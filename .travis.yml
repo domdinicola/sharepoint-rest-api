@@ -1,0 +1,25 @@
+dist: xenial
+language: python
+sudo: false
+
+python:
+  - 3.8
+
+env:
+  global:
+    - SHAREPOINT_TENANT = 'https://unitst.sharepoint.com'
+  jobs:
+    - DJANGO=3.0
+
+install:
+  - pip install tox codecov
+
+script:
+  - tox -e "py${TRAVIS_PYTHON_VERSION//.}-d${DJANGO//.}" -- py.test tests -v
+
+before_success:
+  - coverage erase
+
+after_success:
+  - coverage combine
+  - codecov
