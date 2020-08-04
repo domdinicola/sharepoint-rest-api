@@ -1,0 +1,40 @@
+{
+    "library": {
+        "master": {
+            "model": "sharepoint_rest_api.sharepointlibrary",
+            "pk": 1,
+            "fields": {
+                "created": "2020-08-04T20:28:21.886Z",
+                "modified": "2020-08-04T20:28:21.886Z",
+                "name": "2020 Certified Reports",
+                "site": 1,
+                "active": true,
+                "public": true
+            }
+        },
+        "deps": [
+            {
+                "model": "sharepoint_rest_api.sharepointsite",
+                "pk": 1,
+                "fields": {
+                    "created": "2020-08-04T20:28:21.881Z",
+                    "modified": "2020-08-04T20:28:21.881Z",
+                    "tenant": 1,
+                    "name": "GLB-DRP",
+                    "site_type": "sites"
+                }
+            },
+            {
+                "model": "sharepoint_rest_api.sharepointtenant",
+                "pk": 1,
+                "fields": {
+                    "created": "2020-08-04T20:28:21.877Z",
+                    "modified": "2020-08-04T20:28:21.877Z",
+                    "url": "https://unitst.sharepoint.com/",
+                    "username": null,
+                    "password": null
+                }
+            }
+        ]
+    }
+}

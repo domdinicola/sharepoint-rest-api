@@ -1,0 +1,63 @@
+# Python bytecode:
+*.py[co]
+
+# Packaging files:
+*.egg*
+
+# Editor temp files:
+*.swp
+*~
+
+# Sphinx docs:
+build
+/~build
+
+# SQLite3 database files:
+*.db
+*.sql
+
+# Logs:
+*.log
+.vscode
+
+.idea/
+
+static/*
+media
+
+packer_cache
+*.iso
+*.box
+
+*.tar
+
+*.gz
+
+celerybeat-schedule
+
+htmlcov
+.coverage
+
+config.json
+
+.env
+.envrc
+.venv/
+# Sphinx documentation
+docs/_build/
+
+# macOS system meta file
+.DS_Store
+
+*secrets.yml
+/dist
+.tox
+.pytest_cache
+coverage.xml
+
+Pipfile
+Pipfile.lock
+celerybeat.pid
+*db.sqlite3
+
+data/
