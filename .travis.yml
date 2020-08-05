@@ -6,8 +6,6 @@ python:
   - 3.8
 
 env:
-  global:
-    - SHAREPOINT_TENANT = 'https://unitst.sharepoint.com'
   jobs:
     - DJANGO=3.0
 

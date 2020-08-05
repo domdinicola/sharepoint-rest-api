@@ -37,7 +37,8 @@ class AbstractSharePointViewSet(viewsets.ReadOnlyModelViewSet):
         return response
 
     def get_cache_key(self, **kwargs):
-        key = get_cache_key([self.tenant, self.site, self.folder], **kwargs)
+        keys = [key for key in [self.tenant, self.site, self.folder] if key]
+        key = get_cache_key(keys, **kwargs)
         return key
 
 

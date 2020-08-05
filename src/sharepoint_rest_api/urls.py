@@ -12,8 +12,8 @@ from sharepoint_rest_api.views.settings_based import (
     SharePointSettingsSearchViewSet,
 )
 from sharepoint_rest_api.views.url_based import (
-    FileSharePointUrlViewSet,
     SharePointUrlCamlViewSet,
+    SharePointUrlFileViewSet,
     SharePointUrlRestViewSet,
 )
 
@@ -28,7 +28,7 @@ router.register(r'libraries', SharePointLibraryViewSet, basename='sharepoint-lib
 
 # url based
 router.register(r'sharepoint/(?P<tenant>[\w\-]+)/(?P<site>[\w\-]+)/(?P<folder>[\w\W]+)/files',
-                FileSharePointUrlViewSet, basename='sharepoint-url-files')
+                SharePointUrlFileViewSet, basename='sharepoint-url-files')
 router.register(r'sharepoint/(?P<tenant>[\w\-]+)/(?P<site>[\w\-]+)/(?P<folder>[\w\W]+)/rest',
                 SharePointUrlRestViewSet, basename='sharepoint-url-rest')
 router.register(r'sharepoint/(?P<tenant>[\w\-]+)/(?P<site>[\w\-]+)/(?P<folder>[\w\W]+)/caml',
