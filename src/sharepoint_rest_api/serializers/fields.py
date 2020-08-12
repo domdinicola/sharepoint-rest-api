@@ -38,16 +38,19 @@ class SharePointPropertyManyField(serializers.ReadOnlyField):
 
 class RawSearchSharePointField(serializers.ReadOnlyField):
     def get_attribute(self, instance):
-        return [item['Value'] for item in instance if item['Key'] == self.source][0]
+        items = [item['Value'] for item in instance if item['Key'] == self.source]
+        return items[0] if items else 'N/A'
 
 
 class SearchSharePointField(serializers.ReadOnlyField):
     def get_attribute(self, instance):
         field_name = to_camel(self.source)
-        return [item['Value'] for item in instance if item['Key'] == field_name][0]
+        items = [item['Value'] for item in instance if item['Key'] == field_name]
+        return items[0] if items else 'N/A'
 
 
 class CapitalizeSearchSharePointField(serializers.ReadOnlyField):
     def get_attribute(self, instance):
         field_name = first_upper(self.source)
-        return [item['Value'] for item in instance if item['Key'] == field_name][0]
+        items = [item['Value'] for item in instance if item['Key'] == field_name]
+        return items[0] if items else 'N/A'

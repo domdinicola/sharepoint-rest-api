@@ -111,14 +111,20 @@ class FileSharePointMixin:
 
 class SharePointSearchViewSet(AbstractSharePointViewSet):
     serializer_class = SharePointSearchSerializer
+    select_fields = None
 
     def get_queryset(self):
         kwargs = self.request.query_params.dict()
+        select = kwargs.pop('select', None)
+        if select:
+            select = select.split(',')
+        else:
+            select = self.select_fields
         try:
             key = self.get_cache_key(**kwargs)
             response = cache.get(key)
             if response is None:
-                response = self.client.search(filters=kwargs)
+                response = self.client.search(filters=kwargs, select=select)
                 cache.set(key, response)
             return response
         except ClientRequestException:

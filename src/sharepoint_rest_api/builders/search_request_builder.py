@@ -1,8 +1,11 @@
 from office365.sharepoint.caml.utils import to_camel
 
+from sharepoint_rest_api.libs.search_request import SearchRequest
+
 
 class SearchRequestBuilder:
     filters = {}
+    select = None
 
     mapping_operator = {
         'gte': '>=',
@@ -15,9 +18,13 @@ class SearchRequestBuilder:
         'contains': '*'
     }
 
-    def __init__(self, filters):
-        if filters:
-            self.filters = filters
+    def __init__(self, filters, select):
+        self.filters = filters
+        self.select = select
+
+    def get_select_properties(self):
+        if self.select:
+            return {'results': self.select}
 
     def get_query(self):
         filter_queries = []
@@ -44,3 +51,8 @@ class SearchRequestBuilder:
             return '*'
         qry = ' AND '.join('{}'.format(query) for query in filter_queries)
         return qry
+
+    def build(self):
+        qry = self.get_query()
+        selected_properties = self.get_select_properties()
+        return SearchRequest(qry, selected_properties=selected_properties)

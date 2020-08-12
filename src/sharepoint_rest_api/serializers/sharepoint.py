@@ -133,3 +133,15 @@ class SharePointSearchSerializer(serializers.Serializer):
     serverRedirectedEmbedURL = CapitalizeSearchSharePointField()
     serverRedirectedPreviewURL = CapitalizeSearchSharePointField()
     sPWebUrl = CapitalizeSearchSharePointField()
+
+    download_url = serializers.SerializerMethodField()
+
+    def get_download_url(self, obj):
+        filename = [item['Value'] for item in obj if item['Key'] == 'Title'][0]
+        folder = self.context['folder']  # TODO
+        relative_url = reverse('sharepoint_rest_api:sharepoint-settings-files-download', kwargs={
+            'folder': folder,
+            'filename': filename
+        })
+        return f'{settings.HOST}{relative_url}'
+

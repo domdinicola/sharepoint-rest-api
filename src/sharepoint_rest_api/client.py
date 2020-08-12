@@ -5,7 +5,6 @@ from office365.runtime.auth.userCredential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 from office365.sharepoint.files.file import File
 from office365.sharepoint.files.file_creation_information import FileCreationInformation
-from office365.sharepoint.search.searchRequest import SearchRequest
 from office365.sharepoint.search.searchService import SearchService
 
 from sharepoint_rest_api import config
@@ -90,16 +89,16 @@ class SharePointClient:
         self.context.execute_query()
         return items
 
-    def search(self, filters=None):
+    def search(self, filters=None, select=None):
         filters = filters or dict()
-        qry = SearchRequestBuilder(filters).get_query()
         search = SearchService(self.context)
-        request = SearchRequest(qry)
+        request = SearchRequestBuilder(filters, select).build()
         result = search.post_query(request)
         self.context.execute_query()
         relevant_results = result.PrimaryQueryResult.RelevantResults
         results = relevant_results['Table']['Rows'].values()
-        return [list(item['Cells'].values()) for item in results]
+        items = [list(item['Cells'].values()) for item in results]
+        return items
 
     def upload_file_alt(self, target_folder, name, content):
         context = target_folder.context
