@@ -30,7 +30,7 @@ setup(
         'Environment :: Web Environment',
         'Programming Language :: Python :: 3.8',
         'Framework :: Django',
-        'Framework :: Django :: 3.0',
+        'Framework :: Django :: 3.1',
         'Intended Audience :: Developers'],
     install_requires = [
         'django',
