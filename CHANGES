@@ -1,3 +1,8 @@
+Release 0.2 (in development)
+-----------------------------------------
+* added support to django 3.1
+
+
 Release 0.1
 -----------------------------------------
 * initial release
