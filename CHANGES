@@ -1,6 +1,7 @@
-Release 0.2 (in development)
+Release 0.2
 -----------------------------------------
 * added support to django 3.1
+* tweaked search api
 
 
 Release 0.1
