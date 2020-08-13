@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.filters import OrderingFilter, SearchFilter
 
+from sharepoint_rest_api import config
 from sharepoint_rest_api.serializers.sharepoint import SharePointFileSerializer, SharePointSearchSerializer
 from sharepoint_rest_api.utils import get_cache_key
 
@@ -53,7 +54,8 @@ class CamlQuerySharePointViewSet(AbstractSharePointViewSet):
             response = cache.get(key)
             if response is None:
                 response = self.client.read_caml_items(filters=kwargs)
-                # cache.set(key, response)
+                if config.SHAREPOINT_CACHE_DISABLED:
+                    cache.set(key, response)
             return response
         except ClientRequestException:
             raise Http404
@@ -68,7 +70,8 @@ class RestQuerySharePointViewSet(AbstractSharePointViewSet):
             response = cache.get(key)
             if response is None:
                 response = self.client.read_items(filters=kwargs)
-                # cache.set(key, response)
+                if config.SHAREPOINT_CACHE_DISABLED:
+                    cache.set(key, response)
             return response
         except ClientRequestException:
             raise Http404
@@ -125,7 +128,8 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
             response = cache.get(key)
             if response is None:
                 response = self.client.search(filters=kwargs, select=select)
-                # cache.set(key, response)
+                if config.SHAREPOINT_CACHE_DISABLED:
+                    cache.set(key, response)
             return response
         except ClientRequestException:
             raise Http404

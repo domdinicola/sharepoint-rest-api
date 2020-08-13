@@ -1,5 +1,6 @@
 import os
 
+SHAREPOINT_CACHE_DISABLED = os.environ.get('SHAREPOINT_CACHE_DISABLED', False)
 SHAREPOINT_TENANT = os.environ.get('SHAREPOINT_TENANT', 'https://unitst.sharepoint.com')
 SHAREPOINT_SITE = os.environ.get('SHAREPOINT_SITE', 'GLB-DRP')
 SHAREPOINT_SITE_TYPE = os.environ.get('SHAREPOINT_SITE_TYPE', 'sites')
