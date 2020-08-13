@@ -24,6 +24,10 @@
         "x-content-type-options": [
             "X-Content-Type-Options",
             "nosniff"
+        ],
+        "referrer-policy": [
+            "Referrer-Policy",
+            "same-origin"
         ]
     },
     "data": [
