@@ -144,4 +144,3 @@ class SharePointSearchSerializer(serializers.Serializer):
             'filename': filename
         })
         return f'{settings.HOST}{relative_url}'
-
