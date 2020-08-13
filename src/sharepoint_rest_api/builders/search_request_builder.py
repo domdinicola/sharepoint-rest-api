@@ -1,6 +1,5 @@
-from office365.sharepoint.caml.utils import to_camel
-
 from sharepoint_rest_api.libs.search_request import SearchRequest
+from sharepoint_rest_api.utils import to_camel
 
 
 class SearchRequestBuilder:

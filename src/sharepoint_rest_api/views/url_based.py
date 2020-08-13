@@ -52,7 +52,7 @@ class UrlBasedSharePointViewSet(AbstractSharePointViewSet):
                 dl_info['password'] = dl.site.tenant.password
             try:
                 client = SharePointClient(**dl_info)
-                cache.set(key, client)
+                # cache.set(key, client)
             except SharePointClientException:
                 raise PermissionDenied
 
