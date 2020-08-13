@@ -1,6 +1,7 @@
 from django.core.cache import caches
 from rest_framework.exceptions import PermissionDenied
 
+from sharepoint_rest_api import config
 from sharepoint_rest_api.client import SharePointClient, SharePointClientException
 from sharepoint_rest_api.models import SharePointLibrary
 from sharepoint_rest_api.serializers.sharepoint import SharePointUrlSerializer
@@ -52,7 +53,8 @@ class UrlBasedSharePointViewSet(AbstractSharePointViewSet):
                 dl_info['password'] = dl.site.tenant.password
             try:
                 client = SharePointClient(**dl_info)
-                # cache.set(key, client)
+                if config.SHAREPOINT_CACHE_DISABLED:
+                    cache.set(key, client)
             except SharePointClientException:
                 raise PermissionDenied
 
