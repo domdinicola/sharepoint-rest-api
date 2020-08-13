@@ -67,7 +67,7 @@ class SharePointUrlCamlViewSet(CamlQuerySharePointViewSet, UrlBasedSharePointVie
     serializer_class = SharePointUrlSerializer
 
 
-class FileSharePointUrlViewSet(FileSharePointMixin, UrlBasedSharePointViewSet):
+class SharePointUrlFileViewSet(FileSharePointMixin, UrlBasedSharePointViewSet):
     pass
 
 

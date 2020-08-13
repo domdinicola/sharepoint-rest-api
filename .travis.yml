@@ -6,10 +6,10 @@ python:
   - 3.8
 
 env:
-  global:
-    - SHAREPOINT_TENANT = 'https://unitst.sharepoint.com'
   jobs:
+    - DJANGO=2.2
     - DJANGO=3.0
+    - DJANGO=3.1
 
 install:
   - pip install tox codecov
