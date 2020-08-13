@@ -33,6 +33,9 @@ class SharePointClient:
         self.folder = kwargs.get('folder', 'Documents')
         self.context = ClientContext.connect_with_credentials(self.site_path, UserCredential(username, password))
 
+    def __reduce__(self):
+        return (SharePointClient, (self.relative_url, self.site_path, self.folder, ))
+
     def get_folder(self, list_title):
         list_obj = self.context.web.lists.get_by_title(list_title)
         folder = list_obj.rootFolder
