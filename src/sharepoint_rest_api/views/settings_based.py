@@ -49,7 +49,7 @@ class SettingsBasedSharePointViewSet(AbstractSharePointViewSet):
             }
             try:
                 client = SharePointClient(**dl_info)
-                cache.set(key, client)
+                # cache.set(key, client)
             except SharePointClientException:
                 raise PermissionDenied
 
