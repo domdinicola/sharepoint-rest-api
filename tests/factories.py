@@ -5,7 +5,7 @@ import factory
 from sharepoint_rest_api.models import SharePointLibrary, SharePointSite, SharePointTenant
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = get_user_model()
         django_get_or_create = ('username',)
@@ -32,14 +32,14 @@ class UserFactory(factory.DjangoModelFactory):
         return user
 
 
-class SharePointTenantFactory(factory.DjangoModelFactory):
+class SharePointTenantFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = SharePointTenant
         django_get_or_create = ('url',)
 
 
-class SharePointSiteFactory(factory.DjangoModelFactory):
+class SharePointSiteFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: "name%03d" % n)
 
     class Meta:
@@ -47,7 +47,7 @@ class SharePointSiteFactory(factory.DjangoModelFactory):
         django_get_or_create = ('name',)
 
 
-class SharePointLibraryFactory(factory.DjangoModelFactory):
+class SharePointLibraryFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: "name%03d" % n)
 
     class Meta:

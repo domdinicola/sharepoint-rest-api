@@ -18,7 +18,7 @@ class SearchRequestBuilder:
         'contains': '*'
     }
 
-    def __init__(self, filters, select):
+    def __init__(self, filters=None, select=None):
         self.filters = filters
         self.select = select
 
