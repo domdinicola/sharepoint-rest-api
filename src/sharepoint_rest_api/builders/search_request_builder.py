@@ -30,7 +30,7 @@ class SearchRequestBuilder:
         if self.filters.keys():
             filter_queries = []
             for qs_filter_name, filter_value in self.filters.items():
-                filter_name = to_camel(qs_filter_name.split('__')[0])
+                filter_name = qs_filter_name.split('__')[0]
                 querystring_operator = qs_filter_name.split('__')[-1]
                 operator = self.mapping_operator.get(querystring_operator, ':')
                 if operator == '..':
