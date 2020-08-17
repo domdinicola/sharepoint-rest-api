@@ -130,7 +130,10 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
             key = self.get_cache_key(**kwargs)
             response = cache.get(key)
             if response is None:
-                response = self.client.search(filters=self.get_filters(kwargs), select=select)
+                response = self.client.search(
+                    filters=self.get_filters(kwargs),
+                    select=select
+                )
                 if config.SHAREPOINT_CACHE_DISABLED:
                     cache.set(key, response)
             return response

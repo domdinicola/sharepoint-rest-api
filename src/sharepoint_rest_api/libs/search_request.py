@@ -1,5 +1,7 @@
 from office365.runtime.client_value import ClientValue
 
+from sharepoint_rest_api import config
+
 
 class SearchRequest(ClientValue):
 
@@ -24,8 +26,8 @@ class SearchRequest(ClientValue):
         self.RefinementFilters = refinement_filters
         self.Refiners = refiners
 
-        self.RowLimit = row_limit
-        self.RowsPerPage = rows_per_page
+        self.RowLimit = row_limit or config.SHAREPOINT_LIMIT
+        self.RowsPerPage = rows_per_page or config.SHAREPOINT_ROWS_PER_PAGE
         self.StartRow = start_row
 
         self.Timeout = timeout
