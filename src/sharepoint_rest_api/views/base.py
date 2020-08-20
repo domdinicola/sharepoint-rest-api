@@ -122,17 +122,16 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
     def get_queryset(self):
         kwargs = self.request.query_params.dict()
         select = kwargs.pop('select', None)
-        if select:
-            select = select.split(',')
-        else:
-            select = self.select_fields
+        select = select.split(',') if select else self.select_fields
+        source_id = kwargs.pop('source_id', None)
         try:
             key = self.get_cache_key(**kwargs)
             response = cache.get(key)
             if response is None:
                 response = self.client.search(
                     filters=self.get_filters(kwargs),
-                    select=select
+                    select=select,
+                    source_id=source_id
                 )
                 if config.SHAREPOINT_CACHE_DISABLED:
                     cache.set(key, response)

@@ -5,7 +5,7 @@ from sharepoint_rest_api import config
 
 class SearchRequest(ClientValue):
 
-    def __init__(self, query_text, selected_properties=None, refinement_filters=None, refiners=None,
+    def __init__(self, query_text, selected_properties=None, refinement_filters=None, refiners=None, source_id=None,
                  row_limit=None, rows_per_page=None, start_row=None, timeout=None,
                  block_dedupe_mode=None, bypass_result_types=None):
         """
@@ -25,6 +25,7 @@ class SearchRequest(ClientValue):
         self.SelectProperties = selected_properties
         self.RefinementFilters = refinement_filters
         self.Refiners = refiners
+        self.SourceId = source_id
 
         self.RowLimit = row_limit or config.SHAREPOINT_LIMIT
         self.RowsPerPage = rows_per_page or config.SHAREPOINT_ROWS_PER_PAGE

@@ -16,9 +16,10 @@ class SearchRequestBuilder:
         'contains': '*'
     }
 
-    def __init__(self, filters=None, select=None):
+    def __init__(self, filters=None, select=None, source_id=None):
         self.filters = filters
         self.select = select
+        self.source_id = source_id
 
     def get_select_properties(self):
         if self.select:
