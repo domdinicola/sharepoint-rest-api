@@ -16,10 +16,11 @@ class SearchRequestBuilder:
         'contains': '*'
     }
 
-    def __init__(self, filters=None, select=None, source_id=None):
+    def __init__(self, filters=None, select=None, source_id=None, start_row=None):
         self.filters = filters
         self.select = select
         self.source_id = source_id
+        self.start_row = start_row
 
     def get_select_properties(self):
         if self.select:
@@ -37,7 +38,7 @@ class SearchRequestBuilder:
                     filter_value_from, filter_value_to = filter_value.split('__')
                     query = '{}:{}{}{}'.format(filter_name, filter_value_from, operator, filter_value_to)
                 elif operator == "*":
-                    query = '{}:{}{}'.format(filter_name, filter_value, operator)
+                    query = '{}:"{}{}"'.format(filter_name, filter_value, operator)
                 else:
                     values = filter_value.split(',')
                     if len(values) == 1:
@@ -54,4 +55,9 @@ class SearchRequestBuilder:
     def build(self):
         qry = self.get_query()
         selected_properties = self.get_select_properties()
-        return SearchRequest(qry, selected_properties=selected_properties, source_id=self.source_id)
+        return SearchRequest(
+            qry,
+            selected_properties=selected_properties,
+            source_id=self.source_id,
+            start_row=self.start_row
+        )
