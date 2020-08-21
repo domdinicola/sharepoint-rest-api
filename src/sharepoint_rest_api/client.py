@@ -11,6 +11,7 @@ from sharepoint_rest_api import config
 from sharepoint_rest_api.builders.camlquery_builder import CamlQueryBuilder
 from sharepoint_rest_api.builders.querystring_builder import QueryStringBuilder
 from sharepoint_rest_api.builders.search_request_builder import SearchRequestBuilder
+from sharepoint_rest_api.config import SHAREPOINT_PAGE_SIZE
 
 logger = logging.getLogger(__name__)
 
@@ -92,10 +93,10 @@ class SharePointClient:
         self.context.execute_query()
         return items
 
-    def search(self, filters=None, select=None, source_id=None):
+    def search(self, filters=None, select=None, source_id=None, page=1):
         filters = filters or dict()
         search = SearchService(self.context)
-        request = SearchRequestBuilder(filters, select, source_id).build()
+        request = SearchRequestBuilder(filters, select, source_id, (page - 1) * SHAREPOINT_PAGE_SIZE).build()
         result = search.post_query(request)
         self.context.execute_query()
         relevant_results = result.PrimaryQueryResult.RelevantResults
