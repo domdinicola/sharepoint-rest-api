@@ -114,23 +114,27 @@ class FileSharePointMixin:
 
 class SharePointSearchViewSet(AbstractSharePointViewSet):
     serializer_class = SharePointSearchSerializer
-    select_fields = None
+    selected_fields = None
 
     def get_filters(self, kwargs):
         return kwargs
 
+    def get_selected(self, selected):
+        return selected.split(',') if selected else self.serializer_class._declared_fields.keys()
+
     def get_queryset(self):
         kwargs = self.request.query_params.dict()
-        select = kwargs.pop('select', None)
-        select = select.split(',') if select else self.select_fields
+        selected = self.get_selected(kwargs.pop('selected', None))
         source_id = kwargs.pop('source_id', None)
+        filters = self.get_filters(kwargs)
+
         try:
             key = self.get_cache_key(**kwargs)
             response = cache.get(key)
             if response is None:
                 response = self.client.search(
-                    filters=self.get_filters(kwargs),
-                    select=select,
+                    filters=filters,
+                    select=selected,
                     source_id=source_id
                 )
                 if config.SHAREPOINT_CACHE_DISABLED:
