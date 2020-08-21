@@ -1,3 +1,9 @@
+Release 0.4
+-----------------------------------------
+* Querystring builder: added source id
+* Search API: possibility to add default filters
+
+
 Release 0.3
 -----------------------------------------
 * upgraded office365 to 2.2
