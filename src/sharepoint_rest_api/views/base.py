@@ -126,8 +126,8 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
         kwargs = self.request.query_params.dict()
         selected = self.get_selected(kwargs.pop('selected', None))
         source_id = kwargs.pop('source_id', None)
+        page = int(kwargs.pop('page', 1))
         filters = self.get_filters(kwargs)
-
         try:
             key = self.get_cache_key(**kwargs)
             response = cache.get(key)
@@ -135,7 +135,8 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
                 response = self.client.search(
                     filters=filters,
                     select=selected,
-                    source_id=source_id
+                    source_id=source_id,
+                    page=page
                 )
                 if config.SHAREPOINT_CACHE_DISABLED:
                     cache.set(key, response)

@@ -27,8 +27,8 @@ class SearchRequest(ClientValue):
         self.Refiners = refiners
         self.SourceId = source_id
 
-        self.RowLimit = row_limit or config.SHAREPOINT_LIMIT
-        self.RowsPerPage = rows_per_page or config.SHAREPOINT_ROWS_PER_PAGE
+        self.RowLimit = row_limit or config.SHAREPOINT_PAGE_SIZE
+        self.RowsPerPage = rows_per_page
         self.StartRow = start_row
 
         self.Timeout = timeout
