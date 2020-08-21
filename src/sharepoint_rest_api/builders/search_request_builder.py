@@ -1,5 +1,4 @@
 from sharepoint_rest_api.libs.search_request import SearchRequest
-from sharepoint_rest_api.utils import to_camel
 
 
 class SearchRequestBuilder:
@@ -17,9 +16,10 @@ class SearchRequestBuilder:
         'contains': '*'
     }
 
-    def __init__(self, filters=None, select=None):
+    def __init__(self, filters=None, select=None, source_id=None):
         self.filters = filters
         self.select = select
+        self.source_id = source_id
 
     def get_select_properties(self):
         if self.select:
@@ -30,7 +30,7 @@ class SearchRequestBuilder:
         if self.filters.keys():
             filter_queries = []
             for qs_filter_name, filter_value in self.filters.items():
-                filter_name = to_camel(qs_filter_name.split('__')[0])
+                filter_name = qs_filter_name.split('__')[0]
                 querystring_operator = qs_filter_name.split('__')[-1]
                 operator = self.mapping_operator.get(querystring_operator, ':')
                 if operator == '..':
@@ -41,9 +41,9 @@ class SearchRequestBuilder:
                 else:
                     values = filter_value.split(',')
                     if len(values) == 1:
-                        filter_values = values[0]
+                        filter_values = f'\"{values[0]}\"'
                     else:
-                        filter_values = '(' + ' OR '.join(["{}".format(value) for value in values]) + ')'
+                        filter_values = "(" + " OR ".join(['\"{}\"'.format(value) for value in values]) + ')'
                     query = '{}{}{}'.format(filter_name, operator, filter_values)
                 filter_queries.append(query)
         if not filter_queries:
@@ -54,4 +54,4 @@ class SearchRequestBuilder:
     def build(self):
         qry = self.get_query()
         selected_properties = self.get_select_properties()
-        return SearchRequest(qry, selected_properties=selected_properties)
+        return SearchRequest(qry, selected_properties=selected_properties, source_id=self.source_id)

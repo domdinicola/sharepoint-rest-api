@@ -1,23 +1,40 @@
 from office365.runtime.client_value import ClientValue
 
+from sharepoint_rest_api import config
+
 
 class SearchRequest(ClientValue):
 
-    def __init__(self, query_text, selected_properties=None, refinement_filters=None,
-                 blockDedupeMode=None, bypassResultTypes=None):
+    def __init__(self, query_text, selected_properties=None, refinement_filters=None, refiners=None, source_id=None,
+                 row_limit=None, rows_per_page=None, start_row=None, timeout=None,
+                 block_dedupe_mode=None, bypass_result_types=None):
         """
-
         :type query_text: str
         :type selected_properties: dict
         :type refinement_filters: dict
+        :type refiners: str
+        :type row_limit: int
+        :type rows_per_page: int
+        :type start_row: int
+        :type timeout: int
+        :type bypassResultTypes: bool
         :type blockDedupeMode: int
         """
         super().__init__()
         self.Querytext = query_text
-        self.BlockDedupeMode = blockDedupeMode
-        self.BypassResultTypes = bypassResultTypes
         self.SelectProperties = selected_properties
         self.RefinementFilters = refinement_filters
+        self.Refiners = refiners
+        self.SourceId = source_id
+
+        self.RowLimit = row_limit or config.SHAREPOINT_LIMIT
+        self.RowsPerPage = rows_per_page or config.SHAREPOINT_ROWS_PER_PAGE
+        self.StartRow = start_row
+
+        self.Timeout = timeout
+
+        self.BypassResultTypes = bypass_result_types
+        self.BlockDedupeMode = block_dedupe_mode
         self.ClientType = None
         self.CollapseSpecification = None
         self.Culture = None

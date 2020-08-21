@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.filters import OrderingFilter, SearchFilter
 
+from sharepoint_rest_api import config
 from sharepoint_rest_api.serializers.sharepoint import SharePointFileSerializer, SharePointSearchSerializer
 from sharepoint_rest_api.utils import get_cache_key
 
@@ -53,7 +54,8 @@ class CamlQuerySharePointViewSet(AbstractSharePointViewSet):
             response = cache.get(key)
             if response is None:
                 response = self.client.read_caml_items(filters=kwargs)
-                # cache.set(key, response)
+                if config.SHAREPOINT_CACHE_DISABLED:
+                    cache.set(key, response)
             return response
         except ClientRequestException:
             raise Http404
@@ -68,7 +70,8 @@ class RestQuerySharePointViewSet(AbstractSharePointViewSet):
             response = cache.get(key)
             if response is None:
                 response = self.client.read_items(filters=kwargs)
-                # cache.set(key, response)
+                if config.SHAREPOINT_CACHE_DISABLED:
+                    cache.set(key, response)
             return response
         except ClientRequestException:
             raise Http404
@@ -113,19 +116,25 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
     serializer_class = SharePointSearchSerializer
     select_fields = None
 
+    def get_filters(self, kwargs):
+        return kwargs
+
     def get_queryset(self):
         kwargs = self.request.query_params.dict()
         select = kwargs.pop('select', None)
-        if select:
-            select = select.split(',')
-        else:
-            select = self.select_fields
+        select = select.split(',') if select else self.select_fields
+        source_id = kwargs.pop('source_id', None)
         try:
             key = self.get_cache_key(**kwargs)
             response = cache.get(key)
             if response is None:
-                response = self.client.search(filters=kwargs, select=select)
-                # cache.set(key, response)
+                response = self.client.search(
+                    filters=self.get_filters(kwargs),
+                    select=select,
+                    source_id=source_id
+                )
+                if config.SHAREPOINT_CACHE_DISABLED:
+                    cache.set(key, response)
             return response
         except ClientRequestException:
             raise Http404

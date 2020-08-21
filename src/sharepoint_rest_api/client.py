@@ -92,14 +92,15 @@ class SharePointClient:
         self.context.execute_query()
         return items
 
-    def search(self, filters=None, select=None):
+    def search(self, filters=None, select=None, source_id=None):
         filters = filters or dict()
         search = SearchService(self.context)
-        request = SearchRequestBuilder(filters, select).build()
+        request = SearchRequestBuilder(filters, select, source_id).build()
         result = search.post_query(request)
         self.context.execute_query()
         relevant_results = result.PrimaryQueryResult.RelevantResults
         results = relevant_results['Table']['Rows'].values()
+        logger.info(f'Retrieved: {relevant_results["TotalRows"]} results')
         items = [list(item['Cells'].values()) for item in results]
         return items
 
