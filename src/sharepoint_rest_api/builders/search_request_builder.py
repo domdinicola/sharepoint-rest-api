@@ -41,9 +41,9 @@ class SearchRequestBuilder:
                 else:
                     values = filter_value.split(',')
                     if len(values) == 1:
-                        filter_values = values[0]
+                        filter_values = f'\"{values[0]}\"'
                     else:
-                        filter_values = '(' + ' OR '.join(["{}".format(value) for value in values]) + ')'
+                        filter_values = "(" + " OR ".join(['\"{}\"'.format(value) for value in values]) + ')'
                     query = '{}{}{}'.format(filter_name, operator, filter_values)
                 filter_queries.append(query)
         if not filter_queries:
