@@ -1,6 +1,11 @@
+Release 0.6
+-----------------------------------------
+* Search API: added total rows
+
+
 Release 0.5
 -----------------------------------------
-* added pagination
+* Search API: added pagination
 
 
 Release 0.4.1
