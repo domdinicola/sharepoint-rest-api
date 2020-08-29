@@ -103,7 +103,7 @@ class SharePointClient:
         results = relevant_results['Table']['Rows'].values()
         logger.info(f'Retrieved: {relevant_results["TotalRows"]} results')
         items = [list(item['Cells'].values()) for item in results]
-        return items
+        return items, relevant_results["TotalRows"]
 
     def upload_file_alt(self, target_folder, name, content):
         context = target_folder.context
