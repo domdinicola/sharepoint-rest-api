@@ -118,6 +118,7 @@ class FileSharePointMixin:
 class SharePointSearchViewSet(AbstractSharePointViewSet):
     serializer_class = SharePointSearchSerializer
     selected_fields = None
+    total_rows = None
 
     def get_filters(self, kwargs):
         return kwargs
@@ -135,7 +136,7 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
             key = self.get_cache_key(**kwargs)
             response = cache.get(key)
             if response is None:
-                response = self.client.search(
+                response, self.total_rows = self.client.search(
                     filters=filters,
                     select=selected,
                     source_id=source_id,
