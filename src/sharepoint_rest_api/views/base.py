@@ -151,12 +151,13 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
     def list(self, request, *args, **kwargs):
         def get_link(page):
             last_dict = request.query_params.copy()
-            if page == 1:
-                last_dict['page'] = str(page)
-                return request.build_absolute_uri('?')
+            if page == 0:
+                return
+            elif page == 1:
+                last_dict.pop('page', None)
             elif page > 1:
                 last_dict['page'] = str(page)
-                return request.build_absolute_uri('?') + '?' + urlencode(last_dict)
+            return request.build_absolute_uri('?') + '?' + urlencode(last_dict)
 
         response = super().list(request, *args, **kwargs)
         current_page = int(self.request.query_params.get('page', 1))
@@ -165,7 +166,7 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
         next_offset = current_page + 1 if current_page < last_offset else 0
 
         response.data = {
-            "first": request.build_absolute_uri('?'),
+            "first": get_link(1),
             "last": get_link(last_offset),
             "previous": get_link(prev_offset),
             "next:": get_link(next_offset),
