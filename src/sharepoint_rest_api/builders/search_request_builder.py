@@ -54,10 +54,11 @@ class SearchRequestBuilder:
 
     def build(self):
         qry = self.get_query()
-        selected_properties = self.get_select_properties()
+        select_properties = self.get_select_properties()
         return SearchRequest(
-            qry,
-            selected_properties=selected_properties,
-            source_id=self.source_id,
-            start_row=self.start_row
+            Querytext=qry,
+            SelectProperties=select_properties,
+            SourceId=self.source_id,
+            StartRow=self.start_row,
+            TrimDuplicates=False
         )
