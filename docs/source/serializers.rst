@@ -10,7 +10,7 @@ Serializers Fields
 SharePointPropertyField
 =======================
 
-.. autoclass:: sharepoint_rest_api.serializers.SharePointTenant
+.. autoclass:: sharepoint_rest_api.serializers.fields.SharePointPropertyField
 
 
 UpperSharePointPropertyField
@@ -73,7 +73,7 @@ Sharepoint
 BaseSharePointItemSerializer
 ===============================
 
-.. autoclass:: sharepoint_rest_api.serializers.sharepoint
+.. autoclass:: sharepoint_rest_api.serializers.sharepoint.BaseSharePointItemSerializer
 
 
 SharePointSettingsSerializer

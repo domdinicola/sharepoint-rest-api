@@ -19,6 +19,7 @@ class SharePointTenant(TimeStampedModel):
         return f'{self.url}'
 
     class Meta:
+        app_label = 'sharepoint_rest_api'
         ordering = ['url']
         verbose_name = 'SharePoint Tenant'
         verbose_name_plural = 'SharePoint Tenants'
@@ -39,6 +40,7 @@ class SharePointSite(TimeStampedModel):
     site_type = models.CharField(verbose_name=_("Site Type"), max_length=16, choices=SITE_TYPES, default=SITE)
 
     class Meta:
+        app_label = 'sharepoint_rest_api'
         ordering = ['name']
         verbose_name = 'SharePoint Site'
         verbose_name_plural = 'SharePoint Sites'
@@ -61,6 +63,7 @@ class SharePointLibrary(TimeStampedModel):
     public = models.BooleanField(verbose_name=_("Public"), default=True)
 
     class Meta:
+        app_label = 'sharepoint_rest_api'
         ordering = ['name']
         unique_together = ('name', 'site', )
         verbose_name = 'SharePoint Document Library'

@@ -1,5 +1,5 @@
 .. include:: globals.txt
-.. currentmodule:: wfp_auth
+.. currentmodule:: sharepoint_rest_api.views
 .. _api:
 
 ===

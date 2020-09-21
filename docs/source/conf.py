@@ -10,9 +10,15 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+import django
+from django.conf import settings
+
+sys.path.insert(0, os.path.abspath(os.path.join('..', '..', 'src')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "_ext")))
+settings.configure()
+django.setup()
 
 
 # -- Project information -----------------------------------------------------
@@ -28,13 +34,15 @@ author = 'Domenico Di Nicola'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    # "djangodocs",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
-    "sphinxcontrib.log_cabinet",
+    # "sphinxcontrib.log_cabinet",
 ]
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
+    "django": ("http://django.readthedocs.org/en/latest/", None),
     "click": ("https://click.palletsprojects.com/", None),
     "jinja": ("https://jinja.palletsprojects.com/", None),
 }
@@ -46,6 +54,9 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
+
+# The master toctree document.
+master_doc = 'index'
 
 
 # -- Options for HTML output -------------------------------------------------

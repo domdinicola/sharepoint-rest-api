@@ -1,5 +1,5 @@
 .. include:: globals.txt
-.. currentmodule:: wfp_auth.models
+.. currentmodule:: sharepoint_rest_api.builders
 .. _models:
 
 ========
@@ -10,7 +10,7 @@ Utility classes to help transforming url dictionary in "SharePoint" like query
 
 
 CamlQueryBuilder
-==============
+================
 
 .. autoclass:: sharepoint_rest_api.builders.camlquery_builder.CamlQueryBuilder
 
