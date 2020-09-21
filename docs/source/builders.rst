@@ -1,6 +1,6 @@
 .. include:: globals.txt
 .. currentmodule:: sharepoint_rest_api.builders
-.. _models:
+.. _builders:
 
 ========
 Builders

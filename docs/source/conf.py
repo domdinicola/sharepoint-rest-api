@@ -12,11 +12,12 @@
 #
 import os
 import sys
+
 import django
 from django.conf import settings
 
 sys.path.insert(0, os.path.abspath(os.path.join('..', '..', 'src')))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "_ext")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', "_ext")))
 settings.configure()
 django.setup()
 
@@ -34,7 +35,7 @@ author = 'Domenico Di Nicola'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    # "djangodocs",
+    "djangodocs",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     # "sphinxcontrib.log_cabinet",

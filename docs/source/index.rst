@@ -1,8 +1,5 @@
 .. include:: globals.txt
-.. SharePoint REST API documentation master file, created by
-   sphinx-quickstart on Mon Sep 14 09:10:57 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. _index:
 
 Welcome to SharePoint REST API's documentation!
 ===============================================
@@ -38,3 +35,4 @@ Overview
     models
     utils
     changes
+    intershpinx

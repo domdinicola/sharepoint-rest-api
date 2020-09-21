@@ -22,8 +22,10 @@ Add `sharepoint_rest_api` to ``INSTALLED_APPS`` in settings
     ]
 
 
-Contributing
-------------
+Documentation
+-------------
+
+Documentation can be found at https://sharepoint-rest-api.readthedocs.io/en/latest/
 
 Environment Setup
 ~~~~~~~~~~~~~~~~~

@@ -28,10 +28,11 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
+import argparse
+import imp
 import os
 import sys
-import imp
-import argparse
+
 from sphinx.ext import intersphinx
 
 color_names = ('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')

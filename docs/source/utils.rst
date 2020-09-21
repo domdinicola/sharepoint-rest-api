@@ -1,6 +1,6 @@
 .. include:: globals.txt
 .. currentmodule:: sharepoint_rest_api.utils
-.. _models:
+.. _utils:
 
 =======
 Utils
