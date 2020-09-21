@@ -6,15 +6,15 @@
 Models
 =======
 
+.. contents::
+    :local:
+    :depth: 1
 
 SharePointTenant
 ================
 
 .. autoclass:: sharepoint_rest_api.models.SharePointTenant
 
-    .. attribute:: url
-
-        URL field
 
 SharePointSite
 ==============

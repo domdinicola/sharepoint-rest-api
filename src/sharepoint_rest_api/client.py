@@ -38,6 +38,7 @@ class SharePointClient:
         return SharePointClient, (self.relative_url, self.site_path, self.folder, )
 
     def get_folder(self, list_title):
+        """set folder passed as param"""
         list_obj = self.context.web.lists.get_by_title(list_title)
         folder = list_obj.rootFolder
         self.context.load(folder)

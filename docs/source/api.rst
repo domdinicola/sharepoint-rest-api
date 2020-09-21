@@ -8,11 +8,22 @@ API
 
 .. contents::
     :local:
-    :depth: 1
+    :depth: 2
+
+
+Model Views
+===========
+Views to allow CRUD on SharePoint models
+
+.. autofunction:: sharepoint_rest_api.views.model_views.SharePointTenantViewSet
+.. autofunction:: sharepoint_rest_api.views.model_views.SharePointSiteViewSet
+.. autofunction:: sharepoint_rest_api.views.model_views.SharePointLibraryViewSet
 
 
 Base Views
 ==========
+
+Base views extracted by settings and based views
 
 .. autofunction:: sharepoint_rest_api.views.base.AbstractSharePointViewSet
 .. autofunction:: sharepoint_rest_api.views.base.CamlQuerySharePointViewSet
@@ -22,15 +33,10 @@ Base Views
 
 
 
-Model Views
-===========
-.. autofunction:: sharepoint_rest_api.views.model_views.SharePointTenantViewSet
-.. autofunction:: sharepoint_rest_api.views.model_views.SharePointSiteViewSet
-.. autofunction:: sharepoint_rest_api.views.model_views.SharePointLibraryViewSet
-
-
 Settings Based Views
 ====================
+
+Views used for settings mode
 
 .. autofunction:: sharepoint_rest_api.views.settings_based.SettingsBasedSharePointViewSet
 .. autofunction:: sharepoint_rest_api.views.settings_based.SharePointSettingsRestViewSet
@@ -41,6 +47,8 @@ Settings Based Views
 
 URL Based Views
 ===============
+
+Views used for URL mode
 
 .. autofunction:: sharepoint_rest_api.views.url_based.UrlBasedSharePointViewSet
 .. autofunction:: sharepoint_rest_api.views.url_based.SharePointUrlRestViewSet

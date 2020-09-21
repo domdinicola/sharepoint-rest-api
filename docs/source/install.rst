@@ -5,7 +5,7 @@
 Install
 ======================
 
-add SharePoint REST API in your INSTALLED APPS in your settings.py
+add SharePoint REST API in your INSTALLED APPS in your settings.py and configure your settingss
 
 .. code-block:: python
 
@@ -15,19 +15,15 @@ add SharePoint REST API in your INSTALLED APPS in your settings.py
         ...
     )
 
-
-
-
-.. note::
-    assure following urls have been imported in your urls.py
+include your the library urls in the main url.py
 
 .. code-block:: python
 
     path(r'api/', include('sharepoint_rest_api.urls', namespace='sharepoint')),
 
 
-Available settings
-======================
+setup your settings
+===================
 
 Please see :ref:`settings`
 

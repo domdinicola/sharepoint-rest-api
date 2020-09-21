@@ -6,6 +6,12 @@
 Utils
 =======
 
+Utility functions
+
+.. contents::
+    :local:
+    :depth: 1
+
 to_camel
 ========
 

@@ -39,7 +39,7 @@ setup(
         'django-filter',
         'django-model-utils',
         'djangorestframework',
-        'Office365-REST-Python-Client',
+        'office365-rest-python-client',
     ],
     extras_require={
         'test': [
@@ -56,8 +56,7 @@ setup(
             'pytest-pythonpath',
             'pytest-redis',
             'requests-mock',
-            'sphinxcontrib',
-            'Sphinx',
+            'sphinx',
             'unittest2',
             'vcrpy',
         ],

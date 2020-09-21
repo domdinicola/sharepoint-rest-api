@@ -8,6 +8,10 @@ Builders
 
 Utility classes to help transforming url dictionary in "SharePoint" like query
 
+.. contents::
+    :local:
+    :depth: 1
+
 
 CamlQueryBuilder
 ================

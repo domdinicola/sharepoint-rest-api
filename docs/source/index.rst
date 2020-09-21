@@ -4,7 +4,29 @@
 Welcome to SharePoint REST API's documentation!
 ===============================================
 
-|app| provides custom backend and Model that allow Users to be mapped with different groups depending of the Office
+|app| provides REST API to connect to SharePoint, similarly to Django Rest Framework.
+
+The library allows you to query specific library or use the search API.
+You can work in two modality: URLs or Settings.
+
+URL mode
+--------
+
+URL would specify: tenant and site in the url
+
+.. note::
+    "api/sharepoint/<tenant>/<site>/<library>/<search-type>/?<filter>=<value>"
+
+Settings mode
+-------------
+
+Settings would use... settings
+
+SHAREPOINT_TENANT
+SHAREPOINT_SITE
+
+.. note::
+    "api/sharepoint/<library>/<search-type>/?<filter>=<value>"
 
 
 .. toctree::
