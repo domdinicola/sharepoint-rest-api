@@ -6,6 +6,7 @@ from model_utils.models import TimeStampedModel
 
 
 class SharePointTenant(TimeStampedModel):
+    """SharePoint Tenant model"""
     url = models.URLField(unique=True)
     username = models.CharField(verbose_name=_("Username"), max_length=64, null=True, blank=True)
     password = models.CharField(verbose_name=_("Password"), max_length=64, null=True, blank=True)
@@ -24,6 +25,7 @@ class SharePointTenant(TimeStampedModel):
 
 
 class SharePointSite(TimeStampedModel):
+    """SharePoint Site model"""
     SITE = 'sites'
     TEAM = 'teams'
 
@@ -52,6 +54,7 @@ class SharePointSite(TimeStampedModel):
 
 
 class SharePointLibrary(TimeStampedModel):
+    """SharePoint Library model"""
     name = models.CharField(verbose_name=_("Name"), max_length=64)
     site = models.ForeignKey(SharePointSite, related_name='libraries', on_delete=models.deletion.CASCADE)
     active = models.BooleanField(verbose_name=_("Active"), default=True)

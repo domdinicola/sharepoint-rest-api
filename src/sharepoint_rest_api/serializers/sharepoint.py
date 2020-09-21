@@ -12,6 +12,7 @@ from sharepoint_rest_api.serializers.fields import (
 
 
 class BaseSharePointItemSerializer(serializers.Serializer):
+    """Base Serializer for SharePointItem object"""
 
     id = UpperSharePointPropertyField()
     guid = UpperSharePointPropertyField()
@@ -26,6 +27,8 @@ class BaseSharePointItemSerializer(serializers.Serializer):
 
 
 class SharePointSettingsSerializer(BaseSharePointItemSerializer):
+    """Serializer for Settings Based implementation"""
+
     def get_download_url(self, obj):
         filename = obj.properties.get('FileLeafRef', obj.properties.get('Title', ''))
         if filename:
@@ -42,6 +45,7 @@ class SharePointSettingsSerializer(BaseSharePointItemSerializer):
 
 
 class SharePointUrlSerializer(BaseSharePointItemSerializer):
+    """Serializer for Url Based implementation"""
     def get_download_url(self, obj):
         filename = obj.properties.get('FileLeafRef', obj.properties.get('Title', ''))
         if filename:
@@ -60,6 +64,7 @@ class SharePointUrlSerializer(BaseSharePointItemSerializer):
 
 
 class SharePointFileSerializer(serializers.Serializer):
+    """Serializer for SharePoint File object"""
     name = SharePointPropertyField()
     type_name = serializers.ReadOnlyField()
     url = serializers.ReadOnlyField()
@@ -80,7 +85,7 @@ class SharePointFileSerializer(serializers.Serializer):
 
 
 class SharePointSearchSerializer(serializers.Serializer):
-
+    """Serializer for SharePoint Search API"""
     rank = SearchSharePointField()
     doc_id = SearchSharePointField()
     work_id = SearchSharePointField()

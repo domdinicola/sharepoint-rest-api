@@ -6,18 +6,21 @@ from sharepoint_rest_api.models import SharePointLibrary, SharePointSite, ShareP
 
 
 class SharePointTenantSerializer(serializers.ModelSerializer):
+    """Serializer for SharePointTenant model"""
     class Meta:
         model = SharePointTenant
         exclude = ('username', 'password')
 
 
 class SharePointSiteSerializer(serializers.ModelSerializer):
+    """Serializer for SharePointSite model"""
     class Meta:
         model = SharePointSite
         fields = '__all__'
 
 
 class SharePointLibrarySerializer(serializers.ModelSerializer):
+    """Serializer for Sharepoint Library model"""
     site_name = serializers.ReadOnlyField(source='site.name')
     api_url = serializers.SerializerMethodField()
 

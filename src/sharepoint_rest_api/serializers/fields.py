@@ -37,12 +37,14 @@ class SharePointPropertyManyField(serializers.ReadOnlyField):
 
 
 class RawSearchSharePointField(serializers.ReadOnlyField):
+    """Gets the name of the field without any transformation"""
     def get_attribute(self, instance):
         items = [item['Value'] for item in instance if item['Key'] == self.source]
         return items[0] if items else 'N/A'
 
 
 class SearchSharePointField(serializers.ReadOnlyField):
+    """Gets the name of the field transforming the name with caml query function: last_name -> LastName"""
     def get_attribute(self, instance):
         field_name = to_camel(self.source)
         items = [item['Value'] for item in instance if item['Key'] == field_name]
@@ -50,6 +52,7 @@ class SearchSharePointField(serializers.ReadOnlyField):
 
 
 class CapitalizeSearchSharePointField(serializers.ReadOnlyField):
+    """Gets the name of the field capitalizing the name of the field: example -> Example"""
     def get_attribute(self, instance):
         field_name = first_upper(self.source)
         items = [item['Value'] for item in instance if item['Key'] == field_name]

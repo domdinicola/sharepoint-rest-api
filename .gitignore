@@ -61,4 +61,3 @@ celerybeat.pid
 *db.sqlite3
 
 data/
-docs/
