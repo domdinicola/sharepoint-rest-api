@@ -22,8 +22,10 @@ include your the library urls in the main url.py
     path(r'api/', include('sharepoint_rest_api.urls', namespace='sharepoint')),
 
 
+create your objects tenant, site and libraries objects in your models.
+
+
 setup your settings
-===================
 
 Please see :ref:`settings`
 

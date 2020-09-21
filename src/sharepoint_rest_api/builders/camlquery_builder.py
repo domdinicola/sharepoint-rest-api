@@ -21,6 +21,7 @@ def recursive_builder(queries, operator='And'):
 
 
 class CamlQueryBuilder:
+    """Helper Class to create queries in CamlQuery format"""
     date_operators = ['Geq', 'Gt', 'Leq', 'Lt']
     mapping_operator = {
         'gte': 'Geq',

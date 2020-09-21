@@ -8,7 +8,7 @@ from sharepoint_rest_api.serializers.sharepoint import SharePointSettingsSeriali
 from sharepoint_rest_api.views.base import (
     AbstractSharePointViewSet,
     CamlQuerySharePointViewSet,
-    FileSharePointMixin,
+    FileSharePointViewSet,
     RestQuerySharePointViewSet,
     SharePointSearchViewSet,
 )
@@ -17,6 +17,9 @@ cache = caches['default']
 
 
 class SettingsBasedSharePointViewSet(AbstractSharePointViewSet):
+    """
+    Base viewset for settings based mode
+    """
 
     def is_public(self):
         return SharePointLibrary.objects.filter(name=self.folder, public=True)
@@ -58,16 +61,26 @@ class SettingsBasedSharePointViewSet(AbstractSharePointViewSet):
 
 
 class SharePointSettingsRestViewSet(SettingsBasedSharePointViewSet, RestQuerySharePointViewSet):
+    """
+    Viewset for SharePoint Rest (settings based)
+    """
     serializer_class = SharePointSettingsSerializer
 
 
 class SharePointSettingsCamlViewSet(SettingsBasedSharePointViewSet, CamlQuerySharePointViewSet):
+    """
+    Viewset for SharePoint Caml (settings based)
+    """
     serializer_class = SharePointSettingsSerializer
 
 
-class SharePointSettingsFileViewSet(FileSharePointMixin, SettingsBasedSharePointViewSet):
-    pass
+class SharePointSettingsFileViewSet(FileSharePointViewSet, SettingsBasedSharePointViewSet):
+    """
+    Viewset for SharePoint File metadata (settings based)
+    """
 
 
 class SharePointSettingsSearchViewSet(SharePointSearchViewSet, SettingsBasedSharePointViewSet):
-    pass
+    """
+    Viewset for SharePoint Search (settings based)
+    """

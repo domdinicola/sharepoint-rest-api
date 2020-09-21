@@ -28,7 +28,7 @@ Base views extracted by settings and based views
 .. autofunction:: sharepoint_rest_api.views.base.AbstractSharePointViewSet
 .. autofunction:: sharepoint_rest_api.views.base.CamlQuerySharePointViewSet
 .. autofunction:: sharepoint_rest_api.views.base.RestQuerySharePointViewSet
-.. autofunction:: sharepoint_rest_api.views.base.FileSharePointMixin
+.. autofunction:: sharepoint_rest_api.views.base.FileSharePointViewSet
 .. autofunction:: sharepoint_rest_api.views.base.SharePointSearchViewSet
 
 

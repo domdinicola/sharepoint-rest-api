@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class QueryStringBuilder:
-    """class to map web-querystring dictionary to sharepoint-querystring"""
+    """Helper class to create sharepoint querystring"""
     date_operators = ['ge', 'gt', 'le', 'lt']
     mapping_operator = {
         'gte': 'ge',

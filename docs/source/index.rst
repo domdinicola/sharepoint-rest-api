@@ -9,18 +9,18 @@ Welcome to SharePoint REST API's documentation!
 The library allows you to query specific library or use the search API.
 You can work in two modality: URLs or Settings.
 
-URL mode
---------
+URL based mode
+--------------
 
-URL would specify: tenant and site in the url
+URL mode would specify: tenant and site in the url
 
 .. note::
     "api/sharepoint/<tenant>/<site>/<library>/<search-type>/?<filter>=<value>"
 
-Settings mode
--------------
+Settings based mode
+-------------------
 
-Settings would use... settings
+Settings mode would use... settings
 
 SHAREPOINT_TENANT
 SHAREPOINT_SITE

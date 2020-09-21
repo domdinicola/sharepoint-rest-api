@@ -2,6 +2,7 @@ from sharepoint_rest_api.libs.search_request import SearchRequest
 
 
 class SearchRequestBuilder:
+    """Helper class to build queries in Keyword Query Language (KQL)"""
     filters = {}
     select = None
 
