@@ -1,3 +1,4 @@
+from sharepoint_rest_api import config
 from sharepoint_rest_api.libs.search_request import SearchRequest
 
 
@@ -61,5 +62,6 @@ class SearchRequestBuilder:
             SelectProperties=select_properties,
             SourceId=self.source_id,
             StartRow=self.start_row,
+            RowLimit=config.SHAREPOINT_PAGE_SIZE,
             TrimDuplicates=False
         )
