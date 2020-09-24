@@ -1,7 +1,9 @@
+from sharepoint_rest_api import config
 from sharepoint_rest_api.libs.search_request import SearchRequest
 
 
 class SearchRequestBuilder:
+    """Helper class to build queries in Keyword Query Language (KQL)"""
     filters = {}
     select = None
 
@@ -60,5 +62,6 @@ class SearchRequestBuilder:
             SelectProperties=select_properties,
             SourceId=self.source_id,
             StartRow=self.start_row,
+            RowLimit=config.SHAREPOINT_PAGE_SIZE,
             TrimDuplicates=False
         )

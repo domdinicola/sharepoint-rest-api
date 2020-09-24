@@ -8,7 +8,7 @@ from sharepoint_rest_api.serializers.sharepoint import SharePointUrlSerializer
 from sharepoint_rest_api.views.base import (
     AbstractSharePointViewSet,
     CamlQuerySharePointViewSet,
-    FileSharePointMixin,
+    FileSharePointViewSet,
     RestQuerySharePointViewSet,
     SharePointSearchViewSet,
 )
@@ -17,6 +17,9 @@ cache = caches['default']
 
 
 class UrlBasedSharePointViewSet(AbstractSharePointViewSet):
+    """
+    Base viewset for URL based mode
+    """
 
     def get_library(self):
         return SharePointLibrary.objects.get(
@@ -62,16 +65,26 @@ class UrlBasedSharePointViewSet(AbstractSharePointViewSet):
 
 
 class SharePointUrlRestViewSet(RestQuerySharePointViewSet, UrlBasedSharePointViewSet):
+    """
+    Viewset for SharePoint Rest (URL based)
+    """
     serializer_class = SharePointUrlSerializer
 
 
 class SharePointUrlCamlViewSet(CamlQuerySharePointViewSet, UrlBasedSharePointViewSet):
+    """
+    Viewset for SharePoint Caml (URL based)
+    """
     serializer_class = SharePointUrlSerializer
 
 
-class SharePointUrlFileViewSet(FileSharePointMixin, UrlBasedSharePointViewSet):
-    pass
+class SharePointUrlFileViewSet(FileSharePointViewSet, UrlBasedSharePointViewSet):
+    """
+    Viewset for SharePoint File metadata (URL based)
+    """
 
 
 class SharePointUrlSearchViewSet(SharePointSearchViewSet, UrlBasedSharePointViewSet):
-    pass
+    """
+    Viewset for SharePoint Search (URL based)
+    """

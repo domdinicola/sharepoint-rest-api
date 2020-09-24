@@ -34,7 +34,7 @@ setup(
         'Framework :: Django :: 3.0',
         'Framework :: Django :: 3.1',
         'Intended Audience :: Developers'],
-    install_requires = [
+    install_requires=[
         'django',
         'django-filter',
         'django-model-utils',
@@ -44,6 +44,7 @@ setup(
     extras_require={
         'test': [
             'django-webtest',
+            'drf_api_checker',
             'factory-boy',
             'flake8',
             'isort',
@@ -55,9 +56,9 @@ setup(
             'pytest-pythonpath',
             'pytest-redis',
             'requests-mock',
+            'sphinx',
             'unittest2',
             'vcrpy',
-            'drf_api_checker',
         ],
     },
     package_dir={'': 'src'},

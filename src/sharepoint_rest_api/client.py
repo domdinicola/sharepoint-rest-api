@@ -35,27 +35,44 @@ class SharePointClient:
         self.context = ClientContext.connect_with_credentials(self.site_path, UserCredential(username, password))
 
     def __reduce__(self):
-        return (SharePointClient, (self.relative_url, self.site_path, self.folder, ))
+        return SharePointClient, (self.relative_url, self.site_path, self.folder, )
 
-    def get_folder(self, list_title):
-        list_obj = self.context.web.lists.get_by_title(list_title)
+    def get_folder(self, folder_name):
+        """
+        :param folder_name: name of the folder
+        :return: folder object
+
+        Return folder object
+        """
+        list_obj = self.context.web.lists.get_by_title(folder_name)
         folder = list_obj.rootFolder
         self.context.load(folder)
         self.context.execute_query()
         logger.info(f'List url: {folder.properties["ServerRelativeUrl"]}')
         return folder
 
-    def read_folders(self, list_title):
-        self.get_folder(list_title)
+    def read_folders(self, folder_name):
+        """
+        :param folder_name:
+        :return: folders
+
+        Return folders metadata for subfolder of current folder
+        """
+        self.get_folder(folder_name)
         folders = self.context.web.folders
         self.context.load(folders)
         self.context.execute_query()
         for folder in folders:
             logger.info(f'Folder name: {folder.properties["Name"]}')
-
         return folders
 
     def read_files(self, filters=None):
+        """
+        :param filters:
+        :return: files
+
+        Returns files metadata for files in current folder
+        """
         filters = filters or dict()
         querystring = QueryStringBuilder(filters).get_querystring()
         folder = self.get_folder(self.folder)
@@ -68,6 +85,13 @@ class SharePointClient:
         return files
 
     def read_items(self, filters=None, select=None):
+        """
+        :param filters: filter dictionary
+        :param scope: SharePoint scope
+        :return: items
+
+        Retrieves (filtered) items on current folder using querystring
+        """
         filters = filters or dict()
         querystring = QueryStringBuilder(filters).get_querystring()
         list_object = self.context.web.lists.get_by_title(self.folder)
@@ -78,6 +102,12 @@ class SharePointClient:
         return items
 
     def read_file(self, filename):
+        """
+        :param filename: filename
+        :return:
+
+        Retrieve file in current folder
+        """
         folder = self.get_folder(self.folder)
         cur_file = folder.files.get_by_url(f'/{self.relative_url}/{self.folder}/{filename}')
         self.context.load(cur_file)
@@ -86,6 +116,13 @@ class SharePointClient:
         return cur_file
 
     def read_caml_items(self, filters=None, scope=None):
+        """
+        :param filters: filter dictionary
+        :param scope: SharePoint scope
+        :return: items
+
+        Retrieves (filtered) items on current folder using CamlQueries
+        """
         filters = filters or dict()
         list_obj = self.context.web.lists.get_by_title(self.folder)
         qry = CamlQueryBuilder(filters, scope).get_query()
@@ -94,6 +131,14 @@ class SharePointClient:
         return items
 
     def search(self, filters=None, select=None, source_id=None, page=1):
+        """
+        :param filter: filter dictionary
+        :param select: select string
+        :param source_id: SharePoint SourceId
+        :return: items and total row number
+
+        search file in the SharePoint site
+        """
         filters = filters or dict()
         search = SearchService(self.context)
         request = SearchRequestBuilder(filters, select, source_id, (page - 1) * SHAREPOINT_PAGE_SIZE).build()
@@ -115,12 +160,18 @@ class SharePointClient:
         context.execute_query()
         return target_file
 
-    def upload_file(self, path, list_title='Documents', upload_into_library=True):
+    def upload_file(self, path, folder_name='Documents', upload_into_library=True):
+        """
+        :param path: location of the file
+        :param folder_name:
+        :param upload_into_library: boolean
+        :return:
+        """
         with open(path, 'rb') as content_file:
             file_content = content_file.read()
 
         if upload_into_library:
-            target_folder = self.context.web.lists.get_by_title(list_title).rootFolder
+            target_folder = self.context.web.lists.get_by_title(folder_name).rootFolder
             file = self.upload_file_alt(target_folder, os.path.basename(path), file_content)
             logger.info('File url: {}'.format(file.properties['ServerRelativeUrl']))
         else:
@@ -128,6 +179,12 @@ class SharePointClient:
             File.save_binary(self.context, target_url, str(file_content))
 
     def download_file(self, filename):
+        """
+        :param filename: name of the file to download
+        :return:
+
+        download file in current folder
+        """
         response = File.open_binary(self.context, f'/{self.folder}/{filename}')
         with open(f'./data/{filename}', 'wb') as local_file:
             local_file.write(response.content)

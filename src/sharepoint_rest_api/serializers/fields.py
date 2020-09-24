@@ -4,7 +4,10 @@ from sharepoint_rest_api.utils import first_upper, to_camel
 
 
 class SharePointPropertyField(serializers.ReadOnlyField):
-    """Get attribute from the object or properties, convering camlcase from_date --> fromDate"""
+    """
+    Get attribute from the object or properties converting it to camlcase
+    e.g. from_date --> fromDate
+    """
 
     def get_attribute(self, instance):
         camel_case = to_camel(self.source)
@@ -14,7 +17,10 @@ class SharePointPropertyField(serializers.ReadOnlyField):
 
 
 class UpperSharePointPropertyField(serializers.ReadOnlyField):
-    """Get attribute from the object or properties, it changes to upper case e.g uuid --> UUID"""
+    """
+    Get attribute from the object or properties, it changes to upper case
+    e.g uuid --> UUID
+    """
 
     def get_attribute(self, instance):
         upper_case = self.source.upper()
@@ -24,7 +30,9 @@ class UpperSharePointPropertyField(serializers.ReadOnlyField):
 
 
 class SharePointPropertyManyField(serializers.ReadOnlyField):
-    """Get attribute from the object or properties, handles multivalue"""
+    """
+    Get attribute from the object or properties, handles multivalues
+    """
 
     def get_attribute(self, instance):
         camel_case = to_camel(self.source)
@@ -37,12 +45,19 @@ class SharePointPropertyManyField(serializers.ReadOnlyField):
 
 
 class RawSearchSharePointField(serializers.ReadOnlyField):
+    """
+    Gets the name of the field without any transformation
+    """
     def get_attribute(self, instance):
         items = [item['Value'] for item in instance if item['Key'] == self.source]
         return items[0] if items else 'N/A'
 
 
 class SearchSharePointField(serializers.ReadOnlyField):
+    """
+    Gets the name of the field transforming the name with caml query function
+    e.g. last_name -> LastName
+    """
     def get_attribute(self, instance):
         field_name = to_camel(self.source)
         items = [item['Value'] for item in instance if item['Key'] == field_name]
@@ -50,6 +65,10 @@ class SearchSharePointField(serializers.ReadOnlyField):
 
 
 class CapitalizeSearchSharePointField(serializers.ReadOnlyField):
+    """
+    Gets the name of the field capitalizing the name of the field
+    e.g. example -> Example
+    """
     def get_attribute(self, instance):
         field_name = first_upper(self.source)
         items = [item['Value'] for item in instance if item['Key'] == field_name]

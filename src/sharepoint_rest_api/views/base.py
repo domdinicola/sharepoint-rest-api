@@ -19,6 +19,9 @@ cache = caches['default']
 
 
 class AbstractSharePointViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Base ViewSet for SharePoint Integration
+    """
     serializer_class = None
     filter_backends = (SearchFilter, DjangoFilterBackend, OrderingFilter)
     tenant = None
@@ -47,6 +50,9 @@ class AbstractSharePointViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class CamlQuerySharePointViewSet(AbstractSharePointViewSet):
+    """
+    Viewset for CamlQuery Integration
+    """
 
     def get_queryset(self):
         kwargs = self.request.query_params.dict()
@@ -65,6 +71,9 @@ class CamlQuerySharePointViewSet(AbstractSharePointViewSet):
 
 
 class RestQuerySharePointViewSet(AbstractSharePointViewSet):
+    """
+    Viewset for Rest Integration
+    """
 
     def get_queryset(self):
         kwargs = self.request.query_params.dict()
@@ -80,7 +89,10 @@ class RestQuerySharePointViewSet(AbstractSharePointViewSet):
             raise Http404
 
 
-class FileSharePointMixin:
+class FileSharePointViewSet(AbstractSharePointViewSet):
+    """
+    Base Viewset to handle SharePoint file metadata
+    """
     serializer_class = SharePointFileSerializer
     lookup_field = 'filename'
     lookup_value_regex = '[^/]+'
@@ -116,6 +128,9 @@ class FileSharePointMixin:
 
 
 class SharePointSearchViewSet(AbstractSharePointViewSet):
+    """
+    Base class for SharePoint Search API
+    """
     serializer_class = SharePointSearchSerializer
     selected_fields = None
     total_rows = None
