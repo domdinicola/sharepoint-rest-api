@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""# Copyright (c) 2011 Stefano Apostolico and individual contributors.
+"""# Copyright (c) 2011 individual contributors.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
@@ -97,7 +97,7 @@ To use it add an entry to your ``intersphinx_mapping``.
 .. code-block:: python
 
     intersphinx_mapping = {{
-            '{0}': ('http://readthedocs.wfp.org/{0}/latest/', None),
+            '{0}': ('http://readthedocs.org/{0}/latest/', None),
             ...
     }}
 

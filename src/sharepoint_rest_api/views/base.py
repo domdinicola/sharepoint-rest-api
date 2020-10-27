@@ -184,7 +184,7 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
             "first": get_link(1),
             "last": get_link(last_offset),
             "previous": get_link(prev_offset),
-            "next:": get_link(next_offset),
+            "next": get_link(next_offset),
             "total_rows": self.total_rows,
             "items": response.data,
         }

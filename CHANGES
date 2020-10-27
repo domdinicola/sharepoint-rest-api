@@ -1,3 +1,8 @@
+Release 0.7 (in development)
+-----------------------------------------
+* added support to python 3.9
+
+
 Release 0.6.5
 -----------------------------------------
 * SearchRequest fix pages size
