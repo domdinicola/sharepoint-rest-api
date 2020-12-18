@@ -1,7 +1,6 @@
 import logging
 import os
 
-from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 from office365.sharepoint.files.file import File
 from office365.sharepoint.files.file_creation_information import FileCreationInformation
@@ -32,7 +31,7 @@ class SharePointClient:
         username = kwargs.get('username', config.SHAREPOINT_USERNAME)
         password = kwargs.get('password', config.SHAREPOINT_PASSWORD)
         self.folder = kwargs.get('folder', 'Documents')
-        self.context = ClientContext.connect_with_credentials(self.site_path, UserCredential(username, password))
+        self.context = ClientContext(self.site_path).with_user_credentials(username, password)
 
     def __reduce__(self):
         return SharePointClient, (self.relative_url, self.site_path, self.folder, )
@@ -45,7 +44,7 @@ class SharePointClient:
         Return folder object
         """
         list_obj = self.context.web.lists.get_by_title(folder_name)
-        folder = list_obj.rootFolder
+        folder = list_obj.root_folder
         self.context.load(folder)
         self.context.execute_query()
         logger.info(f'List url: {folder.properties["ServerRelativeUrl"]}')
