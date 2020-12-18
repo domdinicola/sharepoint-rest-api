@@ -52,8 +52,7 @@ class SettingsBasedSharePointViewSet(AbstractSharePointViewSet):
             }
             try:
                 client = SharePointClient(**dl_info)
-                if config.SHAREPOINT_CACHE_DISABLED:
-                    cache.set(key, client)
+                cache.set(key, client)
             except SharePointClientException:
                 raise PermissionDenied
 

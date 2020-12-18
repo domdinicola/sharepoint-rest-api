@@ -60,25 +60,25 @@ def mock_client():
 @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/client/folders.yml'))
 def test_folders(library, sh_client, mock_client):
     items = sh_client.read_folders(library.name)
-    assert len(items) == 49
+    assert len(items) == 50
 
 
 @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/client/items.yml'))
 def test_items(sh_client, mock_client):
     items = sh_client.read_items()
-    assert len(items) == 100
+    assert len(items) == 56
 
 
 @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/client/caml_items.yml'))
 def test_caml_items(sh_client, mock_client):
     items = sh_client.read_caml_items()
-    assert len(items) == 1225
+    assert len(items) == 56
 
 
 @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/client/files.yml'))
 def test_files(sh_client, mock_client):
     items = sh_client.read_files()
-    assert len(items) == 1225
+    assert len(items) == 56
 
 
 # @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/client/file.yml'))

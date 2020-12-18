@@ -1,3 +1,11 @@
+Release 0.7
+-----------------------------------------
+* upgraded to Office365 2.3.x
+* added support to python 3.9
+* removed cache switch, related to CamlQuery issue
+* allow config to be changed by envvars and settings
+
+
 Release 0.6.5
 -----------------------------------------
 * SearchRequest fix pages size
