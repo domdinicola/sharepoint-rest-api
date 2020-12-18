@@ -24,15 +24,19 @@
         "x-content-type-options": [
             "X-Content-Type-Options",
             "nosniff"
+        ],
+        "referrer-policy": [
+            "Referrer-Policy",
+            "same-origin"
         ]
     },
     "data": [
         {
-            "name": "2019 Certified Reports",
+            "name": "2020 Certified Reports",
             "site_name": "GLB-DRP",
             "active": true,
-            "library_url": "https://unitst.sharepoint.com/sites/GLB-DRP/2019%20Certified%20Reports",
-            "api_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2019%20Certified%20Reports/rest/"
+            "library_url": "https://unitst.sharepoint.com/sites/GLB-DRP/2020%20Certified%20Reports",
+            "api_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/rest/"
         }
     ],
     "content_type": null

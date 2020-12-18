@@ -4,8 +4,8 @@
             "model": "sharepoint_rest_api.sharepointtenant",
             "pk": 1,
             "fields": {
-                "created": "2020-08-13T21:37:49.940Z",
-                "modified": "2020-08-13T21:37:49.940Z",
+                "created": "2020-12-18T21:46:45.512Z",
+                "modified": "2020-12-18T21:46:45.512Z",
                 "url": "https://unitst.sharepoint.com/",
                 "username": null,
                 "password": null
