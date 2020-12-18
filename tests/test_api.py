@@ -33,7 +33,7 @@ def site(tenant, request, db):
 def library(site, request, db):
     return SharePointLibraryFactory(
         site=site,
-        name='2019 Certified Reports'
+        name='2020 Certified Reports'
     )
 
 

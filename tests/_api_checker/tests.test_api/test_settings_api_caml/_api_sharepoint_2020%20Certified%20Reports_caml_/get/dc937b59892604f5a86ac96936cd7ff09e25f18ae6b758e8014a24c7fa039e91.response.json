@@ -1,0 +1,63 @@
+{
+    "status_code": 200,
+    "headers": {
+        "content-type": [
+            "Content-Type",
+            "application/json"
+        ],
+        "vary": [
+            "Vary",
+            "Accept"
+        ],
+        "allow": [
+            "Allow",
+            "GET, HEAD, OPTIONS"
+        ],
+        "x-frame-options": [
+            "X-Frame-Options",
+            "DENY"
+        ],
+        "content-length": [
+            "Content-Length",
+            "1045"
+        ],
+        "x-content-type-options": [
+            "X-Content-Type-Options",
+            "nosniff"
+        ],
+        "referrer-policy": [
+            "Referrer-Policy",
+            "same-origin"
+        ]
+    },
+    "data": [
+        {
+            "id": 1,
+            "guid": "5fc59da5-47ab-4afd-b9b9-4d49416170b1",
+            "created": "2015-02-26T18:06:36Z",
+            "modified": "2015-02-26T18:06:36Z",
+            "title": null,
+            "resource_url": "https://unitst.sharepoint.com/_api/Web/lists/GetByTitle('Documents')/getItemById(1)",
+            "download_url": "http://localhost:8000/api/sharepoint/2020%20Certified%20Reports/files/None/download/"
+        },
+        {
+            "id": 4,
+            "guid": "5ad071a0-a239-41b3-a750-f643c43f6088",
+            "created": "2016-06-03T09:30:51Z",
+            "modified": "2016-06-03T12:15:45Z",
+            "title": null,
+            "resource_url": "https://unitst.sharepoint.com/_api/Web/lists/GetByTitle('Documents')/getItemById(4)",
+            "download_url": "http://localhost:8000/api/sharepoint/2020%20Certified%20Reports/files/None/download/"
+        },
+        {
+            "id": 7,
+            "guid": "7f4a801c-c056-4fcb-b2dc-9601335877c0",
+            "created": "2019-04-08T13:18:54Z",
+            "modified": "2019-04-08T13:24:43Z",
+            "title": "TEST PowerPoint",
+            "resource_url": "https://unitst.sharepoint.com/_api/Web/lists/GetByTitle('Documents')/getItemById(7)",
+            "download_url": "http://localhost:8000/api/sharepoint/2020%20Certified%20Reports/files/TEST%20PowerPoint.pdf/download/"
+        }
+    ],
+    "content_type": null
+}

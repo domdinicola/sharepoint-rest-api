@@ -63,8 +63,7 @@ class CamlQuerySharePointViewSet(AbstractSharePointViewSet):
             response = cache.get(key)
             if response is None:
                 response = self.client.read_caml_items(filters=kwargs)
-                if config.SHAREPOINT_CACHE_DISABLED:
-                    cache.set(key, response)
+                cache.set(key, response)
             return response
         except ClientRequestException:
             raise Http404
@@ -82,8 +81,7 @@ class RestQuerySharePointViewSet(AbstractSharePointViewSet):
             response = cache.get(key)
             if response is None:
                 response = self.client.read_items(filters=kwargs)
-                if config.SHAREPOINT_CACHE_DISABLED:
-                    cache.set(key, response)
+                cache.set(key, response)
             return response
         except ClientRequestException:
             raise Http404
@@ -157,8 +155,7 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
                     source_id=source_id,
                     page=page
                 )
-                if config.SHAREPOINT_CACHE_DISABLED:
-                    cache.set(key, response)
+                cache.set(key, response)
             return response
         except ClientRequestException:
             raise Http404
