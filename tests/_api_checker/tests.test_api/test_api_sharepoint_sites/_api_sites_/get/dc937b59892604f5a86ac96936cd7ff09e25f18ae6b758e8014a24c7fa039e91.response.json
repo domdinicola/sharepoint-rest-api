@@ -1,0 +1,40 @@
+{
+    "status_code": 200,
+    "headers": {
+        "content-type": [
+            "Content-Type",
+            "application/json"
+        ],
+        "vary": [
+            "Vary",
+            "Accept"
+        ],
+        "allow": [
+            "Allow",
+            "GET, HEAD, OPTIONS"
+        ],
+        "x-frame-options": [
+            "X-Frame-Options",
+            "DENY"
+        ],
+        "content-length": [
+            "Content-Length",
+            "139"
+        ],
+        "x-content-type-options": [
+            "X-Content-Type-Options",
+            "nosniff"
+        ]
+    },
+    "data": [
+        {
+            "id": 1,
+            "created": "2020-08-13T21:37:49.944000Z",
+            "modified": "2020-08-13T21:37:49.944000Z",
+            "name": "GLB-DRP",
+            "site_type": "sites",
+            "tenant": 1
+        }
+    ],
+    "content_type": null
+}
