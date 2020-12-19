@@ -141,12 +141,12 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
 
     def get_queryset(self):
         kwargs = self.request.query_params.dict()
+        key = self.get_cache_key(**kwargs)
         selected = self.get_selected(kwargs.pop('selected', None))
         source_id = kwargs.pop('source_id', None)
         page = int(kwargs.pop('page', 1))
         filters = self.get_filters(kwargs)
         try:
-            key = self.get_cache_key(**kwargs)
             response = cache.get(key)
             if response is None:
                 response, self.total_rows = self.client.search(
