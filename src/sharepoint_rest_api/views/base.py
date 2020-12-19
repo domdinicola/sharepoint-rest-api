@@ -147,15 +147,17 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
         page = int(kwargs.pop('page', 1))
         filters = self.get_filters(kwargs)
         try:
-            response = cache.get(key)
-            if response is None:
+            cached = cache.get(key)
+            if cached is None:
                 response, self.total_rows = self.client.search(
                     filters=filters,
                     select=selected,
                     source_id=source_id,
                     page=page
                 )
-                cache.set(key, response)
+                cache.set(key, (response, self.total_rows))
+            else:
+                response, self.total_rows = cached
             return response
         except ClientRequestException:
             raise Http404
