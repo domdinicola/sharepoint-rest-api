@@ -1,4 +1,5 @@
 from django.core.cache import caches
+from django.utils.functional import cached_property
 from rest_framework.exceptions import PermissionDenied
 
 from sharepoint_rest_api import config
@@ -40,21 +41,17 @@ class SettingsBasedSharePointViewSet(AbstractSharePointViewSet):
     def site_type(self):
         return config.SHAREPOINT_SITE_TYPE
 
-    @property
+    @cached_property
     def client(self):
-        key = self.get_cache_key(**{'client': 'client'})
-        client = cache.get(key)
-        if client is None:
-            dl_info = {
-                'url': f'{self.tenant}/{self.site_type}/{self.site}',
-                'relative_url': f'{self.site_type}/{self.site}',
-                'folder': self.folder
-            }
-            try:
-                client = SharePointClient(**dl_info)
-                cache.set(key, client)
-            except SharePointClientException:
-                raise PermissionDenied
+        dl_info = {
+            'url': f'{self.tenant}/{self.site_type}/{self.site}',
+            'relative_url': f'{self.site_type}/{self.site}',
+            'folder': self.folder
+        }
+        try:
+            client = SharePointClient(**dl_info)
+        except SharePointClientException:
+            raise PermissionDenied
 
         return client
 
