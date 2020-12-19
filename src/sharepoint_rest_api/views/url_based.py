@@ -1,4 +1,5 @@
 from django.core.cache import caches
+from django.utils.functional import cached_property
 from rest_framework.exceptions import PermissionDenied
 
 from sharepoint_rest_api.client import SharePointClient, SharePointClientException
@@ -39,25 +40,21 @@ class UrlBasedSharePointViewSet(AbstractSharePointViewSet):
     def folder(self):
         return self.kwargs.get('folder')
 
-    @property
+    @cached_property
     def client(self):
-        key = self.get_cache_key(**{'client': 'client'})
-        client = cache.get(key)
-        if client is None:
-            dl = self.get_library()
-            dl_info = {
-                'url': dl.site.site_url(),
-                'relative_url': dl.site.relative_url(),
-                'folder': dl.name
-            }
-            if dl.site.tenant.username:
-                dl_info['username'] = dl.site.tenant.username
-                dl_info['password'] = dl.site.tenant.password
-            try:
-                client = SharePointClient(**dl_info)
-                cache.set(key, client)
-            except SharePointClientException:
-                raise PermissionDenied
+        dl = self.get_library()
+        dl_info = {
+            'url': dl.site.site_url(),
+            'relative_url': dl.site.relative_url(),
+            'folder': dl.name
+        }
+        if dl.site.tenant.username:
+            dl_info['username'] = dl.site.tenant.username
+            dl_info['password'] = dl.site.tenant.password
+        try:
+            client = SharePointClient(**dl_info)
+        except SharePointClientException:
+            raise PermissionDenied
 
         return client
 
