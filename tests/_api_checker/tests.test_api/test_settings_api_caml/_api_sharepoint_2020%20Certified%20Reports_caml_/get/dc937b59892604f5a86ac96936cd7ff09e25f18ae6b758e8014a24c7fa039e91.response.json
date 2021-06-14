@@ -1,34 +1,13 @@
 {
     "status_code": 200,
     "headers": {
-        "content-type": [
-            "Content-Type",
-            "application/json"
-        ],
-        "vary": [
-            "Vary",
-            "Accept"
-        ],
-        "allow": [
-            "Allow",
-            "GET, HEAD, OPTIONS"
-        ],
-        "x-frame-options": [
-            "X-Frame-Options",
-            "DENY"
-        ],
-        "content-length": [
-            "Content-Length",
-            "26193"
-        ],
-        "x-content-type-options": [
-            "X-Content-Type-Options",
-            "nosniff"
-        ],
-        "referrer-policy": [
-            "Referrer-Policy",
-            "same-origin"
-        ]
+        "Content-Type": "application/json",
+        "Vary": "Accept",
+        "Allow": "GET, HEAD, OPTIONS",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "26193",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin"
     },
     "data": [
         {
@@ -536,5 +515,5 @@
             "download_url": "http://localhost:8000/api/sharepoint/2020%20Certified%20Reports/files/CertifiedDonorStatementFinal_CSACC_SC130572_19102020.pdf/download/"
         }
     ],
-    "content_type": null
+    "content_type": "application/json"
 }

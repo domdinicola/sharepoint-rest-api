@@ -143,7 +143,7 @@ class SharePointClient:
         request = SearchRequestBuilder(filters, select, source_id, (page - 1) * SHAREPOINT_PAGE_SIZE).build()
         result = search.post_query(request)
         self.context.execute_query()
-        relevant_results = result.PrimaryQueryResult.RelevantResults
+        relevant_results = result.value.PrimaryQueryResult.RelevantResults
         results = relevant_results['Table']['Rows'].values()
         logger.info(f'Retrieved: {relevant_results["TotalRows"]} results')
         items = [list(item['Cells'].values()) for item in results]

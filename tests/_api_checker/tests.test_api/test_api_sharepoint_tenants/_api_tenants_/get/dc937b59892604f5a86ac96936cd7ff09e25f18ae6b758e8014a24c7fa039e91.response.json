@@ -1,42 +1,21 @@
 {
     "status_code": 200,
     "headers": {
-        "content-type": [
-            "Content-Type",
-            "application/json"
-        ],
-        "vary": [
-            "Vary",
-            "Accept"
-        ],
-        "allow": [
-            "Allow",
-            "GET, HEAD, OPTIONS"
-        ],
-        "x-frame-options": [
-            "X-Frame-Options",
-            "DENY"
-        ],
-        "content-length": [
-            "Content-Length",
-            "130"
-        ],
-        "x-content-type-options": [
-            "X-Content-Type-Options",
-            "nosniff"
-        ],
-        "referrer-policy": [
-            "Referrer-Policy",
-            "same-origin"
-        ]
+        "Content-Type": "application/json",
+        "Vary": "Accept",
+        "Allow": "GET, HEAD, OPTIONS",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "130",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin"
     },
     "data": [
         {
             "id": 1,
-            "created": "2020-12-18T21:46:45.512000Z",
-            "modified": "2020-12-18T21:46:45.512000Z",
+            "created": "2021-06-14T21:06:35.833000Z",
+            "modified": "2021-06-14T21:06:35.833000Z",
             "url": "https://unitst.sharepoint.com/"
         }
     ],
-    "content_type": null
+    "content_type": "application/json"
 }
