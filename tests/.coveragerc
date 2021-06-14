@@ -24,7 +24,7 @@ exclude_lines =
     #if 0:
     if __name__ == .__main__.:
 
-fail_under = 60
+fail_under = 38
 
 ignore_errors = True
 

@@ -4,8 +4,8 @@
             "model": "sharepoint_rest_api.sharepointsite",
             "pk": 1,
             "fields": {
-                "created": "2020-12-18T21:46:45.524Z",
-                "modified": "2020-12-18T21:46:45.524Z",
+                "created": "2021-06-14T21:06:35.839Z",
+                "modified": "2021-06-14T21:06:35.839Z",
                 "tenant": 1,
                 "name": "GLB-DRP",
                 "site_type": "sites"
@@ -16,8 +16,8 @@
                 "model": "sharepoint_rest_api.sharepointtenant",
                 "pk": 1,
                 "fields": {
-                    "created": "2020-12-18T21:46:45.512Z",
-                    "modified": "2020-12-18T21:46:45.512Z",
+                    "created": "2021-06-14T21:06:35.833Z",
+                    "modified": "2021-06-14T21:06:35.833Z",
                     "url": "https://unitst.sharepoint.com/",
                     "username": null,
                     "password": null
