@@ -1,34 +1,13 @@
 {
     "status_code": 200,
     "headers": {
-        "content-type": [
-            "Content-Type",
-            "application/json"
-        ],
-        "vary": [
-            "Vary",
-            "Accept"
-        ],
-        "allow": [
-            "Allow",
-            "GET, HEAD, OPTIONS"
-        ],
-        "x-frame-options": [
-            "X-Frame-Options",
-            "DENY"
-        ],
-        "content-length": [
-            "Content-Length",
-            "255"
-        ],
-        "x-content-type-options": [
-            "X-Content-Type-Options",
-            "nosniff"
-        ],
-        "referrer-policy": [
-            "Referrer-Policy",
-            "same-origin"
-        ]
+        "Content-Type": "application/json",
+        "Vary": "Accept",
+        "Allow": "GET, HEAD, OPTIONS",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "255",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin"
     },
     "data": [
         {
@@ -39,5 +18,5 @@
             "api_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/rest/"
         }
     ],
-    "content_type": null
+    "content_type": "application/json"
 }
