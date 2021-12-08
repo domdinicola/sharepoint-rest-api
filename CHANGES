@@ -1,6 +1,6 @@
 Release 0.8
 -----------------------------------------
-* added support to django 3.2
+* added support to django 3.2, 4.0
 * upgraded to Office365 2.3.4
 
 
