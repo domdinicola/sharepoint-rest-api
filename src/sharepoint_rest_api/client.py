@@ -1,6 +1,8 @@
 import logging
 import os
 
+from office365.runtime.auth.client_credential import ClientCredential
+from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 from office365.sharepoint.files.file import File
 from office365.sharepoint.files.file_creation_information import FileCreationInformation
@@ -28,10 +30,18 @@ class SharePointClient:
     def __init__(self, *args, **kwargs) -> None:
         self.relative_url = kwargs.get('relative_url', None)
         self.site_path = kwargs.get('url', config.SHAREPOINT_TENANT)
-        username = kwargs.get('username', config.SHAREPOINT_USERNAME)
-        password = kwargs.get('password', config.SHAREPOINT_PASSWORD)
+        if config.SHAREPOINT_CONNECTION == 'app':
+            client_id = kwargs.get('client_id', config.SHAREPOINT_CLIENT_ID)
+            client_secret = kwargs.get('client_secret', config.SHAREPOINT_CLIENT_SECRET)
+            credentials = ClientCredential(client_id, client_secret)
+        elif config.SHAREPOINT_CONNECTION == 'user':
+            username = kwargs.get('username', config.SHAREPOINT_USERNAME)
+            password = kwargs.get('password', config.SHAREPOINT_PASSWORD)
+            credentials = UserCredential(username, password)
+        else:
+            raise SharePointClientException('Invalid connection type')
         self.folder = kwargs.get('folder', 'Documents')
-        self.context = ClientContext(self.site_path).with_user_credentials(username, password)
+        self.context = ClientContext(self.site_path).with_credentials(credentials)
 
     def __reduce__(self):
         return SharePointClient, (self.relative_url, self.site_path, self.folder, )

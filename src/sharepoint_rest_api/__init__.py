@@ -1,2 +1,2 @@
 NAME = "sharepoint-rest-api"
-VERSION = __version__ = "0.8.0"
+VERSION = __version__ = "0.9.0"
