@@ -1,3 +1,5 @@
+# to regenerate cassettes
+# comment the mock_client fixture (since is mocking the login)
 from pathlib import Path
 
 from drf_api_checker.pytest import frozenfixture
@@ -46,8 +48,6 @@ def sh_client(library, request, db):
     return SharePointClient(**dl_info)
 
 
-# to regenerate cassettes
-# comment the mock_client fixture (since is mocking the login)
 @fixture(scope='session', autouse=True)
 def mock_client():
     patcher = mock.patch('office365.sharepoint.client_context.AuthenticationContext')
@@ -60,7 +60,7 @@ def mock_client():
 @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/client/folders.yml'))
 def test_folders(library, sh_client, mock_client):
     items = sh_client.read_folders(library.name)
-    assert len(items) == 50
+    assert len(items) == 100
 
 
 @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/client/items.yml'))
@@ -79,15 +79,3 @@ def test_caml_items(sh_client, mock_client):
 def test_files(sh_client, mock_client):
     items = sh_client.read_files()
     assert len(items) == 56
-
-
-# @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/client/file.yml'))
-# def test_file(sh_client, mock_client):
-#     my_file = sh_client.read_file('CertifiedDonorStatement_CSACC_KC120003_31122019.pdf')
-#     assert my_file.properties['Name'] == 'CertifiedDonorStatement_CSACC_KC120003_31122019.pdf'
-
-
-# @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/download.yml'))
-# def test_download(sh_client):
-#     my_file = sh_client.download_file('CertifiedDonorStatement_SC110743_31122018')
-#     assert my_file.properties['Name'] == 'CertifiedDonorStatement_SC110743_31122018.pdf'

@@ -11,6 +11,7 @@ from tests.factories import UserFactory
 def pytest_configure(config):
     # enable this to remove deprecations
     os.environ['CELERY_TASK_ALWAYS_EAGER'] = "1"
+    os.environ['SHAREPOINT_CONNECTION'] = "user"
     os.environ['STATIC_ROOT'] = tempfile.gettempdir()
 
 
