@@ -2,13 +2,12 @@ import math
 from urllib.parse import urlencode
 
 from django.core.cache import caches
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django_filters.rest_framework import DjangoFilterBackend
 from office365.runtime.client_request_exception import ClientRequestException
 from office365.sharepoint.files.file import File
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import ErrorDetail
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 from sharepoint_rest_api import config
@@ -37,12 +36,6 @@ class AbstractSharePointViewSet(viewsets.ReadOnlyModelViewSet):
         })
         return ctx
 
-    def handle_exception(self, exc):
-        response = super().handle_exception(exc)
-        if isinstance(exc, Http404):
-            response.data['detail'] = ErrorDetail('No document found using selected filters', 'not_found')
-        return response
-
     def get_cache_key(self, **kwargs):
         keys = [key for key in [self.tenant, self.site, self.folder] if key]
         key = get_cache_key(keys, **kwargs)
@@ -58,15 +51,12 @@ class CamlQuerySharePointViewSet(AbstractSharePointViewSet):
         kwargs = self.request.query_params.dict()
         cache_dict = kwargs.copy()
         cache_dict['caml'] = 'true'
-        try:
-            key = self.get_cache_key(**cache_dict)
-            response = cache.get(key)
-            if response is None:
-                response = self.client.read_caml_items(filters=kwargs)
-                cache.set(key, response)
-            return response
-        except ClientRequestException:
-            raise Http404
+        key = self.get_cache_key(**cache_dict)
+        response = cache.get(key)
+        if response is None:
+            response = self.client.read_caml_items(filters=kwargs)
+            cache.set(key, response)
+        return response
 
 
 class RestQuerySharePointViewSet(AbstractSharePointViewSet):
@@ -76,15 +66,12 @@ class RestQuerySharePointViewSet(AbstractSharePointViewSet):
 
     def get_queryset(self):
         kwargs = self.request.query_params.dict()
-        try:
-            key = self.get_cache_key(**kwargs)
-            response = cache.get(key)
-            if response is None:
-                response = self.client.read_items(filters=kwargs)
-                cache.set(key, response)
-            return response
-        except ClientRequestException:
-            raise Http404
+        key = self.get_cache_key(**kwargs)
+        response = cache.get(key)
+        if response is None:
+            response = self.client.read_items(filters=kwargs)
+            cache.set(key, response)
+        return response
 
 
 class FileSharePointViewSet(AbstractSharePointViewSet):
@@ -97,18 +84,12 @@ class FileSharePointViewSet(AbstractSharePointViewSet):
 
     def get_object(self):
         filename = self.kwargs.get('filename', None)
-        try:
-            doc_file = self.client.read_file(f'{filename}')
-        except ClientRequestException:
-            raise Http404
+        doc_file = self.client.read_file(f'{filename}')
         return doc_file
 
     def get_queryset(self):
         kwargs = self.request.query_params.dict()
-        try:
-            return self.client.read_files(filters=kwargs)
-        except ClientRequestException:
-            raise Http404
+        return self.client.read_files(filters=kwargs)
 
     @action(detail=True, methods=['get'])
     def download(self, request, *args, **kwargs):
@@ -146,21 +127,18 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
         source_id = kwargs.pop('source_id', None)
         page = int(kwargs.pop('page', 1))
         filters = self.get_filters(kwargs)
-        try:
-            cached = cache.get(key)
-            if cached is None:
-                response, self.total_rows = self.client.search(
-                    filters=filters,
-                    select=selected,
-                    source_id=source_id,
-                    page=page
-                )
-                cache.set(key, (response, self.total_rows))
-            else:
-                response, self.total_rows = cached
-            return response
-        except ClientRequestException:
-            raise Http404
+        cached = cache.get(key)
+        if cached is None:
+            response, self.total_rows = self.client.search(
+                filters=filters,
+                select=selected,
+                source_id=source_id,
+                page=page
+            )
+            cache.set(key, (response, self.total_rows))
+        else:
+            response, self.total_rows = cached
+        return response
 
     def list(self, request, *args, **kwargs):
         def get_link(page):
@@ -173,7 +151,10 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
                 last_dict['page'] = str(page)
             return request.build_absolute_uri('?') + '?' + urlencode(last_dict)
 
-        response = super().list(request, *args, **kwargs)
+        try:
+            response = super().list(request, *args, **kwargs)
+        except ClientRequestException as e:
+            return HttpResponseBadRequest(str(e))
         current_page = int(self.request.query_params.get('page', 1))
         last_offset = math.ceil(self.total_rows / config.SHAREPOINT_PAGE_SIZE)
         prev_offset = current_page - 1

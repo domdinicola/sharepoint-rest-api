@@ -1,3 +1,8 @@
+Release 0.10
+-----------------------------------------
+* fixed authentication issue notification
+
+
 Release 0.9
 -----------------------------------------
 * allow connection using client and secret
