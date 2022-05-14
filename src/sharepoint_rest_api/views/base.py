@@ -8,7 +8,6 @@ from office365.runtime.client_request_exception import ClientRequestException
 from office365.sharepoint.files.file import File
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.filters import OrderingFilter, SearchFilter
 
 from sharepoint_rest_api import config
 from sharepoint_rest_api.serializers.sharepoint import SharePointFileSerializer, SharePointSearchSerializer
@@ -22,7 +21,7 @@ class AbstractSharePointViewSet(viewsets.ReadOnlyModelViewSet):
     Base ViewSet for SharePoint Integration
     """
     serializer_class = None
-    filter_backends = (SearchFilter, DjangoFilterBackend, OrderingFilter)
+    filter_backends = (DjangoFilterBackend, )
     tenant = None
     site = None
     folder = None
