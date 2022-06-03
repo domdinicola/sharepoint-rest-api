@@ -1,3 +1,9 @@
+Release 0.11
+-----------------------------------------
+* updated to Office365-REST-Python-Client==2.3.12
+* added support to order by
+
+
 Release 0.10
 -----------------------------------------
 * fixed authentication issue notification
