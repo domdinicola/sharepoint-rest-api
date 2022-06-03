@@ -6,7 +6,7 @@ from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 from office365.sharepoint.files.file import File
 from office365.sharepoint.files.file_creation_information import FileCreationInformation
-from office365.sharepoint.search.searchService import SearchService
+from office365.sharepoint.search.search_service import SearchService
 
 from sharepoint_rest_api import config
 from sharepoint_rest_api.builders.camlquery_builder import CamlQueryBuilder
@@ -139,10 +139,11 @@ class SharePointClient:
         self.context.execute_query()
         return items
 
-    def search(self, filters=None, select=None, source_id=None, page=1):
+    def search(self, filters=None, select=None, order_by=None, source_id=None, page=1):
         """
         :param filter: filter dictionary
         :param select: select string
+        :param order_by: SharePoint order fields
         :param source_id: SharePoint SourceId
         :return: items and total row number
 
@@ -150,7 +151,7 @@ class SharePointClient:
         """
         filters = filters or dict()
         search = SearchService(self.context)
-        request = SearchRequestBuilder(filters, select, source_id, (page - 1) * SHAREPOINT_PAGE_SIZE).build()
+        request = SearchRequestBuilder(filters, select, order_by, source_id, (page - 1) * SHAREPOINT_PAGE_SIZE).build()
         result = search.post_query(request)
         self.context.execute_query()
         relevant_results = result.value.PrimaryQueryResult.RelevantResults

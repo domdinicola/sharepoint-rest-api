@@ -8,7 +8,6 @@ from office365.runtime.client_request_exception import ClientRequestException
 from office365.sharepoint.files.file import File
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.filters import OrderingFilter, SearchFilter
 
 from sharepoint_rest_api import config
 from sharepoint_rest_api.serializers.sharepoint import SharePointFileSerializer, SharePointSearchSerializer
@@ -22,7 +21,7 @@ class AbstractSharePointViewSet(viewsets.ReadOnlyModelViewSet):
     Base ViewSet for SharePoint Integration
     """
     serializer_class = None
-    filter_backends = (SearchFilter, DjangoFilterBackend, OrderingFilter)
+    filter_backends = (DjangoFilterBackend, )
     tenant = None
     site = None
     folder = None
@@ -115,6 +114,7 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
     total_rows = None
 
     def get_filters(self, kwargs):
+        kwargs.pop('serializer', None)
         return kwargs
 
     def get_selected(self, selected):
@@ -124,6 +124,7 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
         kwargs = self.request.query_params.dict()
         key = self.get_cache_key(**kwargs)
         selected = self.get_selected(kwargs.pop('selected', None))
+        order_by = kwargs.pop('order_by', None)
         source_id = kwargs.pop('source_id', None)
         page = int(kwargs.pop('page', 1))
         filters = self.get_filters(kwargs)
@@ -132,6 +133,7 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
             response, self.total_rows = self.client.search(
                 filters=filters,
                 select=selected,
+                order_by=order_by,
                 source_id=source_id,
                 page=page
             )
