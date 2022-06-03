@@ -1,5 +1,8 @@
+from office365.sharepoint.search.query.sort import Sort
+from office365.sharepoint.search.search_request import SearchRequest
+
 from sharepoint_rest_api import config
-from sharepoint_rest_api.libs.search_request import SearchRequest
+from sharepoint_rest_api.utils import to_camel
 
 
 class SearchRequestBuilder:
@@ -18,15 +21,21 @@ class SearchRequestBuilder:
         'contains': '*'
     }
 
-    def __init__(self, filters=None, select=None, source_id=None, start_row=None):
+    def __init__(self, filters=None, select=None, order_by=None, source_id=None, start_row=None):
         self.filters = filters
         self.select = select
+        self.order_by = order_by
         self.source_id = source_id
         self.start_row = start_row
 
     def get_select_properties(self):
         if self.select:
-            return {'results': self.select}
+            return self.select
+
+    def get_order_by(self):
+        if self.order_by:
+            order = to_camel(self.order_by).split(',')
+            return [Sort(item[1:], 1) if item.startswith('-') else Sort(item, 0) for item in order]
 
     def get_query(self):
         filter_queries = []
@@ -56,12 +65,14 @@ class SearchRequestBuilder:
 
     def build(self):
         qry = self.get_query()
-        select_properties = self.get_select_properties()
+        print(111, self.get_order_by())
         return SearchRequest(
-            Querytext=qry,
-            SelectProperties=select_properties,
+            qry,
+            sort_list=self.get_order_by(),
+            select_properties=self.get_select_properties(),
+            start_row=self.start_row,
+            row_limit=config.SHAREPOINT_PAGE_SIZE,
+            trim_duplicates=False,
             SourceId=self.source_id,
-            StartRow=self.start_row,
-            RowLimit=config.SHAREPOINT_PAGE_SIZE,
-            TrimDuplicates=False
+            # source_id=self.source_id,
         )
