@@ -4,8 +4,8 @@ import os
 from office365.runtime.auth.client_credential import ClientCredential
 from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
+from office365.sharepoint.files.creation_information import FileCreationInformation
 from office365.sharepoint.files.file import File
-from office365.sharepoint.files.file_creation_information import FileCreationInformation
 from office365.sharepoint.search.search_service import SearchService
 
 from sharepoint_rest_api import config

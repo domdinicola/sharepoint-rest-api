@@ -40,7 +40,7 @@ setup(
         'django-filter',
         'django-model-utils',
         'djangorestframework',
-        'office365-rest-python-client>=2.3.4',
+        'office365-rest-python-client>=2.3.13',
     ],
     extras_require={
         'test': [
