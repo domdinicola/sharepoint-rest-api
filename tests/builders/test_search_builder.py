@@ -18,5 +18,5 @@ from sharepoint_rest_api.builders.search_request_builder import SearchRequestBui
      'FileType:"pdf" AND Title:"Humanitarian*" AND LastModifiedTime>="2019-10-10"'),
 ])
 def test_no_querystring(filters, expected):
-    qs = SearchRequestBuilder(filters).get_query()
+    qs = SearchRequestBuilder(filters=filters).get_query()
     assert qs == expected

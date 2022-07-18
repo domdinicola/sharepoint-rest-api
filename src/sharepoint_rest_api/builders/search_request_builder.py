@@ -21,7 +21,8 @@ class SearchRequestBuilder:
         'contains': '*'
     }
 
-    def __init__(self, filters=None, select=None, order_by=None, source_id=None, start_row=None):
+    def __init__(self, search=None, filters=None, select=None, order_by=None, source_id=None, start_row=None):
+        self.search = search
         self.filters = filters
         self.select = select
         self.order_by = order_by
@@ -61,13 +62,11 @@ class SearchRequestBuilder:
         if not filter_queries:
             return '*'
         qry = ' AND '.join('{}'.format(query) for query in filter_queries)
-        return qry
+        return f'{self.search} {qry}' if self.search else qry
 
     def build(self):
-        qry = self.get_query()
-        print(111, self.get_order_by())
         return SearchRequest(
-            qry,
+            self.get_query(),
             sort_list=self.get_order_by(),
             select_properties=self.get_select_properties(),
             start_row=self.start_row,
