@@ -123,6 +123,7 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
     def get_queryset(self):
         kwargs = self.request.query_params.dict()
         key = self.get_cache_key(**kwargs)
+        search = kwargs.pop('search', None)
         selected = self.get_selected(kwargs.pop('selected', None))
         order_by = kwargs.pop('order_by', None)
         source_id = kwargs.pop('source_id', None)
@@ -131,6 +132,7 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
         cached = cache.get(key)
         if cached is None:
             response, self.total_rows = self.client.search(
+                search=search,
                 filters=filters,
                 select=selected,
                 order_by=order_by,

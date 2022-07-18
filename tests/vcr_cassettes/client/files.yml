@@ -492,7 +492,7 @@ interactions:
       User-Agent:
       - python-requests/2.24.0
     method: GET
-    uri: https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/getFolderById('55f679dd-a5db-49a1-8189-85e9b9e841f9')/Files
+    uri: https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/GetFolderById('55f679dd-a5db-49a1-8189-85e9b9e841f9')/Files
   response:
     body:
       string: '{"d":{"results":[{"__metadata":{"id":"https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/GetFileByServerRelativePath(decodedurl=''/sites/GLB-DRP/2020

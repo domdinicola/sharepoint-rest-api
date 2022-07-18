@@ -139,7 +139,7 @@ class SharePointClient:
         self.context.execute_query()
         return items
 
-    def search(self, filters=None, select=None, order_by=None, source_id=None, page=1):
+    def search(self, search=None, filters=None, select=None, order_by=None, source_id=None, page=1):
         """
         :param filter: filter dictionary
         :param select: select string
@@ -149,10 +149,12 @@ class SharePointClient:
 
         search file in the SharePoint site
         """
+        search = search or None
         filters = filters or dict()
-        search = SearchService(self.context)
-        request = SearchRequestBuilder(filters, select, order_by, source_id, (page - 1) * SHAREPOINT_PAGE_SIZE).build()
-        result = search.post_query(request)
+        search_service = SearchService(self.context)
+        request = SearchRequestBuilder(
+            search, filters, select, order_by, source_id, (page - 1) * SHAREPOINT_PAGE_SIZE).build()
+        result = search_service.post_query(request)
         self.context.execute_query()
         relevant_results = result.value.PrimaryQueryResult.RelevantResults
         results = relevant_results['Table']['Rows'].values()
