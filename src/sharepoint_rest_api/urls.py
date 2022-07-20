@@ -1,5 +1,6 @@
 from rest_framework import routers
 
+from sharepoint_rest_api.views.files import UploadViewSet
 from sharepoint_rest_api.views.model_views import (
     SharePointLibraryViewSet,
     SharePointSiteViewSet,
@@ -27,6 +28,7 @@ router.register(r'sites', SharePointSiteViewSet, basename='sharepoint-site')
 router.register(r'libraries', SharePointLibraryViewSet, basename='sharepoint-library')
 
 # url based
+router.register(r'sharepoint/upload', UploadViewSet, basename="upload")
 router.register(r'sharepoint/(?P<tenant>[\w\-]+)/(?P<site>[\w\-]+)/(?P<folder>[\w\W]+)/files',
                 SharePointUrlFileViewSet, basename='sharepoint-url-files')
 router.register(r'sharepoint/(?P<tenant>[\w\-]+)/(?P<site>[\w\-]+)/(?P<folder>[\w\W]+)/rest',

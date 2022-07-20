@@ -1,5 +1,4 @@
 import logging
-import os
 
 from office365.runtime.auth.client_credential import ClientCredential
 from office365.runtime.auth.user_credential import UserCredential
@@ -172,23 +171,23 @@ class SharePointClient:
         context.execute_query()
         return target_file
 
-    def upload_file(self, path, folder_name='Documents', upload_into_library=True):
+    def upload_file(self, file, folder_name='Documents', metadata=dict):
         """
-        :param path: location of the file
-        :param folder_name:
-        :param upload_into_library: boolean
+        :param path: inmemory file
+        :param folder_name: name of the folder
+        :param metadata: metadata dictionary
         :return:
         """
-        with open(path, 'rb') as content_file:
-            file_content = content_file.read()
-
-        if upload_into_library:
-            target_folder = self.context.web.lists.get_by_title(folder_name).rootFolder
-            file = self.upload_file_alt(target_folder, os.path.basename(path), file_content)
-            logger.info('File url: {}'.format(file.properties['ServerRelativeUrl']))
-        else:
-            target_url = f'/{self.folder}/{os.path.basename(path)}'
-            File.save_binary(self.context, target_url, str(file_content))
+        file_content = file.read()
+        target_folder = self.context.web.lists.get_by_title(folder_name).root_folder
+        target_file = target_folder.upload_file(file.name, file_content).execute_query()
+        logger.info("File has been uploaded to url: {0}".format(target_file.serverRelativeUrl))
+        context = target_folder.context
+        item = target_file.listItemAllFields
+        for key, value in metadata.items():
+            item.set_property(name=key, value=value)
+        item.update()
+        context.execute_query()
 
     def download_file(self, filename):
         """
