@@ -3,9 +3,9 @@ import json
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from sharepoint_rest_api.serializers.files import UploadSerializer
 from sharepoint_rest_api import config
 from sharepoint_rest_api.client import SharePointClient
+from sharepoint_rest_api.serializers.files import UploadSerializer
 
 
 class UploadViewSet(ViewSet):
