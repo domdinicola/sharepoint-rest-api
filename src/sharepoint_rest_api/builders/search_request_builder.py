@@ -60,7 +60,7 @@ class SearchRequestBuilder:
                     query = '{}{}{}'.format(filter_name, operator, filter_values)
                 filter_queries.append(query)
         if not filter_queries:
-            return f'{self.search} {qry}' if self.search else '*'
+            return f'{self.search}' if self.search else '*'
         qry = ' AND '.join('{}'.format(query) for query in filter_queries)
         return f'{self.search} {qry}' if self.search else qry
 
