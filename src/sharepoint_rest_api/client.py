@@ -5,7 +5,7 @@ from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 from office365.sharepoint.files.creation_information import FileCreationInformation
 from office365.sharepoint.files.file import File
-from office365.sharepoint.search.search_service import SearchService
+from office365.sharepoint.search.service import SearchService
 
 from sharepoint_rest_api import config
 from sharepoint_rest_api.builders.camlquery_builder import CamlQueryBuilder

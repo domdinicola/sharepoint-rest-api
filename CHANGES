@@ -1,3 +1,13 @@
+Release 0.15
+-----------------------------------------
+* updated to Office365-REST-Python-Client>=2.3.16
+
+
+Release 0.14.2
+-----------------------------------------
+* fixed search
+
+
 Release 0.14.1
 -----------------------------------------
 * fixed search
@@ -15,7 +25,7 @@ Release 0.13
 
 Release 0.12
 -----------------------------------------
-* updated to Office365-REST-Python-Client==2.3.13
+* updated to Office365-REST-Python-Client>=2.3.13
 
 Release 0.11
 -----------------------------------------

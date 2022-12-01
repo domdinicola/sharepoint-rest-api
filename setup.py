@@ -30,17 +30,19 @@ setup(
         'Environment :: Web Environment',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Framework :: Django',
         'Framework :: Django :: 2.2',
         'Framework :: Django :: 3.2',
         'Framework :: Django :: 4.0',
+        'Framework :: Django :: 4.1',
         'Intended Audience :: Developers'],
     install_requires=[
         'django',
         'django-filter',
         'django-model-utils',
         'djangorestframework',
-        'office365-rest-python-client>=2.3.13',
+        'office365-rest-python-client>=2.3.16',
     ],
     extras_require={
         'test': [
@@ -54,7 +56,6 @@ setup(
             'pytest-cov',
             'pytest-django',
             'pytest-echo',
-            'pytest-pythonpath',
             'pytest-redis',
             'requests-mock',
             'sphinx',

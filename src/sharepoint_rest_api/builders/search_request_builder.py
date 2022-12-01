@@ -1,5 +1,5 @@
-from office365.sharepoint.search.query.sort import Sort
-from office365.sharepoint.search.search_request import SearchRequest
+from office365.sharepoint.search.query.sort.sort import Sort
+from office365.sharepoint.search.service import SearchRequest
 
 from sharepoint_rest_api import config
 from sharepoint_rest_api.utils import to_camel
@@ -30,6 +30,7 @@ class SearchRequestBuilder:
         self.start_row = start_row
 
     def get_select_properties(self):
+        print(self.select)
         if self.select:
             return self.select
 
@@ -60,7 +61,7 @@ class SearchRequestBuilder:
                     query = '{}{}{}'.format(filter_name, operator, filter_values)
                 filter_queries.append(query)
         if not filter_queries:
-            return f'{self.search} {qry}' if self.search else '*'
+            return f'{self.search}' if self.search else '*'
         qry = ' AND '.join('{}'.format(query) for query in filter_queries)
         return f'{self.search} {qry}' if self.search else qry
 
