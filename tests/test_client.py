@@ -50,7 +50,7 @@ def sh_client(library, request, db):
 
 @fixture(scope='session', autouse=True)
 def mock_client():
-    patcher = mock.patch('office365.sharepoint.client_context.AuthenticationContext')
+    patcher = mock.patch('office365.runtime.auth.authentication_context.AuthenticationContext')
     my_mock = patcher.start()
     my_mock.acquire_token.return_value = True
     yield
