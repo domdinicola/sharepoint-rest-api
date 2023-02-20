@@ -46,8 +46,10 @@ class CamlQuerySharePointViewSet(AbstractSharePointViewSet):
     Viewset for CamlQuery Integration
     """
 
-    def get_queryset(self):
-        kwargs = self.request.query_params.dict()
+    def get_queryset(self, **kwargs):
+        qp = self.request.query_params.dict()
+        qp.update(kwargs)
+        kwargs = qp
         cache_dict = kwargs.copy()
         cache_dict['caml'] = 'true'
         key = self.get_cache_key(**cache_dict)
@@ -63,8 +65,10 @@ class RestQuerySharePointViewSet(AbstractSharePointViewSet):
     Viewset for Rest Integration
     """
 
-    def get_queryset(self):
-        kwargs = self.request.query_params.dict()
+    def get_queryset(self, **kwargs):
+        qp = self.request.query_params.dict()
+        qp.update(kwargs)
+        kwargs = qp
         key = self.get_cache_key(**kwargs)
         response = cache.get(key)
         if response is None:
@@ -86,8 +90,10 @@ class FileSharePointViewSet(AbstractSharePointViewSet):
         doc_file = self.client.read_file(f'{filename}')
         return doc_file
 
-    def get_queryset(self):
-        kwargs = self.request.query_params.dict()
+    def get_queryset(self, **kwargs):
+        qp = self.request.query_params.dict()
+        qp.update(kwargs)
+        kwargs = qp
         return self.client.read_files(filters=kwargs)
 
     @action(detail=True, methods=['get'])
@@ -120,8 +126,10 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
     def get_selected(self, selected):
         return selected.split(',') if selected else self.serializer_class._declared_fields.keys()
 
-    def get_queryset(self):
-        kwargs = self.request.query_params.dict()
+    def get_queryset(self, **kwargs):
+        qp = self.request.query_params.dict()
+        qp.update(kwargs)
+        kwargs = qp
         key = self.get_cache_key(**kwargs)
         search = kwargs.pop('search', None)
         selected = self.get_selected(kwargs.pop('selected', None))
