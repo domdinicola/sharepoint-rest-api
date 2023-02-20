@@ -1,6 +1,7 @@
 import logging
 
 from office365.sharepoint.listitems.caml.query import CamlQuery
+from office365.sharepoint.views.scope import ViewScope
 
 from sharepoint_rest_api.utils import to_camel
 
