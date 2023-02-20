@@ -75,4 +75,4 @@ class CamlQueryBuilder:
         return query
 
     def get_query(self):
-        return CamlQuery.create_custom_query(self.create_query())
+        return CamlQuery.parse(self.create_query(), ViewScope.RecursiveAll)
