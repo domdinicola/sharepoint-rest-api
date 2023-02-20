@@ -1,6 +1,7 @@
 import logging
 
 from office365.sharepoint.listitems.caml.query import CamlQuery
+from office365.sharepoint.views.scope import ViewScope
 
 from sharepoint_rest_api.utils import to_camel
 
@@ -75,4 +76,4 @@ class CamlQueryBuilder:
         return query
 
     def get_query(self):
-        return CamlQuery.create_custom_query(self.create_query())
+        return CamlQuery.parse(self.create_query(), ViewScope.RecursiveAll)

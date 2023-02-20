@@ -151,15 +151,15 @@ class SharePointClient:
         search = search or None
         filters = filters or dict()
         search_service = SearchService(self.context)
-        request = SearchRequestBuilder(
+        query = SearchRequestBuilder(
             search, filters, select, order_by, source_id, (page - 1) * SHAREPOINT_PAGE_SIZE).build()
-        result = search_service.post_query(request)
+        result = search_service.post_query(**query)
         self.context.execute_query()
         relevant_results = result.value.PrimaryQueryResult.RelevantResults
-        results = relevant_results['Table']['Rows'].values()
-        logger.info(f'Retrieved: {relevant_results["TotalRows"]} results')
-        items = [list(item['Cells'].values()) for item in results]
-        return items, relevant_results["TotalRows"]
+        results = relevant_results.Table.Rows
+        logger.info(f'Retrieved: {relevant_results.TotalRows} results')
+        items = [item.Cells for item in results]
+        return items, relevant_results.TotalRows
 
     def upload_file_alt(self, target_folder, name, content):
         context = target_folder.context
