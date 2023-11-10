@@ -43,6 +43,7 @@ config.json
 .env
 .envrc
 .venv/
+.hatch/
 # Sphinx documentation
 docs/_build/
 

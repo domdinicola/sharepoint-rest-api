@@ -5,9 +5,10 @@
         "Vary": "Accept",
         "Allow": "GET, HEAD, OPTIONS",
         "X-Frame-Options": "DENY",
-        "Content-Length": "30973",
+        "Content-Length": "23637",
         "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "same-origin"
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin"
     },
     "data": [
         {
@@ -16,7 +17,6 @@
             "created": "2020-08-21T17:48:22Z",
             "modified": "2020-08-24T15:55:28Z",
             "title": "CertifiedDonorStatement_DSINV_SM150124_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1566)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSINV_SM150124_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSINV_SM150124_21082020.pdf"
         },
@@ -26,7 +26,6 @@
             "created": "2020-08-21T17:20:53Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC090473_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1633)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC090473_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC090473_21082020.pdf"
         },
@@ -36,7 +35,6 @@
             "created": "2020-08-21T17:26:26Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC130391_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1634)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC130391_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC130391_21082020.pdf"
         },
@@ -46,7 +44,6 @@
             "created": "2020-08-21T17:21:52Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC100432_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1635)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC100432_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC100432_21082020.pdf"
         },
@@ -56,7 +53,6 @@
             "created": "2020-08-21T17:25:35Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC120408_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1636)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC120408_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC120408_21082020.pdf"
         },
@@ -66,7 +62,6 @@
             "created": "2020-08-21T17:21:21Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC090016_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1637)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC090016_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC090016_21082020.pdf"
         },
@@ -76,7 +71,6 @@
             "created": "2020-08-21T17:21:16Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC090015_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1638)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC090015_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC090015_21082020.pdf"
         },
@@ -86,7 +80,6 @@
             "created": "2020-08-21T17:22:20Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC110130_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1639)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC110130_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC110130_21082020.pdf"
         },
@@ -96,7 +89,6 @@
             "created": "2020-08-21T17:25:52Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC110398_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1640)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC110398_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC110398_21082020.pdf"
         },
@@ -106,7 +98,6 @@
             "created": "2020-08-21T17:21:27Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC090099_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1641)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC090099_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC090099_21082020.pdf"
         },
@@ -116,7 +107,6 @@
             "created": "2020-08-21T17:21:32Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC090128_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1642)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC090128_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC090128_21082020.pdf"
         },
@@ -126,7 +116,6 @@
             "created": "2020-08-21T17:26:03Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC130553_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1643)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC130553_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC130553_21082020.pdf"
         },
@@ -136,7 +125,6 @@
             "created": "2020-08-21T17:27:30Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SM190467_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1645)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SM190467_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SM190467_21082020.pdf"
         },
@@ -146,7 +134,6 @@
             "created": "2020-08-21T17:19:58Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC050054_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1646)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC050054_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC050054_21082020.pdf"
         },
@@ -156,7 +143,6 @@
             "created": "2020-08-21T17:20:24Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC090245_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1647)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC090245_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC090245_21082020.pdf"
         },
@@ -166,7 +152,6 @@
             "created": "2020-08-21T17:20:34Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC090383_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1648)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC090383_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC090383_21082020.pdf"
         },
@@ -176,7 +161,6 @@
             "created": "2020-08-21T17:25:58Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC110692_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1649)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC110692_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC110692_21082020.pdf"
         },
@@ -186,7 +170,6 @@
             "created": "2020-08-21T17:27:14Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC170318_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1651)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC170318_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC170318_21082020.pdf"
         },
@@ -196,7 +179,6 @@
             "created": "2020-08-21T17:26:20Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC140245_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1653)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC140245_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC140245_21082020.pdf"
         },
@@ -206,7 +188,6 @@
             "created": "2020-08-21T17:21:10Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC080851_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1657)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC080851_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC080851_21082020.pdf"
         },
@@ -216,7 +197,6 @@
             "created": "2020-08-21T17:25:41Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC120514_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1658)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC120514_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC120514_21082020.pdf"
         },
@@ -226,7 +206,6 @@
             "created": "2020-08-21T17:26:54Z",
             "modified": "2020-08-24T16:02:23Z",
             "title": "CertifiedDonorStatement_DSTUN_SM060027_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1659)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SM060027_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SM060027_21082020.pdf"
         },
@@ -236,7 +215,6 @@
             "created": "2020-08-21T17:27:36Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC140846_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1660)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC140846_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC140846_21082020.pdf"
         },
@@ -246,7 +224,6 @@
             "created": "2020-08-21T17:25:28Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC120400_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1663)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC120400_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC120400_21082020.pdf"
         },
@@ -256,7 +233,6 @@
             "created": "2020-08-21T17:20:59Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC080534_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1665)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC080534_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC080534_21082020.pdf"
         },
@@ -266,7 +242,6 @@
             "created": "2020-08-21T17:22:36Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC120069_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1666)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC120069_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC120069_21082020.pdf"
         },
@@ -276,7 +251,6 @@
             "created": "2020-08-21T17:27:19Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC181045_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1669)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC181045_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC181045_21082020.pdf"
         },
@@ -286,7 +260,6 @@
             "created": "2020-08-21T17:26:59Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC160709_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1670)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC160709_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC160709_21082020.pdf"
         },
@@ -296,7 +269,6 @@
             "created": "2020-08-21T17:22:25Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC110293_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1673)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC110293_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC110293_21082020.pdf"
         },
@@ -306,7 +278,6 @@
             "created": "2020-08-21T17:21:40Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC100322_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1676)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC100322_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC100322_21082020.pdf"
         },
@@ -316,7 +287,6 @@
             "created": "2020-08-21T17:20:44Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC090472_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1679)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC090472_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC090472_21082020.pdf"
         },
@@ -326,7 +296,6 @@
             "created": "2020-08-21T17:26:14Z",
             "modified": "2020-08-24T16:02:23Z",
             "title": "CertifiedDonorStatement_DSTUN_SC130603_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1681)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC130603_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC130603_21082020.pdf"
         },
@@ -336,7 +305,6 @@
             "created": "2020-08-21T17:21:46Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC100401_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1684)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC100401_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC100401_21082020.pdf"
         },
@@ -346,7 +314,6 @@
             "created": "2020-08-21T17:22:30Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC120068_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1686)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC120068_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC120068_21082020.pdf"
         },
@@ -356,7 +323,6 @@
             "created": "2020-08-21T17:27:25Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC181160_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1687)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC181160_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC181160_21082020.pdf"
         },
@@ -366,7 +332,6 @@
             "created": "2020-08-21T17:22:03Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC100539_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1688)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC100539_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC100539_21082020.pdf"
         },
@@ -376,7 +341,6 @@
             "created": "2020-08-21T17:21:57Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC100433_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1689)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC100433_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC100433_21082020.pdf"
         },
@@ -386,7 +350,6 @@
             "created": "2020-08-21T17:20:09Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC070031_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1692)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC070031_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC070031_21082020.pdf"
         },
@@ -396,7 +359,6 @@
             "created": "2020-08-21T17:27:47Z",
             "modified": "2020-08-24T16:02:23Z",
             "title": "CertifiedDonorStatement_DSTUN_SC100579_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1697)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC100579_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC100579_21082020.pdf"
         },
@@ -406,7 +368,6 @@
             "created": "2020-08-21T17:22:14Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC100756_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1700)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC100756_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC100756_21082020.pdf"
         },
@@ -416,7 +377,6 @@
             "created": "2020-08-21T17:27:05Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC160710_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1704)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC160710_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC160710_21082020.pdf"
         },
@@ -426,7 +386,6 @@
             "created": "2020-08-21T17:27:42Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC200124_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1705)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC200124_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC200124_21082020.pdf"
         },
@@ -436,7 +395,6 @@
             "created": "2020-08-21T17:22:09Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC100578_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1706)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC100578_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC100578_21082020.pdf"
         },
@@ -446,7 +404,6 @@
             "created": "2020-08-21T17:26:42Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC160207_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1707)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC160207_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC160207_21082020.pdf"
         },
@@ -456,7 +413,6 @@
             "created": "2020-08-21T17:25:47Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SC120583_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1708)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC120583_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC120583_21082020.pdf"
         },
@@ -466,7 +422,6 @@
             "created": "2020-08-21T17:26:09Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC130554_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1709)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC130554_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC130554_21082020.pdf"
         },
@@ -476,7 +431,6 @@
             "created": "2020-08-21T17:21:04Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC080573_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1710)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC080573_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC080573_21082020.pdf"
         },
@@ -486,7 +440,6 @@
             "created": "2020-08-21T17:26:37Z",
             "modified": "2020-08-24T16:02:22Z",
             "title": "CertifiedDonorStatement_DSTUN_SM160633_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1711)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SM160633_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SM160633_21082020.pdf"
         },
@@ -496,7 +449,6 @@
             "created": "2020-08-21T17:26:49Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC160221_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1712)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC160221_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC160221_21082020.pdf"
         },
@@ -506,7 +458,6 @@
             "created": "2020-08-21T17:20:17Z",
             "modified": "2020-08-24T16:02:20Z",
             "title": "CertifiedDonorStatement_DSTUN_SC080322_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1715)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC080322_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC080322_21082020.pdf"
         },
@@ -516,7 +467,6 @@
             "created": "2020-08-21T17:26:31Z",
             "modified": "2020-08-24T16:02:21Z",
             "title": "CertifiedDonorStatement_DSTUN_SC130413_21082020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1716)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_DSTUN_SC130413_21082020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_DSTUN_SC130413_21082020.pdf"
         },
@@ -526,7 +476,6 @@
             "created": "2020-09-21T16:50:35Z",
             "modified": "2020-09-21T18:51:28Z",
             "title": "CertifiedDonorStatementFinal_CSACC_SC087525_31102020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1719)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatementFinal_CSACC_SC087525_31102020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatementFinal_CSACC_SC087525_31102020.pdf"
         },
@@ -536,7 +485,6 @@
             "created": "2020-09-21T19:19:12Z",
             "modified": "2020-09-21T19:40:18Z",
             "title": "CertifiedDonorStatement_CSACC_SC110584_17102020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1726)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatement_CSACC_SC110584_17102020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatement_CSACC_SC110584_17102020.pdf"
         },
@@ -546,7 +494,6 @@
             "created": "2020-09-21T19:18:24Z",
             "modified": "2020-09-21T19:40:18Z",
             "title": "CertifiedDonorStatementFinal_DSINV_SC110124_12112020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1729)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatementFinal_DSINV_SC110124_12112020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatementFinal_DSINV_SC110124_12112020.pdf"
         },
@@ -556,7 +503,6 @@
             "created": "2020-09-21T19:17:47Z",
             "modified": "2020-09-21T19:40:19Z",
             "title": "CertifiedDonorStatementFinal_CSACC_SC107539_11122020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1740)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatementFinal_CSACC_SC107539_11122020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatementFinal_CSACC_SC107539_11122020.pdf"
         },
@@ -566,7 +512,6 @@
             "created": "2020-10-09T11:40:39Z",
             "modified": "2022-03-02T12:08:46Z",
             "title": "CertifiedDonorStatementFinal_CSACC_SC130572_19102020.pdf",
-            "resource_url": "https://unitst.sharepoint.com/sites/GLB-DRP/_api/Web/lists/GetByTitle('2020 Certified Reports')/getItemById(1746)",
             "download_url": "http://localhost:8000/api/sharepoint/unitst/GLB-DRP/2020%20Certified%20Reports/files/CertifiedDonorStatementFinal_CSACC_SC130572_19102020.pdf/download/",
             "file_leaf_ref": "CertifiedDonorStatementFinal_CSACC_SC130572_19102020.pdf"
         }

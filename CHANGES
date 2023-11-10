@@ -1,6 +1,13 @@
+Release 0.17
+-----------------------------------------
+* moved to hatch
+* updated to Office365-REST-Python-Client>=2.5
+* added support to django 5
+
+
 Release 0.16
 -----------------------------------------
-updated to Office365-REST-Python-Client>=2.4
+* updated to Office365-REST-Python-Client>=2.4
 
 
 Release 0.15
