@@ -11,8 +11,6 @@ from tests.api_checker import LastModifiedRecorder
 from tests.factories import SharePointLibraryFactory, SharePointSiteFactory, SharePointTenantFactory
 from tests.vcrpy import VCR
 
-django32_or_above = pytest.mark.skipif(django.VERSION < (3, 2), reason="requires Django greater than 3.2")
-
 
 @frozenfixture()
 def tenant(request, db):
@@ -41,27 +39,23 @@ def library(site, request, db):
 
 
 @pytest.mark.django_db
-@django32_or_above
 @contract(LastModifiedRecorder)
 def test_api_sharepoint_tenants(request, django_app, library):
     return reverse('sharepoint_rest_api:sharepoint-tenant-list')
 
 
 @pytest.mark.django_db
-@django32_or_above
 @contract(LastModifiedRecorder)
 def test_api_sharepoint_sites(request, django_app, site):
     return reverse('sharepoint_rest_api:sharepoint-site-list')
 
 
 @pytest.mark.django_db
-@django32_or_above
 @contract(LastModifiedRecorder)
 def test_api_sharepoint_libraries(request, django_app, library):
     return reverse('sharepoint_rest_api:sharepoint-library-list')
 
 
-@django32_or_above
 @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/api/list.yml'))
 def test_api(api_checker_datadir, logged_user, library):  # noqa
     kwargs = {'tenant': library.site.tenant.name, 'site': library.site.name, 'folder': library.name}
@@ -70,7 +64,6 @@ def test_api(api_checker_datadir, logged_user, library):  # noqa
     recorder.assertGET(url)
 
 
-@django32_or_above
 @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/api/caml-list.yml'))
 def test_api_caml(api_checker_datadir, logged_user, library):  # noqa
     kwargs = {'tenant': library.site.tenant.name, 'site': library.site.name, 'folder': library.name}
@@ -79,7 +72,6 @@ def test_api_caml(api_checker_datadir, logged_user, library):  # noqa
     recorder.assertGET(url)
 
 
-@django32_or_above
 @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/api/simple-list.yml'))
 def test_settings_api(api_checker_datadir, logged_user, library):  # noqa
     kwargs = {'folder': library.name}
@@ -88,7 +80,6 @@ def test_settings_api(api_checker_datadir, logged_user, library):  # noqa
     recorder.assertGET(url)
 
 
-@django32_or_above
 @VCR.use_cassette(str(Path(__file__).parent / 'vcr_cassettes/api/simple-caml-list.yml'))
 def test_settings_api_caml(api_checker_datadir, logged_user, library):  # noqa
     kwargs = {'folder': library.name}
