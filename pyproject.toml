@@ -59,6 +59,4 @@ include = [
 ]
 
 [tool.hatch.build.targets.wheel]
-include = [
-    "/src",
-]
+packages = ["/src/sharepoint_rest_api"]
