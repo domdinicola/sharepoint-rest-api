@@ -25,7 +25,7 @@ dependencies = [
     "django-filter",
     "django-model-utils",
     "djangorestframework",
-    "office365-rest-python-client>=2.3.16",
+    "office365-rest-python-client>=2.4",
 ]
 
 [project.optional-dependencies]
@@ -60,5 +60,5 @@ include = [
 
 [tool.hatch.build.targets.wheel]
 include = [
-    "/src/sharepoint-rest-api",
+    "/src",
 ]
