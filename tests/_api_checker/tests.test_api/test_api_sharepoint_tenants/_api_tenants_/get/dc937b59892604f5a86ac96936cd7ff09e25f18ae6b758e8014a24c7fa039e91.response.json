@@ -7,13 +7,14 @@
         "X-Frame-Options": "DENY",
         "Content-Length": "130",
         "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "same-origin"
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin"
     },
     "data": [
         {
             "id": 1,
-            "created": "2022-03-03T04:02:32.936000Z",
-            "modified": "2022-03-03T04:02:32.936000Z",
+            "created": "2023-12-04T13:47:07.200000Z",
+            "modified": "2023-12-04T13:47:07.200000Z",
             "url": "https://unitst.sharepoint.com/"
         }
     ],

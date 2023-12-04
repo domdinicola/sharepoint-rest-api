@@ -55,7 +55,8 @@ class CamlQuerySharePointViewSet(AbstractSharePointViewSet):
         key = self.get_cache_key(**cache_dict)
         response = cache.get(key)
         if response is None:
-            response = self.client.read_caml_items(filters=kwargs)
+            raw_response = self.client.read_caml_items(filters=kwargs)
+            response = raw_response.to_json()
             cache.set(key, response)
         return response
 
@@ -72,7 +73,8 @@ class RestQuerySharePointViewSet(AbstractSharePointViewSet):
         key = self.get_cache_key(**kwargs)
         response = cache.get(key)
         if response is None:
-            response = self.client.read_items(filters=kwargs)
+            raw_response = self.client.read_items(filters=kwargs)
+            response = raw_response.to_json()
             cache.set(key, response)
         return response
 
