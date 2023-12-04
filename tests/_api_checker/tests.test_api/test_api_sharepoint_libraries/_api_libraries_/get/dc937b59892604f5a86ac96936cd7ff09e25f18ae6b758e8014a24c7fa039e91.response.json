@@ -7,7 +7,8 @@
         "X-Frame-Options": "DENY",
         "Content-Length": "255",
         "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "same-origin"
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin"
     },
     "data": [
         {

@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sharepoint-rest-api"
+dynamic = ["version"]
+description = "Provide REST API (DRF style) for SharePoint"
+readme = "README.rst"
+license = "Apache-2.0 OR MIT"
+authors = [
+    { name = "Domenico Di Nicola", email = "domdinicola@unicef.org" },
+]
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "django",
+    "django-filter",
+    "django-model-utils",
+    "djangorestframework",
+    "office365-rest-python-client>=2.3.16",
+]
+
+[project.optional-dependencies]
+test = [
+    "django-webtest",
+    "drf_api_checker",
+    "factory-boy",
+    "flake8",
+    "isort",
+    "mock",
+    "pytest",
+    "pytest-cov",
+    "pytest-django",
+    "pytest-echo",
+    "pytest-redis",
+    "requests-mock",
+    "sphinx",
+    "unittest2",
+    "vcrpy",
+]
+
+[project.urls]
+Homepage = "https://github.com/domdinicola/sharepoint-rest-api"
+
+[tool.hatch.version]
+path = "src/sharepoint_rest_api/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "/src/sharepoint-rest-api",
+]
