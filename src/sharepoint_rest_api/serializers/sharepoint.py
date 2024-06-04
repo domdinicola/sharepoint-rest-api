@@ -30,7 +30,7 @@ class SharePointSettingsSerializer(BaseSharePointItemSerializer):
     """Serializer for Settings Based implementation"""
 
     def get_download_url(self, obj):
-        filename = obj.properties.get('FileLeafRef', obj.properties.get('Title', ''))
+        filename = obj.get('FileLeafRef', obj.get('Title', ''))
         if filename:
             k = filename.rfind(".")
             if k > 0:
@@ -47,7 +47,7 @@ class SharePointSettingsSerializer(BaseSharePointItemSerializer):
 class SharePointUrlSerializer(BaseSharePointItemSerializer):
     """Serializer for Url Based implementation"""
     def get_download_url(self, obj):
-        filename = obj.properties.get('FileLeafRef', obj.properties.get('Title', ''))
+        filename = obj.get('FileLeafRef', obj.get('Title', ''))
         if filename:
             k = filename.rfind(".")
             if k > 0:
@@ -80,7 +80,7 @@ class SharePointFileSerializer(serializers.Serializer):
             'tenant': self.context['tenant'],
             'site': self.context['site'],
             'folder': self.context['folder'],
-            'filename': obj.properties['Name'].split('.')[0]})
+            'filename': obj['Name'].split('.')[0]})
         return f'{settings.HOST}{relative_url}'
 
 
