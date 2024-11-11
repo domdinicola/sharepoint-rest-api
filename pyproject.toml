@@ -27,7 +27,7 @@ dependencies = [
     "django-filter",
     "django-model-utils",
     "djangorestframework",
-    "office365-rest-python-clien=2.4",
+    "office365-rest-python-client",
 ]
 
 [project.optional-dependencies]
