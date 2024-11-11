@@ -15,6 +15,7 @@ class SearchRequestBuilder:
         'lte': '<=',
         'lt': '<',
         'not': '<>',
+        'not_in': ':',
         'eq': ':',
         'between': '..',
         'contains': '*'
@@ -52,7 +53,9 @@ class SearchRequestBuilder:
                     query = '{}:"{}{}"'.format(filter_name, filter_value, operator)
                 else:
                     values = filter_value.split(',')
-                    if len(values) == 1:
+                    if querystring_operator == "not_in":
+                        filter_values = "(" + " ".join(['-\"{}\"'.format(value) for value in values]) + ')'
+                    elif len(values) == 1:
                         filter_values = f'\"{values[0]}\"'
                     else:
                         filter_values = "(" + " OR ".join(['\"{}\"'.format(value) for value in values]) + ')'

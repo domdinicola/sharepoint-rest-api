@@ -7,6 +7,7 @@ from sharepoint_rest_api.builders.search_request_builder import SearchRequestBui
     (dict(), '*'),
     ({'Name': 'toro'}, 'Name:"toro"'),
     ({'Name__not': 'toro'}, 'Name<>"toro"'),
+    ({'Name__not__in': 'toro,capri'}, 'Name:(-"toro" -"capri")'),
     ({'Name__contains': 'toro'}, 'Name:"toro*"'),
     ({'Name': 'toro,loco'}, 'Name:("toro" OR "loco")'),
     ({'Date__gt': '2019-10-10'}, 'Date>"2019-10-10"'),
