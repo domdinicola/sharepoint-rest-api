@@ -1,0 +1,112 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - '**'        # matches every branch
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  id-token: write
+  attestations: write
+
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: changes-group
+      cancel-in-progress: true
+    timeout-minutes: 1
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      run_tests: ${{steps.changes.outputs.run_tests }}
+      lint: ${{steps.changes.outputs.lint }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.7
+      - id: changes
+        name: Check for file changes
+        uses: dorny/paths-filter@v3.0.2
+        with:
+          base: ${{ github.ref }}
+          token: ${{ github.token }}
+          filters: .github/file-filters.yml
+
+  ci:
+    runs-on: ubuntu-latest
+    name: Test py${{ matrix.python-version }}/dj${{matrix.django-version}}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      max-parallel: 1
+      matrix:
+        python-version: [ "3.11", "3.12", "3.13" ]
+        django-version: [ "3.2", "4.2", "5.1" ]
+      fail-fast: true
+    needs: [ changes ]
+    if: needs.changes.outputs.run_tests || needs.changes.outputs.lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
+
+      - name: Cache virtualenv
+        uses: actions/cache@v4
+        with:
+          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version}}-${{ hashFiles('uv.lock') }}
+          path: .venv
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install the project
+        run:  |
+          uv sync --all-extras --dev
+          uv pip install .
+
+      - name: lint
+        if: needs.changes.outputs.lint
+        run: |
+          uv pip install ruff
+          uv run ruff check src tests
+          uv run ruff format --check src tests
+
+      - name: Test
+        if: needs.changes.outputs.run_tests
+        run: |
+          uv run pytest tests --create-db --junit-xml junit-${{ matrix.python-version }}-${{matrix.django-version}}.xml
+
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results-${{ matrix.python-version }}-${{matrix.django-version}}
+          path: junit-${{ matrix.python-version }}-${{matrix.django-version}}.xml
+        if: ${{ always() }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        if: ${{ always() }}
+        continue-on-error: true
+        with:
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: false
+          name: codecov-${{env.GITHUB_REF_NAME}}

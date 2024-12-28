@@ -12,11 +12,11 @@ classifiers = [
     "Framework :: Django",
     "Framework :: Django :: 3.2",
     "Framework :: Django :: 4.2",
-    "Framework :: Django :: 5.0",
     "Framework :: Django :: 5.1",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "django",
@@ -29,11 +29,10 @@ dependencies = [
 [tool.uv]
 dev-dependencies = [
     "django-webtest",
-    "drf_api_checker",
+    "drf-api-checker",
     "factory-boy",
-    "flake8",
-    "isort",
     "mock",
+    "ruff",
     "pytest",
     "pytest-cov",
     "pytest-django",
@@ -41,6 +40,7 @@ dev-dependencies = [
     "pytest-redis",
     "requests-mock",
     "sphinx",
+    "tox",
     "unittest2",
     "vcrpy",
 ]

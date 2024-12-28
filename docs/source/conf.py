@@ -16,17 +16,17 @@ import sys
 import django
 from django.conf import settings
 
-sys.path.insert(0, os.path.abspath(os.path.join('..', '..', 'src')))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', "_ext")))
+sys.path.insert(0, os.path.abspath(os.path.join("..", "..", "src")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "_ext")))
 settings.configure()
 django.setup()
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'SharePoint REST API'
-copyright = '2020, Domenico Di Nicola'
-author = 'Domenico Di Nicola'
+project = "SharePoint REST API"
+copyright = "2020, Domenico Di Nicola"  # noqa
+author = "Domenico Di Nicola"
 
 
 # -- General configuration ---------------------------------------------------
@@ -49,7 +49,7 @@ intersphinx_mapping = {
 }
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -57,7 +57,7 @@ templates_path = ['_templates']
 exclude_patterns = []
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -65,9 +65,9 @@ master_doc = 'index'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = "alabaster"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]

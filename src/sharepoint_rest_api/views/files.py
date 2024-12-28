@@ -15,17 +15,18 @@ class UploadViewSet(ViewSet):
         return Response("Use the form to upload files")
 
     def create(self, request):
-        file_uploaded = request.FILES.get('file_uploaded')
-        folder = request.POST.get('folder')
-        metadata = request.POST.get('metadata')
+        file_uploaded = request.FILES.get("file_uploaded")
+        folder = request.POST.get("folder")
+        metadata = request.POST.get("metadata")
 
         if isinstance(metadata, str):
             metadata = json.loads(metadata)
 
         client = SharePointClient(
-            url=f'{config.SHAREPOINT_TENANT}/{config.SHAREPOINT_SITE_TYPE}/{config.SHAREPOINT_SITE}', folder=folder)
+            url=f"{config.SHAREPOINT_TENANT}/{config.SHAREPOINT_SITE_TYPE}/{config.SHAREPOINT_SITE}", folder=folder
+        )
 
         client.upload_file(file_uploaded, folder_name=folder, metadata=metadata)
-        response = "{} uploaded ".format(file_uploaded.name)
+        response = f"{file_uploaded.name} uploaded"
 
         return Response(response)

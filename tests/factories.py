@@ -8,22 +8,21 @@ from sharepoint_rest_api.models import SharePointLibrary, SharePointSite, ShareP
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = get_user_model()
-        django_get_or_create = ('username',)
+        django_get_or_create = ("username",)
 
     username = factory.Sequence(lambda n: "user%03d" % n)
 
-    last_name = factory.Faker('last_name')
-    first_name = factory.Faker('first_name')
+    last_name = factory.Faker("last_name")
+    first_name = factory.Faker("first_name")
 
     email = factory.Sequence(lambda n: "m%03d@mailinator.com" % n)
-    password = 'password'
+    password = "password"
     is_superuser = False
     is_active = True
 
     @classmethod
     def _prepare(cls, create, **kwargs):
-
-        password = kwargs.pop('password')
+        password = kwargs.pop("password")
         user = super()._prepare(cls, create, **kwargs)
         if password:
             user.set_password(password)
@@ -33,10 +32,9 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 
 class SharePointTenantFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = SharePointTenant
-        django_get_or_create = ('url',)
+        django_get_or_create = ("url",)
 
 
 class SharePointSiteFactory(factory.django.DjangoModelFactory):
@@ -44,7 +42,7 @@ class SharePointSiteFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = SharePointSite
-        django_get_or_create = ('name',)
+        django_get_or_create = ("name",)
 
 
 class SharePointLibraryFactory(factory.django.DjangoModelFactory):
@@ -52,4 +50,4 @@ class SharePointLibraryFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = SharePointLibrary
-        django_get_or_create = ('name',)
+        django_get_or_create = ("name",)
