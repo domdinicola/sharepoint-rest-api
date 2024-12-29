@@ -7,61 +7,111 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='SharePointTenant',
+            name="SharePointTenant",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
-                ('url', models.URLField(unique=True)),
-                ('username', models.CharField(blank=True, max_length=64, null=True, verbose_name='Username')),
-                ('password', models.CharField(blank=True, max_length=64, null=True, verbose_name='Password')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "created",
+                    model_utils.fields.AutoCreatedField(
+                        default=django.utils.timezone.now, editable=False, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    model_utils.fields.AutoLastModifiedField(
+                        default=django.utils.timezone.now, editable=False, verbose_name="modified"
+                    ),
+                ),
+                ("url", models.URLField(unique=True)),
+                ("username", models.CharField(blank=True, max_length=64, null=True, verbose_name="Username")),
+                ("password", models.CharField(blank=True, max_length=64, null=True, verbose_name="Password")),
             ],
             options={
-                'verbose_name': 'SharePoint Tenant',
-                'verbose_name_plural': 'SharePoint Tenants',
-                'ordering': ['url'],
+                "verbose_name": "SharePoint Tenant",
+                "verbose_name_plural": "SharePoint Tenants",
+                "ordering": ["url"],
             },
         ),
         migrations.CreateModel(
-            name='SharePointSite',
+            name="SharePointSite",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
-                ('name', models.CharField(max_length=32, verbose_name='Name')),
-                ('site_type', models.CharField(choices=[('sites', 'sites'), ('teams', 'teams')], default='sites', max_length=16, verbose_name='Site Type')),
-                ('tenant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sites', to='sharepoint_rest_api.SharePointTenant')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "created",
+                    model_utils.fields.AutoCreatedField(
+                        default=django.utils.timezone.now, editable=False, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    model_utils.fields.AutoLastModifiedField(
+                        default=django.utils.timezone.now, editable=False, verbose_name="modified"
+                    ),
+                ),
+                ("name", models.CharField(max_length=32, verbose_name="Name")),
+                (
+                    "site_type",
+                    models.CharField(
+                        choices=[("sites", "sites"), ("teams", "teams")],
+                        default="sites",
+                        max_length=16,
+                        verbose_name="Site Type",
+                    ),
+                ),
+                (
+                    "tenant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="sites",
+                        to="sharepoint_rest_api.SharePointTenant",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'SharePoint Site',
-                'verbose_name_plural': 'SharePoint Sites',
-                'ordering': ['name'],
+                "verbose_name": "SharePoint Site",
+                "verbose_name_plural": "SharePoint Sites",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='SharePointLibrary',
+            name="SharePointLibrary",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
-                ('name', models.CharField(max_length=64, verbose_name='Name')),
-                ('active', models.BooleanField(default=True, verbose_name='Active')),
-                ('public', models.BooleanField(default=True, verbose_name='Public')),
-                ('site', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='libraries', to='sharepoint_rest_api.SharePointSite')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "created",
+                    model_utils.fields.AutoCreatedField(
+                        default=django.utils.timezone.now, editable=False, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    model_utils.fields.AutoLastModifiedField(
+                        default=django.utils.timezone.now, editable=False, verbose_name="modified"
+                    ),
+                ),
+                ("name", models.CharField(max_length=64, verbose_name="Name")),
+                ("active", models.BooleanField(default=True, verbose_name="Active")),
+                ("public", models.BooleanField(default=True, verbose_name="Public")),
+                (
+                    "site",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="libraries",
+                        to="sharepoint_rest_api.SharePointSite",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'SharePoint Document Library',
-                'verbose_name_plural': 'SharePoint Document Libraries',
-                'ordering': ['name'],
-                'unique_together': {('name', 'site')},
+                "verbose_name": "SharePoint Document Library",
+                "verbose_name_plural": "SharePoint Document Libraries",
+                "ordering": ["name"],
+                "unique_together": {("name", "site")},
             },
         ),
     ]

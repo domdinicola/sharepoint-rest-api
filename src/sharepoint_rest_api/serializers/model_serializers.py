@@ -6,29 +6,34 @@ from sharepoint_rest_api.models import SharePointLibrary, SharePointSite, ShareP
 
 
 class SharePointTenantSerializer(serializers.ModelSerializer):
-    """Serializer for SharePointTenant model"""
+    """Serializer for SharePointTenant model."""
+
     class Meta:
         model = SharePointTenant
-        exclude = ('username', 'password')
+        exclude = ("username", "password")
 
 
 class SharePointSiteSerializer(serializers.ModelSerializer):
-    """Serializer for SharePointSite model"""
+    """Serializer for SharePointSite model."""
+
     class Meta:
         model = SharePointSite
-        fields = '__all__'
+        fields = "__all__"
 
 
 class SharePointLibrarySerializer(serializers.ModelSerializer):
-    """Serializer for Sharepoint Library model"""
-    site_name = serializers.ReadOnlyField(source='site.name')
+    """Serializer for Sharepoint Library model."""
+
+    site_name = serializers.ReadOnlyField(source="site.name")
     api_url = serializers.SerializerMethodField()
 
     def get_api_url(self, obj):
-        reverse_url = reverse('sharepoint_rest_api:sharepoint-url-rest-list',
-                              kwargs={'tenant': obj.site.tenant.name, 'site': obj.site.name, 'folder': obj.name})
+        reverse_url = reverse(
+            "sharepoint_rest_api:sharepoint-url-rest-list",
+            kwargs={"tenant": obj.site.tenant.name, "site": obj.site.name, "folder": obj.name},
+        )
         return settings.HOST + reverse_url
 
     class Meta:
         model = SharePointLibrary
-        fields = ('name', 'site_name', 'active', 'library_url', 'api_url')
+        fields = ("name", "site_name", "active", "library_url", "api_url")

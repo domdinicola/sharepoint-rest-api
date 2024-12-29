@@ -8,7 +8,6 @@ from tests.factories import UserFactory
 
 
 class LastModifiedRecorder(Recorder):
-
     @property
     def client(self):
         user = UserFactory(is_superuser=True)
@@ -17,12 +16,12 @@ class LastModifiedRecorder(Recorder):
         return client
 
     def assert_modified(self, response: Response, stored: Response, path: str):
-        value = response['modified']
-        assert datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f%z')
+        value = response["modified"]
+        assert datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f%z")
 
     def assert_created(self, response: Response, stored: Response, path: str):
-        value = response['created']
-        assert datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f%z')
+        value = response["created"]
+        assert datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f%z")
 
 
 class ExpectedErrorRecorder(Recorder):

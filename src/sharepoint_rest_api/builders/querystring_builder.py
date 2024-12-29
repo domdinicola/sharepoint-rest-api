@@ -6,47 +6,39 @@ logger = logging.getLogger(__name__)
 
 
 class QueryStringBuilder:
-    """Helper class to create sharepoint querystring"""
-    date_operators = ['ge', 'gt', 'le', 'lt']
-    mapping_operator = {
-        'gte': 'ge',
-        'gt': 'gt',
-        'lte': 'le',
-        'lt': 'lt',
-        'not': 'ne',
-        'contains': 'substringof'
-    }
-    search = []
-    filters = {}
+    """Helper class to create sharepoint querystring."""
 
-    def __init__(self, filters):
+    date_operators = ["ge", "gt", "le", "lt"]
+    mapping_operator = {"gte": "ge", "gt": "gt", "lte": "le", "lt": "lt", "not": "ne", "contains": "substringof"}
+    search = []
+
+    def __init__(self, filters=None):
         super().__init__()
-        if filters:
-            self.filters = filters
+        self.filters = {} if filters is None else filters
 
     def get_filter_querystring(self):
         filter_queries = []
-        for filter_name, filter_value in self.filters.items():
+        for base_filter_name, filter_value in self.filters.items():
             # operator
-            querystring_operator = filter_name.split('__')[-1]
-            operator = self.mapping_operator.get(querystring_operator, 'eq')
+            querystring_operator = base_filter_name.split("__")[-1]
+            operator = self.mapping_operator.get(querystring_operator, "eq")
             # filter
-            filter_name = to_camel(filter_name.split('__')[0])
+            filter_name = to_camel(base_filter_name.split("__")[0])
             if operator in self.date_operators:
                 values = [f"{filter_value}T00:00:00Z"]  # 2016-03-26
-                query = ' or '.join([f"{filter_name} {operator} datetime'{value}'" for value in values])
-            elif operator == 'substringof':
-                values = filter_value.split(',')
-                query = ' or '.join([f"{operator}('{value}', {filter_name})" for value in values])
+                query = " or ".join([f"{filter_name} {operator} datetime'{value}'" for value in values])
+            elif operator == "substringof":
+                values = filter_value.split(",")
+                query = " or ".join([f"{operator}('{value}', {filter_name})" for value in values])
 
             else:
-                values = filter_value.split(',')
-                query = ' or '.join([f"{filter_name} {operator} '{value}'" for value in values])
+                values = filter_value.split(",")
+                query = " or ".join([f"{filter_name} {operator} '{value}'" for value in values])
                 if len(values) > 1:
-                    query = f'({query})'
+                    query = f"({query})"
             filter_queries.append(query)
             logger.info(query)
         return str(" and ".join(filter_queries))
 
     def get_querystring(self):
-        return self.get_filter_querystring() or ''
+        return self.get_filter_querystring() or ""

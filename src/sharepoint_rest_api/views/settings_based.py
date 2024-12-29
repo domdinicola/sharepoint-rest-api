@@ -14,13 +14,11 @@ from sharepoint_rest_api.views.base import (
     SharePointSearchViewSet,
 )
 
-cache = caches['default']
+cache = caches["default"]
 
 
 class SettingsBasedSharePointViewSet(AbstractSharePointViewSet):
-    """
-    Base viewset for settings based mode
-    """
+    """Base viewset for settings based mode."""
 
     def is_public(self):
         return SharePointLibrary.objects.filter(name=self.folder, public=True)
@@ -35,7 +33,7 @@ class SettingsBasedSharePointViewSet(AbstractSharePointViewSet):
 
     @property
     def folder(self):
-        return self.kwargs.get('folder', 'Documents')
+        return self.kwargs.get("folder", "Documents")
 
     @property
     def site_type(self):
@@ -44,9 +42,9 @@ class SettingsBasedSharePointViewSet(AbstractSharePointViewSet):
     @cached_property
     def client(self):
         dl_info = {
-            'url': f'{self.tenant}/{self.site_type}/{self.site}',
-            'relative_url': f'{self.site_type}/{self.site}',
-            'folder': self.folder
+            "url": f"{self.tenant}/{self.site_type}/{self.site}",
+            "relative_url": f"{self.site_type}/{self.site}",
+            "folder": self.folder,
         }
         try:
             client = SharePointClient(**dl_info)
@@ -57,26 +55,20 @@ class SettingsBasedSharePointViewSet(AbstractSharePointViewSet):
 
 
 class SharePointSettingsRestViewSet(SettingsBasedSharePointViewSet, RestQuerySharePointViewSet):
-    """
-    Viewset for SharePoint Rest (settings based)
-    """
+    """Expose the viewset for SharePoint Rest (settings based)."""
+
     serializer_class = SharePointSettingsSerializer
 
 
 class SharePointSettingsCamlViewSet(SettingsBasedSharePointViewSet, CamlQuerySharePointViewSet):
-    """
-    Viewset for SharePoint Caml (settings based)
-    """
+    """Expose the viewset for SharePoint Caml (settings based)."""
+
     serializer_class = SharePointSettingsSerializer
 
 
 class SharePointSettingsFileViewSet(FileSharePointViewSet, SettingsBasedSharePointViewSet):
-    """
-    Viewset for SharePoint File metadata (settings based)
-    """
+    """Expose the viewset for SharePoint File metadata (settings based)."""
 
 
 class SharePointSettingsSearchViewSet(SharePointSearchViewSet, SettingsBasedSharePointViewSet):
-    """
-    Viewset for SharePoint Search (settings based)
-    """
+    """Expose the viewset for SharePoint Search (settings based)."""

@@ -7,4 +7,4 @@ class UploadSerializer(serializers.Serializer):
     metadata = serializers.JSONField(default=dict)
 
     class Meta:
-        fields = ['file_uploaded']
+        fields = ["file_uploaded"]

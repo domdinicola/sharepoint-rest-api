@@ -15,19 +15,19 @@ class SharePointTenantViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (SearchFilter, DjangoFilterBackend, OrderingFilter)
     queryset = SharePointTenant.objects.all()
     serializer_class = SharePointTenantSerializer
-    search_fields = ('url', )
+    search_fields = ("url",)
 
 
 class SharePointSiteViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (SearchFilter, DjangoFilterBackend, OrderingFilter)
     queryset = SharePointSite.objects.all()
     serializer_class = SharePointSiteSerializer
-    search_fields = ('name', )
+    search_fields = ("name",)
 
 
 class SharePointLibraryViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (SearchFilter, DjangoFilterBackend, OrderingFilter)
     queryset = SharePointLibrary.objects.all()
     serializer_class = SharePointLibrarySerializer
-    search_fields = ('name', )
+    search_fields = ("name",)
     filterset_class = SharePointLibraryFilter

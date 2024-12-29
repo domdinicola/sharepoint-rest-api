@@ -1,34 +1,30 @@
-"""
-Runs through a reST file looking for old-style literals, and helps replace them
-with new-style references.
-"""
+"""Run through a reST file looking for old-style literals, and helps replace them with new-style references."""
 
 import re
 import shelve
 import sys
 
-refre = re.compile(r'``([^`\s]+?)``')
+refre = re.compile(r"``([^`\s]+?)``")
 
 ROLES = (
-    'attr',
-    'class',
+    "attr",
+    "class",
     "djadmin",
-    'data',
-    'exc',
-    'file',
-    'func',
-    'lookup',
-    'meth',
-    'mod',
+    "data",
+    "exc",
+    "file",
+    "func",
+    "lookup",
+    "meth",
+    "mod",
     "djadminopt",
     "ref",
     "setting",
     "term",
     "tfilter",
     "ttag",
-
     # special
-    "skip"
+    "skip",
 )
 
 ALWAYS_SKIP = [
@@ -47,8 +43,7 @@ def fixliterals(fname):
     lastvalues = storage.get("lastvalues", {})
 
     for m in refre.finditer(data):
-
-        new.append(data[last:m.start()])
+        new.append(data[last : m.start()])
         last = m.end()
 
         line_start = data.rfind("\n", 0, m.start())
@@ -62,22 +57,20 @@ def fixliterals(fname):
             continue
 
         # skip when the next line is a title
-        next_line = data[m.end():next_end].strip()
+        next_line = data[m.end() : next_end].strip()
         if next_line[0] in "!-/:-@[-`{-~" and all(c == next_line[0] for c in next_line):
             new.append(m.group(0))
             continue
 
         sys.stdout.write("\n" + "-" * 80 + "\n")
-        sys.stdout.write(data[prev_start + 1:m.start()])
+        sys.stdout.write(data[prev_start + 1 : m.start()])
         sys.stdout.write(colorize(m.group(0), fg="red"))
-        sys.stdout.write(data[m.end():next_end])
+        sys.stdout.write(data[m.end() : next_end])
         sys.stdout.write("\n\n")
 
         replace_type = None
         while replace_type is None:
-            replace_type = input(
-                colorize("Replace role: ", fg="yellow")
-            ).strip().lower()
+            replace_type = input(colorize("Replace role: ", fg="yellow")).strip().lower()
             if replace_type and replace_type not in ROLES:
                 replace_type = None
 
@@ -93,9 +86,7 @@ def fixliterals(fname):
         default = lastvalues.get(m.group(1), m.group(1))
         if default.endswith("()") and replace_type in ("class", "func", "meth"):
             default = default[:-2]
-        replace_value = input(
-            colorize("Text <target> [", fg="yellow") + default + colorize("]: ", fg="yellow")
-        ).strip()
+        replace_value = input(colorize("Text <target> [", fg="yellow") + default + colorize("]: ", fg="yellow")).strip()
         if not replace_value:
             replace_value = default
         new.append(":%s:`%s`" % (replace_type, replace_value))
@@ -107,13 +98,14 @@ def fixliterals(fname):
     storage["lastvalues"] = lastvalues
     storage.close()
 
+
 #
 # The following is taken from django.utils.termcolors and is copied here to
 # avoid the dependancy.
 #
 
 
-def colorize(text='', opts=(), **kwargs):
+def colorize(text="", opts=(), **kwargs):
     """
     Returns your text, enclosed in ANSI graphics codes.
 
@@ -142,32 +134,32 @@ def colorize(text='', opts=(), **kwargs):
         print colorize('and so should this')
         print 'this should not be red'
     """
-    color_names = ('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')
-    foreground = dict([(color_names[x], '3%s' % x) for x in range(8)])
-    background = dict([(color_names[x], '4%s' % x) for x in range(8)])
+    color_names = "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"
+    foreground = {color_names[x]: "3%s" % x for x in range(8)}
+    background = {color_names[x]: "4%s" % x for x in range(8)}
 
-    RESET = '0'
-    opt_dict = {'bold': '1', 'underscore': '4', 'blink': '5', 'reverse': '7', 'conceal': '8'}
+    reset = "0"
+    opt_dict = {"bold": "1", "underscore": "4", "blink": "5", "reverse": "7", "conceal": "8"}
 
     text = str(text)
     code_list = []
-    if text == '' and len(opts) == 1 and opts[0] == 'reset':
-        return '\x1b[%sm' % RESET
+    if text == "" and len(opts) == 1 and opts[0] == "reset":
+        return "\x1b[%sm" % reset
     for k, v in kwargs.iteritems():
-        if k == 'fg':
+        if k == "fg":
             code_list.append(foreground[v])
-        elif k == 'bg':
+        elif k == "bg":
             code_list.append(background[v])
     for o in opts:
         if o in opt_dict:
             code_list.append(opt_dict[o])
-    if 'noreset' not in opts:
-        text = text + '\x1b[%sm' % RESET
-    return ('\x1b[%sm' % ';'.join(code_list)) + text
+    if "noreset" not in opts:
+        text = text + "\x1b[%sm" % reset
+    return ("\x1b[%sm" % ";".join(code_list)) + text
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         fixliterals(sys.argv[1])
     except (KeyboardInterrupt, SystemExit):
-        print
+        print("Interrupted")

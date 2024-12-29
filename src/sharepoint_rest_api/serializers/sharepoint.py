@@ -12,7 +12,7 @@ from sharepoint_rest_api.serializers.fields import (
 
 
 class BaseSharePointItemSerializer(serializers.Serializer):
-    """Base Serializer for SharePointItem object"""
+    """Base Serializer for SharePointItem object."""
 
     id = UpperSharePointPropertyField()
     guid = UpperSharePointPropertyField()
@@ -27,44 +27,49 @@ class BaseSharePointItemSerializer(serializers.Serializer):
 
 
 class SharePointSettingsSerializer(BaseSharePointItemSerializer):
-    """Serializer for Settings Based implementation"""
+    """Serializer for Settings Based implementation."""
 
     def get_download_url(self, obj):
-        filename = obj.get('FileLeafRef', obj.get('Title', ''))
+        filename = obj.get("FileLeafRef", obj.get("Title", ""))
         if filename:
             k = filename.rfind(".")
             if k > 0:
-                filename = filename[:k] + "." + filename[k + 1:]
+                filename = filename[:k] + "." + filename[k + 1 :]
             else:
-                filename = f'{filename}.pdf'
-        relative_url = reverse('sharepoint_rest_api:sharepoint-settings-files-download', kwargs={
-            'folder': self.context['folder'],
-            'filename': filename
-        })
-        return f'{settings.HOST}{relative_url}'
+                filename = f"{filename}.pdf"
+        relative_url = reverse(
+            "sharepoint_rest_api:sharepoint-settings-files-download",
+            kwargs={"folder": self.context["folder"], "filename": filename},
+        )
+        return f"{settings.HOST}{relative_url}"
 
 
 class SharePointUrlSerializer(BaseSharePointItemSerializer):
-    """Serializer for Url Based implementation"""
+    """Serializer for Url Based implementation."""
+
     def get_download_url(self, obj):
-        filename = obj.get('FileLeafRef', obj.get('Title', ''))
+        filename = obj.get("FileLeafRef", obj.get("Title", ""))
         if filename:
             k = filename.rfind(".")
             if k > 0:
-                filename = filename[:k] + "." + filename[k + 1:]
+                filename = filename[:k] + "." + filename[k + 1 :]
             else:
-                filename = f'{filename}.pdf'
-        relative_url = reverse('sharepoint_rest_api:sharepoint-url-files-download', kwargs={
-            'tenant': self.context['tenant'],
-            'site': self.context['site'],
-            'folder': self.context['folder'],
-            'filename': filename
-        })
-        return f'{settings.HOST}{relative_url}'
+                filename = f"{filename}.pdf"
+        relative_url = reverse(
+            "sharepoint_rest_api:sharepoint-url-files-download",
+            kwargs={
+                "tenant": self.context["tenant"],
+                "site": self.context["site"],
+                "folder": self.context["folder"],
+                "filename": filename,
+            },
+        )
+        return f"{settings.HOST}{relative_url}"
 
 
 class SharePointFileSerializer(serializers.Serializer):
-    """Serializer for SharePoint File object"""
+    """Serializer for SharePoint File object."""
+
     name = SharePointPropertyField()
     type_name = serializers.ReadOnlyField()
     url = serializers.ReadOnlyField()
@@ -76,16 +81,21 @@ class SharePointFileSerializer(serializers.Serializer):
     time_last_modified = SharePointPropertyField()
 
     def get_download_url(self, obj):
-        relative_url = reverse('sharepoint_rest_api:sharepoint-files-download', kwargs={
-            'tenant': self.context['tenant'],
-            'site': self.context['site'],
-            'folder': self.context['folder'],
-            'filename': obj['Name'].split('.')[0]})
-        return f'{settings.HOST}{relative_url}'
+        relative_url = reverse(
+            "sharepoint_rest_api:sharepoint-files-download",
+            kwargs={
+                "tenant": self.context["tenant"],
+                "site": self.context["site"],
+                "folder": self.context["folder"],
+                "filename": obj["Name"].split(".")[0],
+            },
+        )
+        return f"{settings.HOST}{relative_url}"
 
 
 class SharePointSearchSerializer(serializers.Serializer):
-    """Serializer for SharePoint Search API"""
+    """Serializer for SharePoint Search API."""
+
     rank = SearchSharePointField()
     doc_id = SearchSharePointField()
     work_id = SearchSharePointField()
@@ -133,22 +143,22 @@ class SharePointSearchSerializer(serializers.Serializer):
     importance = RawSearchSharePointField()
     docaclmeta = RawSearchSharePointField()
 
-    pictureThumbnailURL = CapitalizeSearchSharePointField()
-    serverRedirectedURL = CapitalizeSearchSharePointField()
-    serverRedirectedEmbedURL = CapitalizeSearchSharePointField()
-    serverRedirectedPreviewURL = CapitalizeSearchSharePointField()
-    sPWebUrl = CapitalizeSearchSharePointField()
+    pictureThumbnailURL = CapitalizeSearchSharePointField()  # noqa
+    serverRedirectedURL = CapitalizeSearchSharePointField()  # noqa
+    serverRedirectedEmbedURL = CapitalizeSearchSharePointField()  # noqa
+    serverRedirectedPreviewURL = CapitalizeSearchSharePointField()  # noqa
+    sPWebUrl = CapitalizeSearchSharePointField()  # noqa
 
     download_url = serializers.SerializerMethodField()
 
     def get_download_url(self, obj):
         try:
-            path = [item['Value'] for item in obj if item['Key'] == 'Path'][0]
-            directories = path.split('/')
-            relative_url = reverse('sharepoint_rest_api:sharepoint-settings-files-download', kwargs={
-                'folder': directories[-2],
-                'filename': directories[-1]
-            })
-            return f'{settings.HOST}{relative_url}'
-        except BaseException as e:
+            path = [item["Value"] for item in obj if item["Key"] == "Path"][0]
+            directories = path.split("/")
+            relative_url = reverse(
+                "sharepoint_rest_api:sharepoint-settings-files-download",
+                kwargs={"folder": directories[-2], "filename": directories[-1]},
+            )
+            return f"{settings.HOST}{relative_url}"
+        except (KeyError, ValueError) as e:
             return str(e)
