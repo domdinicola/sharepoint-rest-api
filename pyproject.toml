@@ -28,6 +28,7 @@ dependencies = [
 
 [tool.uv]
 dev-dependencies = [
+    "coverage",
     "django-webtest",
     "drf-api-checker",
     "factory-boy",
