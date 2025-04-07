@@ -3,6 +3,7 @@
 import re
 import shelve
 import sys
+import contextlib
 
 refre = re.compile(r"``([^`\s]+?)``")
 
@@ -106,8 +107,7 @@ def fixliterals(fname):
 
 
 def colorize(text="", opts=(), **kwargs):
-    """
-    Returns your text, enclosed in ANSI graphics codes.
+    """Returns your text, enclosed in ANSI graphics codes.
 
     Depends on the keyword arguments 'fg' and 'bg', and the contents of
     the opts tuple/list.
@@ -133,6 +133,7 @@ def colorize(text="", opts=(), **kwargs):
         print 'this should be red too'
         print colorize('and so should this')
         print 'this should not be red'
+
     """
     color_names = "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"
     foreground = {color_names[x]: "3%s" % x for x in range(8)}
@@ -159,7 +160,5 @@ def colorize(text="", opts=(), **kwargs):
 
 
 if __name__ == "__main__":
-    try:
+    with contextlib.suppress(KeyboardInterrupt, SystemExit):
         fixliterals(sys.argv[1])
-    except (KeyboardInterrupt, SystemExit):
-        print("Interrupted")

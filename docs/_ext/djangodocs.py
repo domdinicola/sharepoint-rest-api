@@ -1,6 +1,4 @@
-"""
-Sphinx plugins for Django documentation.
-"""
+"""Sphinx plugins for Django documentation."""
 
 import json
 import os
@@ -17,6 +15,7 @@ from sphinx.errors import ExtensionError
 from sphinx.util import logging
 from sphinx.util.console import bold
 from sphinx.writers.html import HTMLTranslator
+import contextlib
 
 logger = logging.getLogger(__name__)
 # RE for option descriptions without a '--' prefix
@@ -72,9 +71,9 @@ class VersionDirective(Directive):
 
     def run(self):
         if len(self.arguments) > 1:
-            msg = """Only one argument accepted for directive '{directive_name}::'.
+            msg = f"""Only one argument accepted for directive '{self.name}::'.
             Comments should be provided as content,
-            not as an extra argument.""".format(directive_name=self.name)
+            not as an extra argument."""
             raise self.error(msg)
 
         env = self.state.document.settings.env
@@ -99,9 +98,7 @@ class VersionDirective(Directive):
 
 
 class DjangoHTMLTranslator(HTMLTranslator):
-    """
-    Django-specific reST to HTML tweaks.
-    """
+    """Django-specific reST to HTML tweaks."""
 
     # Don't use border=1, which docutils does by default.
     def visit_table(self, node):
@@ -166,9 +163,7 @@ def parse_django_admin_node(env, sig, signode):
 
 
 class DjangoStandaloneHTMLBuilder(StandaloneHTMLBuilder):
-    """
-    Subclass to add some extra things we need.
-    """
+    """Subclass to add some extra things we need."""
 
     name = "djangohtml"
 
@@ -190,8 +185,7 @@ class DjangoStandaloneHTMLBuilder(StandaloneHTMLBuilder):
 
 
 class ConsoleNode(nodes.literal_block):
-    """
-    Custom node to override the visit/depart event handlers at registration
+    """Custom node to override the visit/depart event handlers at registration
     time. Wrap a literal_block object and defer to it.
     """
 
@@ -233,10 +227,8 @@ def visit_console_html(self, node):
 <section class="c-content-unix" id="c-content-%(id)s-unix">\n"""
             % {"id": uid}
         )
-        try:
+        with contextlib.suppress(nodes.SkipNode):
             self.visit_literal_block(node)
-        except nodes.SkipNode:
-            pass
         self.body.append("</section>\n")
 
         self.body.append('<section class="c-content-win" id="c-content-%(id)s-win">\n' % {"id": uid})
@@ -254,13 +246,11 @@ def visit_console_html(self, node):
         self.body.append("</section>\n")
         self.body.append("</div>\n")
         raise nodes.SkipNode
-    else:
-        self.visit_literal_block(node)
+    self.visit_literal_block(node)
 
 
 class ConsoleDirective(CodeBlock):
-    """
-    A reStructuredText directive which renders a two-tab code block in which
+    """A reStructuredText directive which renders a two-tab code block in which
     the second tab shows a Windows command line equivalent of the usual
     Unix-oriented examples.
     """

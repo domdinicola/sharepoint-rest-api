@@ -54,5 +54,3 @@ setting
     * USERNAME : '``:setting:sharepoint-rest-api:USERNAME``' (:setting:`USERNAME`)
     * PASSWORD : '``:setting:sharepoint-rest-api:PASSWORD``' (:setting:`PASSWORD`)
     * PAGE_SIZE : '``:setting:sharepoint-rest-api:PAGE_SIZE``' (:setting:`PAGE_SIZE`)
-
-

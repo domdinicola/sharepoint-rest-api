@@ -1,0 +1,8 @@
+include README.md
+include CHANGES
+include LICENSE
+include MANIFEST.in
+
+recursive-include docs *
+recursive-include src/sharepoint_rest_api *
+recursive-include tests *

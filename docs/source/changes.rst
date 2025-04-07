@@ -14,5 +14,3 @@ This sections lists the biggest changes done on each release.
    :local:
 
 .. include:: ../../CHANGES
-
-

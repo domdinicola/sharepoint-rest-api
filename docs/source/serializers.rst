@@ -105,4 +105,3 @@ SharePointFileSerializer
 ------------------------
 
 .. autoclass:: sharepoint_rest_api.serializers.sharepoint.SharePointFileSerializer
-

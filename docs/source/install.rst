@@ -28,4 +28,3 @@ create your objects tenant, site and libraries objects in your models.
 setup your settings
 
 Please see :ref:`settings`
-

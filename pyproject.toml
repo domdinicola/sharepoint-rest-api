@@ -1,50 +1,78 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = [
+  "hatch-vcs>=0.4",
+  "hatchling>=1.25",
+]
+
 [project]
 name = "sharepoint-rest-api"
-version = "0.18"
 description = "Provide REST API (DRF style) for SharePoint"
-readme = "README.rst"
-license = {text = "Apache-2.0 OR MIT"}
+readme = "README.md"
+license = "Apache-2.0 OR MIT"
 authors = [
-    { name = "Domenico Di Nicola", email = "domdinicola@unicef.org" },
+  { name = "Domenico Di Nicola", email = "domdinicola@gmail.com" },
 ]
 classifiers = [
-    "Environment :: Web Environment",
-    "Framework :: Django",
-    "Framework :: Django :: 3.2",
-    "Framework :: Django :: 4.2",
-    "Framework :: Django :: 5.1",
-    "Intended Audience :: Developers",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 3.2",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.2",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dynamic = [
+  "version",
 ]
 dependencies = [
-    "django",
-    "django-filter",
-    "django-model-utils",
-    "djangorestframework",
-    "office365-rest-python-client",
+  "django",
+  "django-filter",
+  "django-model-utils",
+  "djangorestframework",
+  "office365-rest-python-client",
 ]
+
+[dependency-groups]
+dev = [
+  "coverage",
+  "django-webtest",
+  "drf-api-checker",
+  "factory-boy",
+  "mock",
+  "pre-commit",
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "pytest-echo",
+  "pytest-redis",
+  "requests-mock",
+  "ruff",
+  "sphinx",
+  "tox",
+  "unittest2",
+  "vcrpy",
+]
+
+[tool.hatch]
+build.hooks.vcs.version-file = "src/sharepoint_rest_api/version.py"
+version.source = "vcs"
+raw-options = { root = "../.." }
+
+[tool.hatch.build.targets.sdist]
+ignore-vcs = true
+include = [
+  "src/sharepoint_rest_api/**/*.*",
+]
+urls.Homepage = "https://github.com/domdinicola/sharepoint-rest-api"
+
+[tool.hatch.build.targets.wheel]
+packages = [ "src/sharepoint_rest_api" ]
 
 [tool.uv]
-dev-dependencies = [
-    "coverage",
-    "django-webtest",
-    "drf-api-checker",
-    "factory-boy",
-    "mock",
-    "ruff",
-    "pytest",
-    "pytest-cov",
-    "pytest-django",
-    "pytest-echo",
-    "pytest-redis",
-    "requests-mock",
-    "sphinx",
-    "tox",
-    "unittest2",
-    "vcrpy",
-]
-
-[project.urls]
-Homepage = "https://github.com/domdinicola/sharepoint-rest-api"
+package = true

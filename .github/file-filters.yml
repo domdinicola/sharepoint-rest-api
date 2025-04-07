@@ -1,7 +1,7 @@
 # This is used by the action https://github.com/dorny/paths-filter
 dependencies: &dependencies
-  - 'uv.lock'
   - 'pyproject.toml'
+  - 'uv.lock'
 
 python: &python
   - added|modified: 'src/**'
@@ -12,15 +12,22 @@ changelog:
   - added|modified: 'changes/**'
   - 'CHANGELOG.md'
 
+mypy:
+  - *python
+  - 'mypy.ini'
+
 run_tests:
   - *python
   - *dependencies
-  - 'pytest.ini'
-
-migrations:
-  - added|modified: 'src/**/migrations/*'
+  - '.github/workflows/test.yml'
+  - '.github/file-filters.yml'
 
 lint:
   -  *python
-  - '.flake8'
   - 'pyproject.toml'
+  - '.github/file-filters.yml'
+
+docs:
+  - added|modified: 'docs/**'
+  - 'mkdocs.yml'
+  - '.github/workflows/docs.yml'
