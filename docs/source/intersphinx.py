@@ -34,6 +34,7 @@ import os
 import sys
 
 from sphinx.ext import intersphinx
+import contextlib
 
 color_names = ("black", "red", "green", "yellow", "blue", "magenta", "cyan", "white")
 foreground = {color_names[x]: "3%s" % x for x in range(8)}
@@ -169,9 +170,8 @@ def get_inventory(args):
 
 def dump_inventory(inventory):
     for k in inventory:
-        print("Type: %s" % k)
-        for name, value in inventory[k].items():
-            print("  %s -> '%s'" % (name, value[2]))
+        for _name, _value in inventory[k].items():
+            pass
 
 
 if __name__ == "__main__":
@@ -201,7 +201,5 @@ if __name__ == "__main__":
     parser_list.set_defaults(func=arg_list)
 
     args = parser.parse_args()
-    try:
-        print(args.func(args))
-    except argparse.ArgumentTypeError:
-        print(parser.format_help())
+    with contextlib.suppress(argparse.ArgumentTypeError):
+        pass

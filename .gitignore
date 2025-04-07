@@ -30,7 +30,6 @@ packer_cache
 *.box
 
 *.tar
-
 *.gz
 
 celerybeat-schedule
@@ -56,9 +55,9 @@ docs/_build/
 .pytest_cache
 coverage.xml
 
-Pipfile
-Pipfile.lock
 celerybeat.pid
 *db.sqlite3
 
 data/
+
+src/sharepoint_rest_api/version.py

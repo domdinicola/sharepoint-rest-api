@@ -9,8 +9,7 @@ DONT_TOUCH = ("./index.txt",)
 
 
 def target_name(fn):
-    if fn.endswith(".txt"):
-        fn = fn[:-4]
+    fn = fn.removesuffix(".txt")
     return "_" + fn.lstrip("./").replace("/", "-")
 
 
@@ -21,7 +20,7 @@ def process_file(fn, lines):
         try:
             f.writelines(lines)
         except OSError:
-            print("Can't write to %s. Not touching it." % fn)
+            pass
         finally:
             f.close()
 
@@ -32,7 +31,6 @@ def has_target(fn):
         try:
             lines = f.readlines()
         except OSError:
-            print("Can't read %s. Not touching it." % fn)
             readok = False
         finally:
             f.close()
@@ -40,7 +38,6 @@ def has_target(fn):
         return True, None
 
     if len(lines) < 1:
-        print("Not touching empty file %s." % fn)
         return True, None
 
     if lines[0].startswith(".. _"):
@@ -64,7 +61,6 @@ def main(argv=None):
 
     for fn in files:
         if fn in DONT_TOUCH:
-            print("Skipping blacklisted file %s." % fn)
             continue
 
         target_found, lines = has_target(fn)
@@ -72,10 +68,9 @@ def main(argv=None):
             if testing:
                 (print("%s: %s" % (fn, lines[0])),)
             else:
-                print("Adding xref to %s" % fn)
                 process_file(fn, lines)
         else:
-            print("Skipping %s: already has a xref" % fn)
+            pass
 
 
 if __name__ == "__main__":

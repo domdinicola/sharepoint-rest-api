@@ -59,7 +59,7 @@ class SharePointClient:
         folder = list_obj.root_folder
         self.context.load(folder)
         self.context.execute_query()
-        logger.info(f'List url: {folder.properties["ServerRelativeUrl"]}')
+        logger.info(f"List url: {folder.properties['ServerRelativeUrl']}")
         return folder
 
     def read_folders(self, folder_name):
@@ -73,7 +73,7 @@ class SharePointClient:
         self.context.load(folders)
         self.context.execute_query()
         for folder in folders:
-            logger.info(f'Folder name: {folder.properties["Name"]}')
+            logger.info(f"Folder name: {folder.properties['Name']}")
         return folders
 
     def read_files(self, filters=None):
@@ -89,7 +89,7 @@ class SharePointClient:
         self.context.load(files)
         self.context.execute_query()
         for cur_file in files:
-            logger.info(f'File name: {cur_file.properties["Name"]}')
+            logger.info(f"File name: {cur_file.properties['Name']}")
 
         return files
 
@@ -119,7 +119,7 @@ class SharePointClient:
         cur_file = folder.files.get_by_url(f"/{self.relative_url}/{self.folder}/{filename}")
         self.context.load(cur_file)
         self.context.execute_query()
-        logger.info(f'File name: {cur_file.properties["Name"]}')
+        logger.info(f"File name: {cur_file.properties['Name']}")
         return cur_file
 
     def read_caml_items(self, filters=None, scope=None):
