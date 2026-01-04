@@ -20,7 +20,7 @@ jobs:
       run_tests: ${{ steps.changes.outputs.run_tests }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - id: changes
         name: Check for file changes
         uses: dorny/paths-filter@v3
@@ -46,12 +46,12 @@ jobs:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_ALWAYS_EAGER: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v6
         with:
           version: "latest"
           enable-cache: true
@@ -76,15 +76,15 @@ jobs:
         run: tox -e d${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
 
       - name: Upload pytest test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: pytest-results-${{ matrix.python }}-${{matrix.django}}
           path: junit-${{ matrix.python }}-${{matrix.django}}.xml
         if: ${{ always() }}
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        if: matrix.python == 3.12
+        uses: codecov/codecov-action@v5
+        if: matrix.python == 3.13
         continue-on-error: true
         with:
           env_vars: OS,PYTHON
