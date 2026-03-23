@@ -136,7 +136,15 @@ class SharePointClient:
         self.context.execute_query()
         return items
 
-    def search(self, search=None, filters=None, select=None, order_by=None, source_id=None, page=1):  # noqa
+    def search(  # noqa
+        self,
+        search=None,
+        filters=None,
+        select=None,
+        order_by=None,
+        source_id=None,
+        page=1,
+    ):
         """Search file in the SharePoint site.
 
         :param filter: filter dictionary
@@ -148,7 +156,12 @@ class SharePointClient:
         filters = {} if filters is None else filters
         search_service = SearchService(self.context)
         query = SearchRequestBuilder(
-            search, filters, select, order_by, source_id, (page - 1) * SHAREPOINT_PAGE_SIZE
+            search,
+            filters,
+            select,
+            order_by,
+            source_id,
+            (page - 1) * SHAREPOINT_PAGE_SIZE,
         ).build()
         result = search_service.post_query(**query)
         self.context.execute_query()

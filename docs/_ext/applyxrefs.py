@@ -65,10 +65,7 @@ def main(argv=None):
 
         target_found, lines = has_target(fn)
         if not target_found:
-            if testing:
-                (print("%s: %s" % (fn, lines[0])),)
-            else:
-                process_file(fn, lines)
+            process_file(fn, lines)
         else:
             pass
 

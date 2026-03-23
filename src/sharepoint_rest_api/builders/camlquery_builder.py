@@ -50,7 +50,10 @@ class CamlQueryBuilder:
 
                 filter_name = to_camel(base_filter_name.split("__")[0])
                 if operator in self.date_operators:
-                    column_type, value = "DateTime", f"{filter_value}T00:00:00Z"  # 2016-03-26
+                    column_type, value = (
+                        "DateTime",
+                        f"{filter_value}T00:00:00Z",
+                    )  # 2016-03-26
                     query = (
                         f'<{operator}><FieldRef Name="{filter_name}" />'
                         f'<Value Type="{column_type}">{value}</Value>'

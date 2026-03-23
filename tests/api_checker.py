@@ -1,10 +1,14 @@
 import datetime
 
 from drf_api_checker.recorder import Recorder
-from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 from tests.factories import UserFactory
+
+import typing
+
+if typing.TYPE_CHECKING:
+    from rest_framework.response import Response
 
 
 class LastModifiedRecorder(Recorder):
@@ -15,11 +19,11 @@ class LastModifiedRecorder(Recorder):
         client.force_authenticate(user)
         return client
 
-    def assert_modified(self, response: Response, stored: Response, path: str):
+    def assert_modified(self, response: "Response", stored: "Response", path: str):
         value = response["modified"]
         assert datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f%z")
 
-    def assert_created(self, response: Response, stored: Response, path: str):
+    def assert_created(self, response: "Response", stored: "Response", path: str):
         value = response["created"]
         assert datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f%z")
 

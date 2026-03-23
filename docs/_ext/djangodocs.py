@@ -185,8 +185,9 @@ class DjangoStandaloneHTMLBuilder(StandaloneHTMLBuilder):
 
 
 class ConsoleNode(nodes.literal_block):
-    """Custom node to override the visit/depart event handlers at registration
-    time. Wrap a literal_block object and defer to it.
+    """Custom node to override the visit/depart event handlers at registration time.
+
+    Wrap a literal_block object and defer to it.
     """
 
     tagname = "ConsoleNode"
@@ -250,9 +251,9 @@ def visit_console_html(self, node):
 
 
 class ConsoleDirective(CodeBlock):
-    """A reStructuredText directive which renders a two-tab code block in which
-    the second tab shows a Windows command line equivalent of the usual
-    Unix-oriented examples.
+    """A reStructuredText directive which renders a two-tab code block.
+
+    In which the second tab shows a Windows command line equivalent of the usual Unix-oriented examples.
     """
 
     required_arguments = 0
@@ -261,30 +262,31 @@ class ConsoleDirective(CodeBlock):
     # grey comment with no highlighting at all.
     WIN_PROMPT = r"...\> "
 
-    def run(self):
+    def run(self):  # noqa
         def args_to_win(cmdline):
             changed = False
             out = []
-            for token in cmdline.split():
-                if token[:2] == "./":
-                    token = token[2:]
+            for raw_token in cmdline.split():
+                if raw_token[:2] == "./":
+                    token = raw_token[2:]
                     changed = True
-                elif token[:2] == "~/":
-                    token = "%HOMEPATH%\\" + token[2:]
+                elif raw_token[:2] == "~/":
+                    token = "%HOMEPATH%\\" + raw_token[2:]
                     changed = True
-                elif token == "make":
-                    token = "make.bat"
+                elif raw_token == "make":  # noqa
+                    token = "make.bat"  # noqa
                     changed = True
-                if "://" not in token and "git" not in cmdline:
+                if "://" not in raw_token and "git" not in cmdline:
                     out.append(token.replace("/", "\\"))
                     changed = True
                 else:
+                    token = raw_token
                     out.append(token)
             if changed:
                 return " ".join(out)
             return cmdline
 
-        def cmdline_to_win(line):
+        def cmdline_to_win(line):  # noqa
             if line.startswith("# "):
                 return "REM " + args_to_win(line[2:])
             if line.startswith("$ # "):
@@ -351,7 +353,7 @@ def html_page_context_hook(app, pagename, templatename, context, doctree):
     context["include_console_assets"] = getattr(doctree, "_console_directive_used_flag", False)
 
 
-def default_role_error(name, rawtext, text, lineno, inliner, options=None, content=None):
+def default_role_error(name, rawtext, text, lineno, inliner, options=None, content=None):  # noqa
     msg = (
         "Default role used (`single backticks`): %s. Did you mean to use two "
         "backticks for ``code``, or miss an underscore for a `link`_ ?" % rawtext

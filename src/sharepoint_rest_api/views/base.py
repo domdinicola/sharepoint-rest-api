@@ -10,7 +10,10 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 
 from sharepoint_rest_api import config
-from sharepoint_rest_api.serializers.sharepoint import SharePointFileSerializer, SharePointSearchSerializer
+from sharepoint_rest_api.serializers.sharepoint import (
+    SharePointFileSerializer,
+    SharePointSearchSerializer,
+)
 from sharepoint_rest_api.utils import get_cache_key
 
 cache = caches["default"]
@@ -129,7 +132,12 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
         cached = cache.get(key)
         if cached is None:
             response, self.total_rows = self.client.search(
-                search=search, filters=filters, select=selected, order_by=order_by, source_id=source_id, page=page
+                search=search,
+                filters=filters,
+                select=selected,
+                order_by=order_by,
+                source_id=source_id,
+                page=page,
             )
             cache.set(key, (response, self.total_rows))
         else:

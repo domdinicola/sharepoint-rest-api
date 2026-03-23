@@ -36,11 +36,11 @@ ALWAYS_SKIP = [
 
 
 def fixliterals(fname):
-    data = open(fname).read()
+    data = open(fname).read()  # noqa
 
     last = 0
     new = []
-    storage = shelve.open("/tmp/literals_to_xref.shelve")
+    storage = shelve.open("/tmp/literals_to_xref.shelve")  # noqa
     lastvalues = storage.get("lastvalues", {})
 
     for m in refre.finditer(data):
@@ -94,7 +94,7 @@ def fixliterals(fname):
         lastvalues[m.group(1)] = replace_value
 
     new.append(data[last:])
-    open(fname, "w").write("".join(new))
+    open(fname, "w").write("".join(new))  # noqa
 
     storage["lastvalues"] = lastvalues
     storage.close()
@@ -107,7 +107,7 @@ def fixliterals(fname):
 
 
 def colorize(text="", opts=(), **kwargs):
-    """Returns your text, enclosed in ANSI graphics codes.
+    """Return your text, enclosed in ANSI graphics codes.
 
     Depends on the keyword arguments 'fg' and 'bg', and the contents of
     the opts tuple/list.
@@ -153,7 +153,7 @@ def colorize(text="", opts=(), **kwargs):
             code_list.append(background[v])
     for o in opts:
         if o in opt_dict:
-            code_list.append(opt_dict[o])
+            code_list.append(opt_dict[o])  # noqa
     if "noreset" not in opts:
         text = text + "\x1b[%sm" % reset
     return ("\x1b[%sm" % ";".join(code_list)) + text

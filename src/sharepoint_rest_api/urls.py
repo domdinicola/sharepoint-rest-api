@@ -52,14 +52,24 @@ router.register(
 
 # settings based
 router.register(
-    r"sharepoint/(?P<folder>[\w\W]+)/rest", SharePointSettingsRestViewSet, basename="sharepoint-settings-rest"
+    r"sharepoint/(?P<folder>[\w\W]+)/rest",
+    SharePointSettingsRestViewSet,
+    basename="sharepoint-settings-rest",
 )
 router.register(
-    r"sharepoint/(?P<folder>[\w\W]+)/caml", SharePointSettingsCamlViewSet, basename="sharepoint-settings-caml"
+    r"sharepoint/(?P<folder>[\w\W]+)/caml",
+    SharePointSettingsCamlViewSet,
+    basename="sharepoint-settings-caml",
 )
 router.register(
-    r"sharepoint/(?P<folder>[\w\W]+)/files", SharePointSettingsFileViewSet, basename="sharepoint-settings-files"
+    r"sharepoint/(?P<folder>[\w\W]+)/files",
+    SharePointSettingsFileViewSet,
+    basename="sharepoint-settings-files",
 )
-router.register(r"sharepoint/search", SharePointSettingsSearchViewSet, basename="sharepoint-settings-search")
+router.register(
+    r"sharepoint/search",
+    SharePointSettingsSearchViewSet,
+    basename="sharepoint-settings-search",
+)
 
 urlpatterns = router.urls
