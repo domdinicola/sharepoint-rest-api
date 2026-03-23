@@ -9,7 +9,14 @@ class QueryStringBuilder:
     """Helper class to create sharepoint querystring."""
 
     date_operators = ["ge", "gt", "le", "lt"]
-    mapping_operator = {"gte": "ge", "gt": "gt", "lte": "le", "lt": "lt", "not": "ne", "contains": "substringof"}
+    mapping_operator = {
+        "gte": "ge",
+        "gt": "gt",
+        "lte": "le",
+        "lt": "lt",
+        "not": "ne",
+        "contains": "substringof",
+    }
     search = []
 
     def __init__(self, filters=None):

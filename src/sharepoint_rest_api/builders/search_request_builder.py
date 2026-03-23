@@ -21,7 +21,15 @@ class SearchRequestBuilder:
         "contains": "*",
     }
 
-    def __init__(self, search=None, filters=None, select=None, order_by=None, source_id=None, start_row=None):  # noqa
+    def __init__(  # noqa
+        self,
+        search=None,
+        filters=None,
+        select=None,
+        order_by=None,
+        source_id=None,
+        start_row=None,
+    ):  # noqa
         self.search = search
         self.filters = {} if filters is None else filters
         self.select = select

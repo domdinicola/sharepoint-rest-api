@@ -2,7 +2,11 @@ from django.conf import settings
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from sharepoint_rest_api.models import SharePointLibrary, SharePointSite, SharePointTenant
+from sharepoint_rest_api.models import (
+    SharePointLibrary,
+    SharePointSite,
+    SharePointTenant,
+)
 
 
 class SharePointTenantSerializer(serializers.ModelSerializer):
@@ -30,7 +34,11 @@ class SharePointLibrarySerializer(serializers.ModelSerializer):
     def get_api_url(self, obj):
         reverse_url = reverse(
             "sharepoint_rest_api:sharepoint-url-rest-list",
-            kwargs={"tenant": obj.site.tenant.name, "site": obj.site.name, "folder": obj.name},
+            kwargs={
+                "tenant": obj.site.tenant.name,
+                "site": obj.site.name,
+                "folder": obj.name,
+            },
         )
         return settings.HOST + reverse_url
 

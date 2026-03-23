@@ -1,3 +1,8 @@
+Release 0.20 (in development)
+-----------------------------------------
+* added support to python 3.14
+* added support to django 6.0
+
 Release 0.19
 -----------------------------------------
 * added support to django 5.2

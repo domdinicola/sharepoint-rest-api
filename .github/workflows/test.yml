@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v6
       - id: changes
         name: Check for file changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         with:
           base: ${{ github.ref }}
           token: ${{ github.token }}
@@ -40,8 +40,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        django: [ "52", "42", "32"]
-        python: [ "3.13", "3.12", "3.11" ]
+        django: [ "32", "42", "52", "60"]
+        python: [ "3.12", "3.13", "3.14"  ]
     env:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_ALWAYS_EAGER: true
@@ -63,10 +63,10 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install tox
-        run: uv tool install --python-preference only-managed --python 3.13 tox --with tox-uv --with tox-gh-actions
+        run: uv tool install --python-preference only-managed --python 3.14 tox --with tox-uv --with tox-gh-actions
 
       - name: Install Python
-        if: matrix.python != '3.13'
+        if: matrix.python != '3.14'
         run: uv python install --python-preference only-managed ${{ matrix.python }}
 
       - name: Setup test suite
@@ -76,7 +76,7 @@ jobs:
         run: tox -e d${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
 
       - name: Upload pytest test results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: pytest-results-${{ matrix.python }}-${{matrix.django}}
           path: junit-${{ matrix.python }}-${{matrix.django}}.xml
@@ -84,7 +84,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
-        if: matrix.python == 3.13
+        if: matrix.python == 3.14
         continue-on-error: true
         with:
           env_vars: OS,PYTHON

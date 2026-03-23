@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+
 """Copyright (c) 2011 individual contributors.
+
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
@@ -48,7 +50,7 @@ RESET = "\x1b[0m"
 
 def echo(*args):
     if len(args) < 2:
-        raise
+        raise  # noqa
     style = args[-1]
     if style:
         out = ("\x1b[%sm" % style) + "".join(args[:-1]) + RESET + "\n"

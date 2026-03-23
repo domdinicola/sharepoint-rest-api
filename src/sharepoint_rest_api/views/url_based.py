@@ -21,7 +21,9 @@ class UrlBasedSharePointViewSet(AbstractSharePointViewSet):
 
     def get_library(self):
         return SharePointLibrary.objects.get(
-            site__tenant__url__contains=self.tenant, site__name=self.site, name=self.folder
+            site__tenant__url__contains=self.tenant,
+            site__name=self.site,
+            name=self.folder,
         )
 
     def is_public(self):
@@ -42,7 +44,11 @@ class UrlBasedSharePointViewSet(AbstractSharePointViewSet):
     @cached_property
     def client(self):
         dl = self.get_library()
-        dl_info = {"url": dl.site.site_url(), "relative_url": dl.site.relative_url(), "folder": dl.name}
+        dl_info = {
+            "url": dl.site.site_url(),
+            "relative_url": dl.site.relative_url(),
+            "folder": dl.name,
+        }
         if dl.site.tenant.username:
             dl_info["username"] = dl.site.tenant.username
             dl_info["password"] = dl.site.tenant.password

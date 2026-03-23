@@ -3,7 +3,11 @@ from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 from sharepoint_rest_api.filters import SharePointLibraryFilter
-from sharepoint_rest_api.models import SharePointLibrary, SharePointSite, SharePointTenant
+from sharepoint_rest_api.models import (
+    SharePointLibrary,
+    SharePointSite,
+    SharePointTenant,
+)
 from sharepoint_rest_api.serializers.model_serializers import (
     SharePointLibrarySerializer,
     SharePointSiteSerializer,

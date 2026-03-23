@@ -23,7 +23,8 @@ class UploadViewSet(ViewSet):
             metadata = json.loads(metadata)
 
         client = SharePointClient(
-            url=f"{config.SHAREPOINT_TENANT}/{config.SHAREPOINT_SITE_TYPE}/{config.SHAREPOINT_SITE}", folder=folder
+            url=f"{config.SHAREPOINT_TENANT}/{config.SHAREPOINT_SITE_TYPE}/{config.SHAREPOINT_SITE}",
+            folder=folder,
         )
 
         client.upload_file(file_uploaded, folder_name=folder, metadata=metadata)
