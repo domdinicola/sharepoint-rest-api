@@ -16,3 +16,9 @@ SHAREPOINT_CLIENT_SECRET = env_or_settings("SHAREPOINT_CLIENT_SECRET", "invalid_
 SHAREPOINT_USERNAME = env_or_settings("SHAREPOINT_USERNAME", "invalid_username")
 SHAREPOINT_PASSWORD = env_or_settings("SHAREPOINT_PASSWORD", "invalid_password")
 SHAREPOINT_PAGE_SIZE = int(env_or_settings("SHAREPOINT_PAGE_SIZE", 25))
+
+GRAPH_CLIENT_ID = env_or_settings("GRAPH_CLIENT_ID", "invalid_graph_client_id")
+GRAPH_CLIENT_SECRET = env_or_settings("GRAPH_CLIENT_SECRET", "invalid_graph_client_secret")
+GRAPH_TENANT = env_or_settings("GRAPH_TENANT", "")
+GRAPH_REGION = env_or_settings("GRAPH_REGION", "US")
+GRAPH_PAGE_SIZE = int(env_or_settings("GRAPH_PAGE_SIZE", 25))

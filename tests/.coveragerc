@@ -6,6 +6,7 @@ omit =
         */reset-migrations.py
         */tests/**
         */migrations/*,
+        */version.py
 
 [report]
 # Regexes for lines to exclude from consideration
@@ -24,7 +25,7 @@ exclude_lines =
     #if 0:
     if __name__ == .__main__.:
 
-fail_under = 60
+fail_under = 95
 
 ignore_errors = True
 

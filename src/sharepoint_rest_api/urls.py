@@ -6,6 +6,7 @@ from sharepoint_rest_api.views.model_views import (
     SharePointSiteViewSet,
     SharePointTenantViewSet,
 )
+from sharepoint_rest_api.views.graph_based import GraphBasedSearchViewSet
 from sharepoint_rest_api.views.settings_based import (
     SharePointSettingsCamlViewSet,
     SharePointSettingsFileViewSet,
@@ -70,6 +71,11 @@ router.register(
     r"sharepoint/search",
     SharePointSettingsSearchViewSet,
     basename="sharepoint-settings-search",
+)
+router.register(
+    r"graph/search",
+    GraphBasedSearchViewSet,
+    basename="graph-settings-search",
 )
 
 urlpatterns = router.urls

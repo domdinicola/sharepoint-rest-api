@@ -10,6 +10,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 
 from sharepoint_rest_api import config
+from sharepoint_rest_api.graph_client import GraphClientError
 from sharepoint_rest_api.serializers.sharepoint import (
     SharePointFileSerializer,
     SharePointSearchSerializer,
@@ -157,7 +158,7 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
 
         try:
             response = super().list(request, *args, **kwargs)
-        except ClientRequestException as e:
+        except (ClientRequestException, GraphClientError) as e:
             return HttpResponseBadRequest(str(e))
         current_page = int(self.request.query_params.get("page", 1))
         last_offset = math.ceil(self.total_rows / config.SHAREPOINT_PAGE_SIZE)
