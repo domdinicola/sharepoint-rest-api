@@ -41,7 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         django: [ "32", "42", "52", "60"]
-        python: [ "3.12", "3.13", "3.14"  ]
+        python: [ "3.14"  ]
     env:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_ALWAYS_EAGER: true

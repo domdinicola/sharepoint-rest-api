@@ -35,6 +35,7 @@ dependencies = [
   "django-filter",
   "django-model-utils",
   "djangorestframework",
+  "msal",
   "office365-rest-python-client",
 ]
 
