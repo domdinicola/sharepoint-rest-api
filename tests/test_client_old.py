@@ -27,6 +27,37 @@ def test_init_app(mock_credential, mock_context):
     assert client.folder == "Docs"
 
 
+@mock.patch("sharepoint_rest_api.client.AuthenticationContext")
+@mock.patch("sharepoint_rest_api.client.ClientContext")
+@mock.patch("sharepoint_rest_api.client.UserCredential")
+@mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "cert")
+def test_cert_auth_with_search_context(mock_user_cred, mock_context, mock_auth):
+    mock_auth_instance = mock.MagicMock()
+    mock_auth.return_value = mock_auth_instance
+
+    mock_context_instance = mock.MagicMock()
+    mock_context.return_value = mock_context_instance
+    mock_context_instance.with_credentials.return_value = mock_context_instance
+
+    client = SharePointClient(
+        url="https://test.sharepoint.com/",
+        relative_url="sites/test",
+        folder="Docs",
+        client_id="test-client-id",
+        username="valid_user",
+        password="valid_pass",
+    )
+
+    mock_auth.assert_called_once_with("https://test.sharepoint.com/")
+    mock_auth_instance.with_client_certificate.assert_called_once()
+
+    mock_context.assert_any_call("https://test.sharepoint.com/", auth_context=mock_auth_instance)
+    mock_context.assert_any_call("https://test.sharepoint.com/")
+    mock_context_instance.with_credentials.assert_called_with(mock_user_cred.return_value)
+    mock_user_cred.assert_called_once_with("valid_user", "valid_pass")
+    assert client._search_context is not None
+
+
 @mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "invalid")
 def test_init_invalid():
     with pytest.raises(SharePointClientException, match="Invalid connection type"):

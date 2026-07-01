@@ -1516,6 +1516,51 @@ def test_search_loop_exhausts_with_post_filters(mock_cca, mock_post):
 
 @mock.patch("sharepoint_rest_api.graph_client.requests.post")
 @mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_search_loop_exhausts_all_pages(mock_cca, mock_post):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {
+        "value": [
+            {
+                "hitsContainers": [
+                    {
+                        "total": 200,
+                        "hits": [
+                            {
+                                "hitId": f"hit{i}",
+                                "rank": i,
+                                "resource": {
+                                    "id": f"doc{i}",
+                                    "name": f"doc{i}.pdf",
+                                    "webUrl": f"https://sharepoint.com/site/doc{i}",
+                                    "size": 512,
+                                    "lastModifiedDateTime": "2024-01-01T00:00:00Z",
+                                    "listItem": {"fields": {"ReportStatus": "Final"}},
+                                },
+                            }
+                            for i in range(1)
+                        ],
+                    }
+                ]
+            }
+        ]
+    }
+    mock_post.return_value = mock_resp
+
+    client = GraphClient()
+    with mock.patch.object(GraphClient, "_fetch_item_fields"):
+        with mock.patch("sharepoint_rest_api.graph_client.config.GRAPH_PAGE_SIZE", 25):
+            items, total = client.search(
+                filters={"ReportStatus": "Final"},
+                searchable_properties=set(),
+            )
+    assert len(items) == 5
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.post")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
 def test_search_with_all_params(mock_cca, mock_post):
     mock_app = mock_cca.return_value
     mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
