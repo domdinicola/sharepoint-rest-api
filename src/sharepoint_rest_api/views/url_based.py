@@ -52,6 +52,12 @@ class UrlBasedSharePointViewSet(AbstractSharePointViewSet):
         if dl.site.tenant.username:
             dl_info["username"] = dl.site.tenant.username
             dl_info["password"] = dl.site.tenant.password
+        if dl.site.tenant.client_id:
+            dl_info["client_id"] = dl.site.tenant.client_id
+            dl_info["cert_tenant"] = dl.site.tenant.client_cert_tenant
+            dl_info["cert_thumbprint"] = dl.site.tenant.client_cert_thumbprint
+            dl_info["cert_path"] = dl.site.tenant.client_cert_path
+            dl_info["cert_passphrase"] = dl.site.tenant.client_cert_passphrase
         try:
             client = SharePointClient(**dl_info)
         except SharePointClientException:

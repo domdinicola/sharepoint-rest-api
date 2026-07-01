@@ -36,6 +36,12 @@ class SharePointTenantFactory(factory.django.DjangoModelFactory):
         model = SharePointTenant
         django_get_or_create = ("url",)
 
+    client_id = ""
+    client_cert_tenant = ""
+    client_cert_path = ""
+    client_cert_thumbprint = ""
+    client_cert_passphrase = ""
+
 
 class SharePointSiteFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: "name%03d" % n)

@@ -79,8 +79,6 @@ class CamlQueryBuilder:
                     query = recursive_builder(queries, "Or")
                 filter_queries.append(query)
             where_condition = recursive_builder(filter_queries)
-            if len(filter_queries) > 1:
-                where_condition = f"<And>{where_condition}</And>"
 
         scope = f' Scope="{self.scope}"' if self.scope else ""
         return f"<View{scope}><Query><Where>{where_condition}</Where></Query></View>"

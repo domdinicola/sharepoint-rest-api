@@ -7,6 +7,21 @@ from .models import SharePointLibrary, SharePointSite, SharePointTenant
 class SharepointTenantAdmin(admin.ModelAdmin):
     search_fields = ("url",)
     list_display = ("url",)
+    fieldsets = (
+        (None, {"fields": ("url", "username", "password")}),
+        (
+            "Client Certificate",
+            {
+                "fields": (
+                    "client_id",
+                    "client_cert_tenant",
+                    "client_cert_path",
+                    "client_cert_thumbprint",
+                    "client_cert_passphrase",
+                ),
+            },
+        ),
+    )
 
 
 @admin.register(SharePointSite)
