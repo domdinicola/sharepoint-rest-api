@@ -28,9 +28,11 @@ class SharePointClient:
     """Client to access SharePoint Document Library.
 
     Supports three authentication modes, configured via ``SHAREPOINT_CONNECTION``:
-    - "app":  SharePoint App-Only (ACS) using client_id + client_secret. Legacy.
+    - "app":  SharePoint App-Only (ACS) using client_id + client_secret.
+      **Deprecated by Microsoft** — no longer works for new tenants.
     - "user": User credentials (username + password).
     - "cert": Microsoft Entra ID app registration using client_id + certificate.
+      Recommended for app-only access.
     """
 
     def __init__(self, *args, **kwargs) -> None:
