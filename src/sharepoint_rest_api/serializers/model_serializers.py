@@ -14,7 +14,7 @@ class SharePointTenantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SharePointTenant
-        exclude = ("username", "password")
+        exclude = ("username", "password", "client_cert_passphrase")
 
 
 class SharePointSiteSerializer(serializers.ModelSerializer):

@@ -11,6 +11,11 @@ class SharePointTenant(TimeStampedModel):
     url = models.URLField(unique=True)
     username = models.CharField(verbose_name=_("Username"), max_length=64, null=True, blank=True)
     password = models.CharField(verbose_name=_("Password"), max_length=64, null=True, blank=True)
+    client_id = models.CharField(verbose_name=_("Client ID"), max_length=256, null=True, blank=True)
+    client_cert_tenant = models.CharField(verbose_name=_("Cert Tenant"), max_length=256, null=True, blank=True)
+    client_cert_path = models.CharField(verbose_name=_("Cert Path"), max_length=512, null=True, blank=True)
+    client_cert_thumbprint = models.CharField(verbose_name=_("Cert Thumbprint"), max_length=512, null=True, blank=True)
+    client_cert_passphrase = models.CharField(verbose_name=_("Cert Passphrase"), max_length=512, null=True, blank=True)
 
     @property
     def name(self):

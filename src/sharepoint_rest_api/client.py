@@ -1,5 +1,6 @@
 import logging
 
+from office365.runtime.auth.authentication_context import AuthenticationContext
 from office365.runtime.auth.client_credential import ClientCredential
 from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
@@ -24,12 +25,29 @@ class SharePointClientException(BaseException):
 
 
 class SharePointClient:
-    """Client to access SharePoint Document Library."""
+    """Client to access SharePoint Document Library.
+
+    Supports three authentication modes, configured via ``SHAREPOINT_CONNECTION``:
+    - "app":  SharePoint App-Only (ACS) using client_id + client_secret. Legacy.
+    - "user": User credentials (username + password).
+    - "cert": Microsoft Entra ID app registration using client_id + certificate.
+    """
 
     def __init__(self, *args, **kwargs) -> None:
         self.relative_url = kwargs.get("relative_url")
         self.site_path = kwargs.get("url", config.SHAREPOINT_TENANT)
-        if config.SHAREPOINT_CONNECTION == "app":
+        auth_context = None
+        if config.SHAREPOINT_CONNECTION == "cert":
+            auth_context = AuthenticationContext(self.site_path)
+            auth_context.with_client_certificate(
+                kwargs.get("cert_tenant", config.SHAREPOINT_CLIENT_CERT_TENANT),
+                kwargs.get("client_id", config.SHAREPOINT_CLIENT_ID),
+                kwargs.get("cert_thumbprint", config.SHAREPOINT_CLIENT_CERT_THUMBPRINT),
+                cert_path=kwargs.get("cert_path", config.SHAREPOINT_CLIENT_CERT_PATH) or None,
+                private_key=kwargs.get("cert_private_key", config.SHAREPOINT_CLIENT_CERT_PRIVATE_KEY) or None,
+                passphrase=kwargs.get("cert_passphrase", config.SHAREPOINT_CLIENT_CERT_PASSPHRASE) or None,
+            )
+        elif config.SHAREPOINT_CONNECTION == "app":
             client_id = kwargs.get("client_id", config.SHAREPOINT_CLIENT_ID)
             client_secret = kwargs.get("client_secret", config.SHAREPOINT_CLIENT_SECRET)
             credentials = ClientCredential(client_id, client_secret)
@@ -40,7 +58,24 @@ class SharePointClient:
         else:
             raise SharePointClientException("Invalid connection type")
         self.folder = kwargs.get("folder", "Documents")
-        self.context = ClientContext(self.site_path).with_credentials(credentials)
+        if auth_context:
+            self.context = ClientContext(self.site_path, auth_context=auth_context)
+        else:
+            self.context = ClientContext(self.site_path).with_credentials(credentials)
+
+        # User-based auth context used specifically for search operations, since
+        # the SharePoint Search REST API does not accept app-only (cert) tokens.
+        self._search_context = None
+        search_username = kwargs.get("username", config.SHAREPOINT_USERNAME)
+        search_password = kwargs.get("password", config.SHAREPOINT_PASSWORD)
+        if search_username not in ("invalid_username", None, "") and search_password not in (
+            "invalid_password",
+            None,
+            "",
+        ):
+            self._search_context = ClientContext(self.site_path).with_credentials(
+                UserCredential(search_username, search_password)
+            )
 
     def __reduce__(self):
         return SharePointClient, (
@@ -147,6 +182,9 @@ class SharePointClient:
     ):
         """Search file in the SharePoint site.
 
+        Uses user-based auth context when available (the SharePoint Search REST API
+        does not accept app-only cert tokens).
+
         :param filter: filter dictionary
         :param select: select string
         :param order_by: SharePoint order fields
@@ -154,7 +192,8 @@ class SharePointClient:
         :return: items and total row number
         """
         filters = {} if filters is None else filters
-        search_service = SearchService(self.context)
+        ctx = self._search_context or self.context
+        search_service = SearchService(ctx)
         query = SearchRequestBuilder(
             search,
             filters,
@@ -164,7 +203,7 @@ class SharePointClient:
             (page - 1) * SHAREPOINT_PAGE_SIZE,
         ).build()
         result = search_service.post_query(**query)
-        self.context.execute_query()
+        ctx.execute_query()
         relevant_results = result.value.PrimaryQueryResult.RelevantResults
         results = relevant_results.Table.Rows
         logger.info(f"Retrieved: {relevant_results.TotalRows} results")

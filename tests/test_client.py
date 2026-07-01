@@ -68,3 +68,35 @@ def test_caml_items(sh_client, mock_client):
 def test_files(sh_client, mock_client):
     items = sh_client.read_files()
     assert len(items) == 56
+
+
+@mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "cert")
+@mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CLIENT_CERT_TENANT", "testtenant.onmicrosoft.com")
+@mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CLIENT_CERT_THUMBPRINT", "abc123")
+def test_client_cert_auth(mock_client):
+    dl_info = {
+        "url": "https://testtenant.sharepoint.com/sites/testsite",
+        "relative_url": "sites/testsite",
+        "folder": "Documents",
+        "client_id": "test-client-id",
+        "cert_private_key": "-----BEGIN PRIVATE KEY-----\nMOCK\n-----END PRIVATE KEY-----",
+    }
+    client = SharePointClient(**dl_info)
+    assert client.context is not None
+
+
+@mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "cert")
+@mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CLIENT_CERT_TENANT", "testtenant.onmicrosoft.com")
+@mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CLIENT_CERT_THUMBPRINT", "abc123")
+def test_client_cert_auth_with_cert_path(tmp_path, mock_client):
+    cert_file = tmp_path / "cert.pem"
+    cert_file.write_text("-----BEGIN PRIVATE KEY-----\nMOCK\n-----END PRIVATE KEY-----")
+    dl_info = {
+        "url": "https://testtenant.sharepoint.com/sites/testsite",
+        "relative_url": "sites/testsite",
+        "folder": "Documents",
+        "client_id": "test-client-id",
+        "cert_path": str(cert_file),
+    }
+    client = SharePointClient(**dl_info)
+    assert client.context is not None
