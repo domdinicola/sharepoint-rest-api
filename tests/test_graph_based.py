@@ -57,8 +57,8 @@ def test_list_catches_graph_client_exception():
     viewset.format_kwarg = None
     viewset.serializer_class = mock.MagicMock()
     viewset.serializer_class._declared_fields = {"Title": mock.MagicMock()}
-    viewset.client = mock.MagicMock()
-    viewset.client.search.side_effect = GraphClientError("graph error")
+    viewset.get_queryset = mock.MagicMock()
+    viewset.get_queryset.side_effect = GraphClientError("graph error")
 
     request = RequestFactory().get("/graph/search")
     request.query_params = request.GET
