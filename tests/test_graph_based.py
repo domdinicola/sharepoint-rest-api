@@ -3,10 +3,29 @@ from unittest import mock
 from django.http import HttpResponseBadRequest
 from django.test import RequestFactory
 import pytest
+from rest_framework.response import Response
 
 from sharepoint_rest_api.graph_client import GraphClientError
 from sharepoint_rest_api.views.graph_based import GraphBasedSearchViewSet
 from rest_framework.exceptions import PermissionDenied
+
+
+def _make_viewset():
+    viewset = GraphBasedSearchViewSet()
+    viewset.kwargs = {}
+    viewset.folder = "docs"
+    viewset.tenant = "t"
+    viewset.site = "s"
+    viewset.action = "list"
+    viewset.format_kwarg = None
+    viewset.serializer_class = mock.MagicMock()
+    viewset.serializer_class._declared_fields = {"Title": mock.MagicMock()}
+    request = RequestFactory().get("/graph/search", {"page": "1"})
+    request.query_params = request.GET
+    request.parser_context = {"kwargs": {}}
+    viewset.request = request
+    viewset.headers = request.headers
+    return viewset, request
 
 
 @mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
@@ -47,24 +66,29 @@ def test_client_uses_config(mock_graph_client, mock_config):
     )
 
 
+def test_list_happy_path():
+    viewset, request = _make_viewset()
+    viewset.get_queryset = mock.MagicMock(return_value=[{"Title": "doc1"}])
+
+    viewset._build_paginated_response = mock.MagicMock(return_value=Response({"items": [{"Title": "doc1"}]}))
+
+    response = viewset.list(request)
+    assert response.status_code == 200
+    viewset._build_paginated_response.assert_called_once()
+    viewset.get_queryset.assert_called_once()
+
+
 def test_list_catches_graph_client_exception():
-    viewset = GraphBasedSearchViewSet()
-    viewset.kwargs = {}
-    viewset.folder = "docs"
-    viewset.tenant = "t"
-    viewset.site = "s"
-    viewset.action = "list"
-    viewset.format_kwarg = None
-    viewset.serializer_class = mock.MagicMock()
-    viewset.serializer_class._declared_fields = {"Title": mock.MagicMock()}
+    viewset, request = _make_viewset()
     viewset.get_queryset = mock.MagicMock()
     viewset.get_queryset.side_effect = GraphClientError("graph error")
-
-    request = RequestFactory().get("/graph/search")
-    request.query_params = request.GET
-    request.parser_context = {"kwargs": {}}
-    viewset.request = request
 
     response = viewset.list(request)
     assert isinstance(response, HttpResponseBadRequest)
     assert b"graph error" in response.content
+
+
+def test_get_page_size():
+    viewset, _ = _make_viewset()
+    result = viewset._get_page_size()
+    assert result == 25
