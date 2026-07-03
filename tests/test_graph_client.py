@@ -488,9 +488,11 @@ def test_fetch_item_fields_respects_limit(mock_cca, mock_post):
     items_with_refs = [({"Title": f"doc{i}"}, "site1", "list1", f"item{i}") for i in range(30)]
     client._fetch_item_fields(items_with_refs)
 
-    assert mock_post.call_count == 1
-    body = mock_post.call_args[1]["json"]
-    assert len(body["requests"]) == 20
+    assert mock_post.call_count == 2
+    first_body = mock_post.call_args_list[0][1]["json"]
+    assert len(first_body["requests"]) == 20
+    second_body = mock_post.call_args_list[1][1]["json"]
+    assert len(second_body["requests"]) == 10
 
 
 @mock.patch("sharepoint_rest_api.graph_client.requests.post")

@@ -129,7 +129,8 @@ class GraphClient:
         """Fetch full listItem fields for search results via the list items API.
 
         Uses the Microsoft Graph batch endpoint to efficiently retrieve
-        list item fields for items found by the search API.
+        list item fields for items found by the search API.  The Graph API
+        limits a single batch to 20 requests, so larger sets are chunked.
         """
         if not items_with_refs:
             return
@@ -154,15 +155,26 @@ class GraphClient:
         if not batch_requests:
             return
 
-        batch_body = RestBuilder.build_batch_body(batch_requests)
+        batch_limit = 20  # Graph API $batch hard limit
+        for chunk_start in range(0, len(batch_requests), batch_limit):
+            chunk = batch_requests[chunk_start : chunk_start + batch_limit]
+            for i, req in enumerate(chunk):
+                req["id"] = str(i)
+            batch_body = RestBuilder.build_batch_body(chunk)
 
-        try:
-            resp = self.post(f"{GRAPH_URL}/$batch", json=batch_body, timeout=120)
-        except GraphClientError as e:
-            logger.warning("Batch field fetch failed (%d items): %s", len(batch_requests), e)
-            return
+            try:
+                resp = self.post(f"{GRAPH_URL}/$batch", json=batch_body, timeout=120)
+            except GraphClientError as e:
+                logger.warning(
+                    "Batch field fetch failed (items %d-%d): %s",
+                    chunk_start,
+                    chunk_start + len(chunk) - 1,
+                    e,
+                )
+                continue
 
-        self._merge_batch_fields(items_with_refs, resp.json().get("responses", []))
+            chunk_container = items_with_refs[chunk_start : chunk_start + len(chunk)]
+            self._merge_batch_fields(chunk_container, resp.json().get("responses", []))
 
     @staticmethod
     def _check_filter_op(operator_key, item_str, item_parts, expected_values):
@@ -205,6 +217,8 @@ class GraphClient:
             if item_val is None:
                 item_val = item.get(alt_name)
             if item_val is None:
+                if operator_key == "not":
+                    continue
                 return is_exclusion
 
             item_str = str(item_val).strip()
