@@ -135,7 +135,7 @@ class SearchResponseMixin:
                 last_dict.pop("page", None)
             else:
                 last_dict["page"] = str(page)
-            return request.build_absolute_uri("?") + "?" + urlencode(last_dict)
+            return request.build_absolute_uri("?" + urlencode(last_dict))
 
         current_page = int(request.query_params.get("page", 1))
         page_size = self._get_page_size()
