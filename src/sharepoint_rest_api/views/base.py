@@ -133,7 +133,7 @@ class SearchResponseMixin:
                 return None
             if page == 1:
                 last_dict.pop("page", None)
-            elif page > 1:
+            else:
                 last_dict["page"] = str(page)
             return request.build_absolute_uri("?") + "?" + urlencode(last_dict)
 

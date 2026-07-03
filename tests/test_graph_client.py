@@ -352,6 +352,10 @@ def test_post_filter_exclusion_multi_value():
     assert not GraphClient._matches_post_filters({"Donor": "Red Cross"}, {"-Donor": "UNICEF,Red Cross"})
 
 
+def test_post_filter_absent_field_not():
+    assert GraphClient._matches_post_filters({}, {"Donor__not": "Red Cross"})
+
+
 def test_post_filter_absent_field_eq():
     assert not GraphClient._matches_post_filters({}, {"Donor": "Red Cross"})
 
