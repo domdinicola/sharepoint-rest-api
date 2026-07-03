@@ -105,11 +105,14 @@ class FileSharePointViewSet(AbstractSharePointViewSet):
         return django_response
 
 
-class SharePointSearchViewSet(AbstractSharePointViewSet):
-    """Base class for SharePoint Search API."""
+class SearchResponseMixin:
+    """Mixin with shared search pagination response logic.
 
-    serializer_class = SharePointSearchSerializer
-    selected_fields = None
+    Provides the ``total_rows`` attribute, helpers for filter/field
+    selection, and a ``_build_paginated_response`` method that wraps
+    serialized data with ``first``/``last``/``next``/``previous`` links.
+    """
+
     total_rows = None
 
     def get_filters(self, kwargs):
@@ -118,6 +121,44 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
 
     def get_selected(self, selected):
         return selected.split(",") if selected else self.serializer_class._declared_fields.keys()
+
+    def _get_page_size(self):
+        """Return the page size used for pagination metadata."""
+        return config.SHAREPOINT_PAGE_SIZE
+
+    def _build_paginated_response(self, request, response):
+        def get_link(page):
+            last_dict = request.query_params.copy()
+            if page == 0:
+                return None
+            if page == 1:
+                last_dict.pop("page", None)
+            else:
+                last_dict["page"] = str(page)
+            return request.build_absolute_uri("?") + "?" + urlencode(last_dict)
+
+        current_page = int(request.query_params.get("page", 1))
+        page_size = self._get_page_size()
+        last_offset = math.ceil(self.total_rows / page_size)
+        prev_offset = current_page - 1
+        next_offset = current_page + 1 if current_page < last_offset else 0
+
+        response.data = {
+            "first": get_link(1),
+            "last": get_link(last_offset),
+            "previous": get_link(prev_offset),
+            "next": get_link(next_offset),
+            "total_rows": self.total_rows,
+            "items": response.data,
+        }
+        return response
+
+
+class SharePointSearchViewSet(SearchResponseMixin, AbstractSharePointViewSet):
+    """Base class for SharePoint Search API."""
+
+    serializer_class = SharePointSearchSerializer
+    selected_fields = None
 
     def get_queryset(self, **kwargs):
         qp = self.request.query_params.dict()
@@ -146,31 +187,8 @@ class SharePointSearchViewSet(AbstractSharePointViewSet):
         return response
 
     def list(self, request, *args, **kwargs):
-        def get_link(page):
-            last_dict = request.query_params.copy()
-            if page == 0:
-                return None
-            if page == 1:
-                last_dict.pop("page", None)
-            elif page > 1:
-                last_dict["page"] = str(page)
-            return request.build_absolute_uri("?") + "?" + urlencode(last_dict)
-
         try:
             response = super().list(request, *args, **kwargs)
         except (ClientRequestException, GraphClientError) as e:
             return HttpResponseBadRequest(str(e))
-        current_page = int(self.request.query_params.get("page", 1))
-        last_offset = math.ceil(self.total_rows / config.SHAREPOINT_PAGE_SIZE)
-        prev_offset = current_page - 1
-        next_offset = current_page + 1 if current_page < last_offset else 0
-
-        response.data = {
-            "first": get_link(1),
-            "last": get_link(last_offset),
-            "previous": get_link(prev_offset),
-            "next": get_link(next_offset),
-            "total_rows": self.total_rows,
-            "items": response.data,
-        }
-        return response
+        return self._build_paginated_response(request, response)
