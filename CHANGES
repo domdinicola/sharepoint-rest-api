@@ -1,6 +1,32 @@
-Release 0.20 (in development)
+Release 0.21.4
+-----------------------------------------
+* Fix KQL operators, add search caching and read_list_items
+
+Release 0.21.3
+-----------------------------------------
+* Fix double ? in pagination links
+
+Release 0.21.2
+-----------------------------------------
+* Refactor Graph search view hierarchy and fix batch pagination
+
+Release 0.21.1
+-----------------------------------------
+* fixes for graph api
+
+Release 0.21.0
+-----------------------------------------
+* SharePoint: add certificate support
+
+Release 0.20.1
 -----------------------------------------
 * added support to python 3.14
+* updated actions
+
+Release 0.20.0
+-----------------------------------------
+* added graph api support
+* modernize: moved to hatch, ruff
 * added support to django 6.0
 
 Release 0.19
