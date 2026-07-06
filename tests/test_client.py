@@ -39,11 +39,10 @@ def sh_client(library, request, db):
 
 @pytest.fixture(scope="session", autouse=True)
 def mock_client():
-    patcher = mock.patch("office365.runtime.auth.authentication_context.AuthenticationContext")
-    my_mock = patcher.start()
-    my_mock.acquire_token.return_value = True
+    patcher = mock.patch("office365.runtime.auth.authentication_context.AuthenticationContext.authenticate_request")
+    patcher.start()
     yield
-    patcher.stop()  # not needed just for clarity
+    patcher.stop()
 
 
 @VCR.use_cassette(str(Path(__file__).parent / "vcr_cassettes/client/folders.yml"))

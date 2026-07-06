@@ -15,6 +15,7 @@ from sharepoint_rest_api.serializers.sharepoint import (
     SharePointSettingsSerializer,
     SharePointUrlSerializer,
 )
+from sharepoint_rest_api.graph_client import _get_scan_cache, _set_scan_cache
 from sharepoint_rest_api.utils import first_upper, get_cache_key
 
 
@@ -158,3 +159,24 @@ def test_kql_exclusion_filter():
 def test_get_cache_key_with_args():
     key = get_cache_key(("foo", "bar"), key1="val1")
     assert isinstance(key, int)
+
+
+# ---- graph_client.py _get_scan_cache coverage ----
+
+
+def test_scan_cache_hit():
+    _set_scan_cache("test_key", "cached_value")
+    assert _get_scan_cache("test_key") == "cached_value"
+
+
+def test_scan_cache_expired():
+    _set_scan_cache("expired_key", "stale", ttl=-1)
+    assert _get_scan_cache("expired_key") is None
+
+
+def test_scan_cache_eviction():
+    for i in range(500):
+        _set_scan_cache(f"stale_{i}", "stale", ttl=-1)
+    _set_scan_cache("fresh", "val", ttl=300)
+    assert _get_scan_cache("stale_0") is None
+    assert _get_scan_cache("fresh") == "val"
