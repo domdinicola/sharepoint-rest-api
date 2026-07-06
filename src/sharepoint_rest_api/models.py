@@ -86,3 +86,19 @@ class SharePointLibrary(TimeStampedModel):
     @property
     def library_url(self):
         return str(self.site.tenant) + quote(f"{self.site.site_type}/{self.site.name}/{self.name}")
+
+
+class SourceId(TimeStampedModel):
+    name = models.CharField(verbose_name=_("Name"), max_length=36)
+    source_id = models.CharField(verbose_name=_("Source ID"), max_length=36)
+    description = models.CharField(verbose_name=_("Description"), max_length=128, null=True, blank=True)
+    default_filters = models.JSONField(verbose_name=_("Default filters"), null=True, blank=True, default=dict)
+
+    def __str__(self):
+        return f"{self.name} | {self.source_id}"
+
+    class Meta:
+        app_label = "sharepoint_rest_api"
+        ordering = ["name"]
+        verbose_name = "Source ID"
+        verbose_name_plural = "Source IDs"

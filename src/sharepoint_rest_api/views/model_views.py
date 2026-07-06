@@ -7,11 +7,13 @@ from sharepoint_rest_api.models import (
     SharePointLibrary,
     SharePointSite,
     SharePointTenant,
+    SourceId,
 )
 from sharepoint_rest_api.serializers.model_serializers import (
     SharePointLibrarySerializer,
     SharePointSiteSerializer,
     SharePointTenantSerializer,
+    SourceIdSerializer,
 )
 
 
@@ -35,3 +37,10 @@ class SharePointLibraryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SharePointLibrarySerializer
     search_fields = ("name",)
     filterset_class = SharePointLibraryFilter
+
+
+class SourceIdViewSet(viewsets.ReadOnlyModelViewSet):
+    filter_backends = (SearchFilter, OrderingFilter)
+    queryset = SourceId.objects.all()
+    serializer_class = SourceIdSerializer
+    search_fields = ("name", "source_id")

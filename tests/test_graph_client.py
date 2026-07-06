@@ -178,6 +178,131 @@ def test_post_http_error(mock_cca, mock_post):
         client.post("https://graph.microsoft.com/v1.0/search/query", json={"query": "test"})
 
 
+# ---- get / post retries on 504 ----------------------------------------------------------------
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_retries_on_504_then_succeeds(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_response_504 = mock.MagicMock()
+    mock_response_504.status_code = 504
+    mock_response_200 = mock.MagicMock()
+    mock_response_200.status_code = 200
+    mock_get.side_effect = [mock_response_504, mock_response_200]
+
+    client = GraphClient()
+    response = client.get("https://graph.microsoft.com/v1.0/sites/root")
+
+    assert response == mock_response_200
+    assert mock_get.call_count == 2
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_retries_on_504_then_fails(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_response_504 = mock.MagicMock()
+    mock_response_504.status_code = 504
+    mock_response_504.raise_for_status.side_effect = requests.exceptions.HTTPError("504")
+    mock_get.return_value = mock_response_504
+
+    client = GraphClient()
+    with pytest.raises(GraphClientError, match="Graph GET request failed"):
+        client.get("https://graph.microsoft.com/v1.0/sites/root")
+
+    assert mock_get.call_count == 2  # default retries = 1
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_does_not_retry_on_non_504(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_response_500 = mock.MagicMock()
+    mock_response_500.status_code = 500
+    mock_response_500.raise_for_status.side_effect = requests.exceptions.HTTPError("500")
+    mock_get.return_value = mock_response_500
+
+    client = GraphClient()
+    with pytest.raises(GraphClientError, match="Graph GET request failed"):
+        client.get("https://graph.microsoft.com/v1.0/sites/root")
+
+    assert mock_get.call_count == 1
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_uses_configurable_retry_count(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_response_504 = mock.MagicMock()
+    mock_response_504.status_code = 504
+    mock_response_504.raise_for_status.side_effect = requests.exceptions.HTTPError("504")
+    mock_get.return_value = mock_response_504
+
+    client = GraphClient()
+    with mock.patch("sharepoint_rest_api.graph_client.config.GRAPH_API_RETRY_COUNT", 3):
+        with pytest.raises(GraphClientError, match="Graph GET request failed"):
+            client.get("https://graph.microsoft.com/v1.0/sites/root")
+
+    assert mock_get.call_count == 4  # initial + 3 retries
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.post")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_post_retries_on_504_then_succeeds(mock_cca, mock_post):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_response_504 = mock.MagicMock()
+    mock_response_504.status_code = 504
+    mock_response_200 = mock.MagicMock()
+    mock_response_200.status_code = 200
+    mock_post.side_effect = [mock_response_504, mock_response_200]
+
+    client = GraphClient()
+    response = client.post("https://graph.microsoft.com/v1.0/search/query", json={"query": "test"})
+
+    assert response == mock_response_200
+    assert mock_post.call_count == 2
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.post")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_post_retries_on_504_then_fails(mock_cca, mock_post):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_response_504 = mock.MagicMock()
+    mock_response_504.status_code = 504
+    mock_response_504.raise_for_status.side_effect = requests.exceptions.HTTPError("504")
+    mock_post.return_value = mock_response_504
+
+    client = GraphClient()
+    with pytest.raises(GraphClientError, match="Graph POST request failed"):
+        client.post("https://graph.microsoft.com/v1.0/search/query", json={"query": "test"})
+
+    assert mock_post.call_count == 2
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.post")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_post_does_not_retry_on_non_504(mock_cca, mock_post):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_response_400 = mock.MagicMock()
+    mock_response_400.status_code = 400
+    mock_response_400.raise_for_status.side_effect = requests.exceptions.HTTPError("400")
+    mock_post.return_value = mock_response_400
+
+    client = GraphClient()
+    with pytest.raises(GraphClientError, match="Graph POST request failed"):
+        client.post("https://graph.microsoft.com/v1.0/search/query", json={"query": "test"})
+
+    assert mock_post.call_count == 1
+
+
 # ---- _get_site_id / site_id ---------------------------------------------------
 
 

@@ -5,6 +5,7 @@ from sharepoint_rest_api.views.model_views import (
     SharePointLibraryViewSet,
     SharePointSiteViewSet,
     SharePointTenantViewSet,
+    SourceIdViewSet,
 )
 from sharepoint_rest_api.views.graph_based import GraphBasedSearchViewSet
 from sharepoint_rest_api.views.settings_based import (
@@ -27,6 +28,7 @@ router = routers.DefaultRouter()
 router.register(r"tenants", SharePointTenantViewSet, basename="sharepoint-tenant")
 router.register(r"sites", SharePointSiteViewSet, basename="sharepoint-site")
 router.register(r"libraries", SharePointLibraryViewSet, basename="sharepoint-library")
+router.register(r"source_ids", SourceIdViewSet, basename="sharepoint-source-id")
 
 # url based
 router.register(r"sharepoint/upload", UploadViewSet, basename="upload")
