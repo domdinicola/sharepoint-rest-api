@@ -6,8 +6,12 @@ from rest_framework.test import APIClient
 
 import pytest
 
-from sharepoint_rest_api.graph_client import _scan_cache
-from tests.factories import UserFactory
+# Must be set before any import that triggers config.py (e.g. graph_client),
+# because SHAREPOINT_CONNECTION is evaluated at module load time.
+os.environ.setdefault("SHAREPOINT_CONNECTION", "user")
+
+from sharepoint_rest_api.graph_client import _scan_cache  # noqa: E402
+from tests.factories import UserFactory  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
@@ -26,7 +30,6 @@ def _mock_sharepoint_auth():
 def pytest_configure(config):
     # enable this to remove deprecations
     os.environ["CELERY_TASK_ALWAYS_EAGER"] = "1"
-    os.environ["SHAREPOINT_CONNECTION"] = "user"
     os.environ["STATIC_ROOT"] = tempfile.gettempdir()
 
 
