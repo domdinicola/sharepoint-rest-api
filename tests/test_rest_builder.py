@@ -47,6 +47,31 @@ def test_kql_clause_unknown_operator():
     assert result == ['Donor:"val"']
 
 
+def test_kql_clause_gte():
+    result = RestBuilder.build_kql_clause("Size__gte", "1000")
+    assert result == ["Size>=1000"]
+
+
+def test_kql_clause_gt():
+    result = RestBuilder.build_kql_clause("Size__gt", "1000")
+    assert result == ["Size>1000"]
+
+
+def test_kql_clause_lte():
+    result = RestBuilder.build_kql_clause("Size__lte", "1000")
+    assert result == ["Size<=1000"]
+
+
+def test_kql_clause_lt():
+    result = RestBuilder.build_kql_clause("Size__lt", "1000")
+    assert result == ["Size<1000"]
+
+
+def test_kql_clause_between():
+    result = RestBuilder.build_kql_clause("Size__between", "1000__5000")
+    assert result == ["Size:1000..5000"]
+
+
 # ---- build_kql ---------------------------------------------------------------
 
 
@@ -100,9 +125,29 @@ def test_kql_multiple_filters():
     assert " AND " in result
 
 
-def test_kql_gte_falls_back_to_eq():
+def test_kql_gte():
     result = RestBuilder.build_kql(filters={"Size__gte": "1000"})
-    assert result == 'Size:"1000"'
+    assert result == "Size>=1000"
+
+
+def test_kql_gt():
+    result = RestBuilder.build_kql(filters={"Size__gt": "1000"})
+    assert result == "Size>1000"
+
+
+def test_kql_lte():
+    result = RestBuilder.build_kql(filters={"Size__lte": "1000"})
+    assert result == "Size<=1000"
+
+
+def test_kql_lt():
+    result = RestBuilder.build_kql(filters={"Size__lt": "1000"})
+    assert result == "Size<1000"
+
+
+def test_kql_between():
+    result = RestBuilder.build_kql(filters={"Size__between": "1000__5000"})
+    assert result == "Size:1000..5000"
 
 
 # ---- build_search_request_body -----------------------------------------------

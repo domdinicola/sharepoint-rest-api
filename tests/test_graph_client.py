@@ -284,9 +284,9 @@ def test_kql_multiple_filters():
     assert " AND " in result
 
 
-def test_kql_gte_falls_back_to_eq():
+def test_kql_gte():
     result = RestBuilder.build_kql(filters={"Size__gte": "1000"})
-    assert result == 'Size:"1000"'
+    assert result == "Size>=1000"
 
 
 # ---- _matches_post_filters ---------------------------------------------------
@@ -1302,92 +1302,73 @@ def test_search_with_post_filters(mock_cca, mock_post):
         filters={"ReportStatus": "Final"},
         searchable_properties=set(),
     )
-    assert total == 2
+    assert total == 3
     assert len(items) == 2
 
 
 @mock.patch("sharepoint_rest_api.graph_client.requests.post")
 @mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
-def test_search_with_post_filters_scans_pages(mock_cca, mock_post):
+def test_search_with_post_filters_single_page(mock_cca, mock_post):
     mock_app = mock_cca.return_value
     mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
 
-    responses = [
-        {
-            "value": [
-                {
-                    "hitsContainers": [
-                        {
-                            "total": 2,
-                            "hits": [
-                                {
-                                    "hitId": "hit1",
-                                    "rank": 1,
-                                    "resource": {
-                                        "id": "doc1",
-                                        "name": "doc1.pdf",
-                                        "webUrl": "https://sharepoint.com/site/doc1",
-                                        "size": 512,
-                                        "lastModifiedDateTime": "2024-01-01T00:00:00Z",
-                                        "listItem": {"fields": {"ReportStatus": "Final"}},
-                                        "parentReference": {
-                                            "siteId": "s1",
-                                            "sharepointIds": {"listId": "l1", "listItemId": "i1"},
-                                        },
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {
+        "value": [
+            {
+                "hitsContainers": [
+                    {
+                        "total": 3,
+                        "hits": [
+                            {
+                                "hitId": "hit1",
+                                "rank": 1,
+                                "resource": {
+                                    "id": "doc1",
+                                    "name": "doc1.pdf",
+                                    "webUrl": "https://sharepoint.com/site/doc1",
+                                    "size": 512,
+                                    "lastModifiedDateTime": "2024-01-01T00:00:00Z",
+                                    "listItem": {"fields": {"ReportStatus": "Final"}},
+                                    "parentReference": {
+                                        "siteId": "s1",
+                                        "sharepointIds": {"listId": "l1", "listItemId": "i1"},
                                     },
-                                }
-                            ],
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "value": [
-                {
-                    "hitsContainers": [
-                        {
-                            "total": 2,
-                            "hits": [
-                                {
-                                    "hitId": "hit_extra",
-                                    "rank": 1,
-                                    "resource": {
-                                        "id": "doc_extra",
-                                        "name": "doc_extra.pdf",
-                                        "webUrl": "https://sharepoint.com/site/doc_extra",
-                                        "size": 512,
-                                        "lastModifiedDateTime": "2024-01-01T00:00:00Z",
-                                        "listItem": {"fields": {"ReportStatus": "Final"}},
-                                        "parentReference": {
-                                            "siteId": "s1",
-                                            "sharepointIds": {"listId": "l1", "listItemId": "i_extra"},
-                                        },
+                                },
+                            },
+                            {
+                                "hitId": "hit2",
+                                "rank": 2,
+                                "resource": {
+                                    "id": "doc2",
+                                    "name": "doc2.pdf",
+                                    "webUrl": "https://sharepoint.com/site/doc2",
+                                    "size": 512,
+                                    "lastModifiedDateTime": "2024-01-01T00:00:00Z",
+                                    "listItem": {"fields": {"ReportStatus": "Draft"}},
+                                    "parentReference": {
+                                        "siteId": "s1",
+                                        "sharepointIds": {"listId": "l1", "listItemId": "i2"},
                                     },
-                                }
-                            ],
-                        }
-                    ]
-                }
-            ]
-        },
-    ]
-
-    mock_resp1 = mock.MagicMock()
-    mock_resp1.json.return_value = responses[0]
-    mock_resp2 = mock.MagicMock()
-    mock_resp2.json.return_value = responses[1]
-    mock_post.side_effect = [mock_resp1, mock_resp2]
+                                },
+                            },
+                        ],
+                    }
+                ]
+            }
+        ]
+    }
+    mock_post.return_value = mock_resp
 
     client = GraphClient()
     with mock.patch.object(GraphClient, "_fetch_item_fields"):
-        with mock.patch("sharepoint_rest_api.graph_client.config.GRAPH_PAGE_SIZE", 1):
-            items, total = client.search(
-                page=1,
-                filters={"ReportStatus": "Final"},
-                searchable_properties=set(),
-            )
+        items, total = client.search(
+            filters={"ReportStatus": "Final"},
+            searchable_properties=set(),
+        )
+    assert total == 3
     assert len(items) == 1
+    assert items[0]["DocId"] == "doc1"
 
 
 @mock.patch("sharepoint_rest_api.graph_client.requests.post")
@@ -1430,54 +1411,7 @@ def test_search_with_pagination(mock_cca, mock_post):
 
 @mock.patch("sharepoint_rest_api.graph_client.requests.post")
 @mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
-def test_search_stops_when_enough_items(mock_cca, mock_post):
-    mock_app = mock_cca.return_value
-    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
-
-    def side_effect(*args, **kwargs):
-        mock_resp = mock.MagicMock()
-        mock_resp.json.return_value = {
-            "value": [
-                {
-                    "hitsContainers": [
-                        {
-                            "total": 50,
-                            "hits": [
-                                {
-                                    "hitId": "hit",
-                                    "rank": 1,
-                                    "resource": {
-                                        "id": "doc",
-                                        "name": "doc.pdf",
-                                        "webUrl": "https://sharepoint.com/site/doc",
-                                        "size": 512,
-                                        "lastModifiedDateTime": "2024-01-01T00:00:00Z",
-                                        "listItem": {"fields": {"ReportStatus": "Final"}},
-                                    },
-                                }
-                                for _ in range(10)
-                            ],
-                        }
-                    ]
-                }
-            ]
-        }
-        return mock_resp
-
-    mock_post.side_effect = side_effect
-
-    client = GraphClient()
-    with mock.patch.object(GraphClient, "_fetch_item_fields"):
-        items, total = client.search(
-            filters={"ReportStatus": "Final"},
-            searchable_properties=set(),
-        )
-    assert len(items) > 0
-
-
-@mock.patch("sharepoint_rest_api.graph_client.requests.post")
-@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
-def test_search_loop_exhausts_with_post_filters(mock_cca, mock_post):
+def test_search_post_filters_no_match(mock_cca, mock_post):
     mock_app = mock_cca.return_value
     mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
 
@@ -1487,7 +1421,51 @@ def test_search_loop_exhausts_with_post_filters(mock_cca, mock_post):
             {
                 "hitsContainers": [
                     {
-                        "total": 50,
+                        "total": 2,
+                        "hits": [
+                            {
+                                "hitId": "hit1",
+                                "rank": 1,
+                                "resource": {
+                                    "id": "doc1",
+                                    "name": "doc1.pdf",
+                                    "webUrl": "https://sharepoint.com/site/doc1",
+                                    "size": 512,
+                                    "lastModifiedDateTime": "2024-01-01T00:00:00Z",
+                                    "listItem": {"fields": {"ReportStatus": "Draft"}},
+                                },
+                            },
+                        ],
+                    }
+                ]
+            }
+        ]
+    }
+    mock_post.return_value = mock_resp
+
+    client = GraphClient()
+    with mock.patch.object(GraphClient, "_fetch_item_fields"):
+        items, total = client.search(
+            filters={"ReportStatus": "Final"},
+            searchable_properties=set(),
+        )
+    assert total == 2
+    assert len(items) == 0
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.post")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_search_with_custom_page_size(mock_cca, mock_post):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {
+        "value": [
+            {
+                "hitsContainers": [
+                    {
+                        "total": 2,
                         "hits": [
                             {
                                 "hitId": f"hit{i}",
@@ -1498,7 +1476,6 @@ def test_search_loop_exhausts_with_post_filters(mock_cca, mock_post):
                                     "webUrl": f"https://sharepoint.com/site/doc{i}",
                                     "size": 512,
                                     "lastModifiedDateTime": "2024-01-01T00:00:00Z",
-                                    "listItem": {"fields": {"ReportStatus": "Final"}},
                                 },
                             }
                             for i in range(2)
@@ -1511,18 +1488,16 @@ def test_search_loop_exhausts_with_post_filters(mock_cca, mock_post):
     mock_post.return_value = mock_resp
 
     client = GraphClient()
-    with mock.patch.object(GraphClient, "_fetch_item_fields"):
-        with mock.patch("sharepoint_rest_api.graph_client.config.GRAPH_PAGE_SIZE", 3):
-            items, total = client.search(
-                filters={"ReportStatus": "Final"},
-                searchable_properties=set(),
-            )
-    assert len(items) == 3
+    items, total = client.search(page_size=10)
+    assert total == 2
+    assert len(items) == 2
+    body = mock_post.call_args[1]["json"]
+    assert body["requests"][0]["size"] == 10
 
 
 @mock.patch("sharepoint_rest_api.graph_client.requests.post")
 @mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
-def test_search_loop_exhausts_all_pages(mock_cca, mock_post):
+def test_search_default_page_size(mock_cca, mock_post):
     mock_app = mock_cca.return_value
     mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
 
@@ -1532,22 +1507,8 @@ def test_search_loop_exhausts_all_pages(mock_cca, mock_post):
             {
                 "hitsContainers": [
                     {
-                        "total": 200,
-                        "hits": [
-                            {
-                                "hitId": f"hit{i}",
-                                "rank": i,
-                                "resource": {
-                                    "id": f"doc{i}",
-                                    "name": f"doc{i}.pdf",
-                                    "webUrl": f"https://sharepoint.com/site/doc{i}",
-                                    "size": 512,
-                                    "lastModifiedDateTime": "2024-01-01T00:00:00Z",
-                                    "listItem": {"fields": {"ReportStatus": "Final"}},
-                                },
-                            }
-                            for i in range(1)
-                        ],
+                        "total": 0,
+                        "hits": [],
                     }
                 ]
             }
@@ -1556,13 +1517,10 @@ def test_search_loop_exhausts_all_pages(mock_cca, mock_post):
     mock_post.return_value = mock_resp
 
     client = GraphClient()
-    with mock.patch.object(GraphClient, "_fetch_item_fields"):
-        with mock.patch("sharepoint_rest_api.graph_client.config.GRAPH_PAGE_SIZE", 25):
-            items, total = client.search(
-                filters={"ReportStatus": "Final"},
-                searchable_properties=set(),
-            )
-    assert len(items) == 5
+    with mock.patch("sharepoint_rest_api.graph_client.config.GRAPH_PAGE_SIZE", 20):
+        client.search()
+    body = mock_post.call_args[1]["json"]
+    assert body["requests"][0]["size"] == 20
 
 
 @mock.patch("sharepoint_rest_api.graph_client.requests.post")

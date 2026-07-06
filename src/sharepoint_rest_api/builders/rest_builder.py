@@ -32,25 +32,32 @@ class RestBuilder:
             "not": "<>",
             "contains": ":",
             "eq": ":",
-            "gte": ">=..",
-            "gt": ">..",
-            "lte": "..<=",
-            "lt": "..<",
-            "between": "..",
+            "gte": ">=",
+            "gt": ">",
+            "lte": "<=",
+            "lt": "<",
+            "between": ":",
         }
         kql_op = kql_op_map.get(operator_key, ":")
         values = [v.strip() for v in filter_value.split(",")]
 
         if operator_key == "not_in":
-            return [f'-"{v}"' for v in values]
-        if operator_key == "contains":
-            return [f'{raw_name}:"{values[0]}*"']
-        if kql_op == "<>":
-            return [f'{raw_name}<>"{values[0]}"']
-        if len(values) == 1:
-            return [f'{raw_name}:"{values[0]}"']
-        or_parts = [f'"{v}"' for v in values]
-        return [f"{raw_name}:({' OR '.join(or_parts)})"]
+            result = [f'-"{v}"' for v in values]
+        elif operator_key == "contains":
+            result = [f'{raw_name}:"{values[0]}*"']
+        elif kql_op == "<>":
+            result = [f'{raw_name}<>"{values[0]}"']
+        elif operator_key in ("gte", "gt", "lte", "lt"):
+            result = [f"{raw_name}{kql_op}{values[0]}"]
+        elif operator_key == "between":
+            range_parts = filter_value.split("__")
+            result = [f"{raw_name}:{range_parts[0]}..{range_parts[-1]}"]
+        elif len(values) == 1:
+            result = [f'{raw_name}:"{values[0]}"']
+        else:
+            or_parts = [f'"{v}"' for v in values]
+            result = [f"{raw_name}:({' OR '.join(or_parts)})"]
+        return result
 
     @staticmethod
     def build_kql(search=None, filters=None):

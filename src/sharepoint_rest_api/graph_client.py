@@ -1,4 +1,7 @@
+import hashlib
+import json
 import logging
+import time
 from urllib.parse import quote
 
 import requests
@@ -12,6 +15,26 @@ from sharepoint_rest_api.builders.rest_builder import (
 )
 
 logger = logging.getLogger(__name__)
+
+_scan_cache = {}
+
+
+def _get_scan_cache(key):
+    entry = _scan_cache.get(key)
+    if entry is not None and time.time() < entry["expires"]:
+        return entry["value"]
+    if entry is not None:
+        del _scan_cache[key]
+    return None
+
+
+def _set_scan_cache(key, value, ttl=300):
+    _scan_cache[key] = {"value": value, "expires": time.time() + ttl}
+    if len(_scan_cache) > 500:
+        now = time.time()
+        stale = [k for k, v in _scan_cache.items() if now >= v["expires"]]
+        for k in stale:
+            del _scan_cache[k]
 
 
 class GraphClientError(Exception):
@@ -343,40 +366,58 @@ class GraphClient:
         return items, total_rows
 
     def _execute_paginated_search(self, kql, page, page_size, post_filters, reverse_map):
+        if not post_filters:
+            start_row = (page - 1) * page_size
+            items, total_rows = self._execute_search_page(kql, start_row, page_size, reverse_map=reverse_map)
+            logger.info(f"Graph Search API: {total_rows} total, returned {len(items)} for page {page}")
+            return items, total_rows
+
+        # Cache scan results in-process so every page sees the same pool
+        # regardless of Django's cache backend.
+        scan_key = hashlib.md5(
+            json.dumps(
+                {
+                    "kql": kql,
+                    "post_filters": dict(sorted(post_filters.items())),
+                    "page_size": page_size,
+                },
+                sort_keys=True,
+            ).encode(),
+            usedforsecurity=False,
+        ).hexdigest()
+
+        all_items = _get_scan_cache(scan_key)
+        if all_items is None:
+            all_items = self._scan_all_post_filtered(kql, page_size, post_filters, reverse_map)
+            _set_scan_cache(scan_key, all_items)
+
+        total_rows = len(all_items)
+        offset = (page - 1) * page_size
+        items = all_items[offset : offset + page_size]
+
+        logger.info(f"Graph Search API: {total_rows} total, returned {len(items)} for page {page}")
+        return items, total_rows
+
+    def _scan_all_post_filtered(self, kql, page_size, post_filters, reverse_map):
+        """Scan ahead and return ALL post-filtered items (no page slicing)."""
         all_items = []
-        total_rows = 0
-        max_scanned = 5 if post_filters else 1
-        pages_scanned = 0
+        max_scanned = 5
 
         for scan_offset in range(max_scanned):
-            pages_scanned = scan_offset + 1
-            start_row = (page - 1 + scan_offset) * page_size
+            start_row = scan_offset * page_size
             page_items, page_total = self._execute_search_page(kql, start_row, page_size, reverse_map=reverse_map)
-            if scan_offset == 0:
-                total_rows = page_total
 
-            if post_filters:
-                page_items = [
-                    it for it in page_items if self._matches_post_filters(it, post_filters, reverse_map=reverse_map)
-                ]
-
+            page_items = [
+                it for it in page_items if self._matches_post_filters(it, post_filters, reverse_map=reverse_map)
+            ]
             all_items.extend(page_items)
 
-            if len(all_items) >= page_size:
-                break
             if page_total == 0:
                 break
-            if not post_filters and len(page_items) < page_size:
-                break
-            if total_rows > 0 and start_row + page_size >= total_rows:
+            if start_row + page_size >= page_total:
                 break
 
-        items = all_items[:page_size]
-        if post_filters:
-            total_rows = len(all_items)
-
-        logger.info(f"Graph Search API: {total_rows} total, returned {len(items)} (scanned {pages_scanned} pages)")
-        return items, total_rows
+        return all_items
 
     def search(
         self,
@@ -384,7 +425,6 @@ class GraphClient:
         filters=None,
         page=1,
         searchable_properties=None,
-        reverse_map=None,
         **kwargs,
     ):
         """Search SharePoint content using the Microsoft Graph Search API.
@@ -403,12 +443,16 @@ class GraphClient:
                      searchable via KQL. Properties NOT in this set are
                      excluded from KQL and applied as post-filters after batch
                      enrichment. If None, all properties are treated as post-filters.
-            reverse_map: Dict mapping managed property names -> serializer
-                     field names (e.g. {'DonorCode': 'DRPDonorCode'}) for
-                     enrichment reverse-mapping.
             **kwargs: Extra keyword arguments for API compatibility.
+                      Accepted kwargs:
+                      - reverse_map: Dict mapping managed property names ->
+                        serializer field names for enrichment reverse-mapping.
+                      - page_size: Number of items per page. Defaults to
+                        config.GRAPH_PAGE_SIZE.
 
         """
+        reverse_map = kwargs.pop("reverse_map", None)
+        page_size = kwargs.pop("page_size", None) or config.GRAPH_PAGE_SIZE
         searchable_filters = {}
         post_filters = {}
         if filters:
@@ -420,4 +464,25 @@ class GraphClient:
                     post_filters[name] = value
 
         kql = RestBuilder.build_kql(search=search, filters=searchable_filters)
-        return self._execute_paginated_search(kql, page, config.GRAPH_PAGE_SIZE, post_filters, reverse_map)
+        return self._execute_paginated_search(kql, page, page_size, post_filters, reverse_map)
+
+    def read_list_items(self, list_name):
+        """Read all items from a SharePoint list via Graph API.
+
+        Uses pagination to fetch all items from the specified list.
+        Returns a list of item dicts (including expanded field values).
+
+        Args:
+            list_name: Display name of the SharePoint list.
+
+        """
+        items = []
+        site_path = quote(self.site_id, safe="")
+        list_path = quote(list_name, safe="")
+        url = f"{GRAPH_URL}/sites/{site_path}/lists/{list_path}/items?expand=fields&$top=500"
+        while url:
+            response = self.get(url)
+            data = response.json()
+            items.extend(data.get("value", []))
+            url = data.get("@odata.nextLink")
+        return items
