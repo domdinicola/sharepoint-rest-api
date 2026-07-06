@@ -1,5 +1,6 @@
 import os
 import tempfile
+from unittest import mock
 
 from rest_framework.test import APIClient
 
@@ -12,6 +13,14 @@ from tests.factories import UserFactory
 @pytest.fixture(autouse=True)
 def _clear_scan_cache():
     _scan_cache.clear()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _mock_sharepoint_auth():
+    patcher = mock.patch("office365.runtime.auth.authentication_context.AuthenticationContext.authenticate_request")
+    patcher.start()
+    yield
+    patcher.stop()
 
 
 def pytest_configure(config):
