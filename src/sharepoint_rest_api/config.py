@@ -27,3 +27,4 @@ GRAPH_CLIENT_SECRET = env_or_settings("GRAPH_CLIENT_SECRET", "invalid_graph_clie
 GRAPH_TENANT = env_or_settings("GRAPH_TENANT", "")
 GRAPH_REGION = env_or_settings("GRAPH_REGION", "US")
 GRAPH_PAGE_SIZE = int(env_or_settings("GRAPH_PAGE_SIZE", 25))
+GRAPH_API_RETRY_COUNT = int(env_or_settings("GRAPH_API_RETRY_COUNT", 1))

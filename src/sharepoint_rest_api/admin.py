@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import SharePointLibrary, SharePointSite, SharePointTenant
+from .models import SharePointLibrary, SharePointSite, SharePointTenant, SourceId
 
 
 @admin.register(SharePointTenant)
@@ -36,3 +36,9 @@ class DocumentLibraryAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     list_display = ("name", "site", "active", "public")
     list_filter = ("active", "public")
+
+
+@admin.register(SourceId)
+class SourceIdAdmin(admin.ModelAdmin):
+    search_fields = ("name", "source_id")
+    list_display = ("name", "source_id", "description")

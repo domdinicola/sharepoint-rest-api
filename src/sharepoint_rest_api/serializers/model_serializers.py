@@ -6,6 +6,7 @@ from sharepoint_rest_api.models import (
     SharePointLibrary,
     SharePointSite,
     SharePointTenant,
+    SourceId,
 )
 
 
@@ -45,3 +46,9 @@ class SharePointLibrarySerializer(serializers.ModelSerializer):
     class Meta:
         model = SharePointLibrary
         fields = ("name", "site_name", "active", "library_url", "api_url")
+
+
+class SourceIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SourceId
+        fields = ("name", "source_id", "description", "default_filters")

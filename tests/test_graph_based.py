@@ -6,6 +6,7 @@ import pytest
 from rest_framework.response import Response
 
 from sharepoint_rest_api.graph_client import GraphClientError
+from sharepoint_rest_api.models import SourceId
 from sharepoint_rest_api.views.graph_based import GraphBasedSearchViewSet
 from rest_framework.exceptions import PermissionDenied
 
@@ -92,3 +93,122 @@ def test_get_page_size():
     viewset, _ = _make_viewset()
     result = viewset._get_page_size()
     assert result == 25
+
+
+def test_apply_source_id_filters_no_source_id():
+    viewset, _ = _make_viewset()
+    qp = {"search": "test"}
+    viewset._apply_source_id_filters(qp)
+    assert qp == {"search": "test"}
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.SourceId.objects")
+def test_apply_source_id_filters_not_found(mock_objects):
+    mock_objects.get.side_effect = SourceId.DoesNotExist
+    viewset, _ = _make_viewset()
+    qp = {"source_id": "nonexistent"}
+    viewset._apply_source_id_filters(qp)
+    assert qp == {"source_id": "nonexistent", "order_by": "-LastModifiedTime"}
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.SourceId")
+def test_apply_source_id_filters_with_default_filters(mock_source_id):
+    mock_source_id.objects.get.return_value.default_filters = {
+        "filters": {"Donor": "Red Cross"},
+    }
+    mock_source_id.objects.get.return_value.search_kql = ""
+    mock_source_id.objects.get.return_value.exclude_paths = []
+    mock_source_id.objects.get.return_value.order_by = None
+    viewset, _ = _make_viewset()
+    qp = {"source_id": "src1"}
+    viewset._apply_source_id_filters(qp)
+    assert qp.get("Donor") == "Red Cross"
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.SourceId")
+def test_apply_source_id_filters_does_not_overwrite(mock_source_id):
+    mock_source_id.objects.get.return_value.default_filters = {
+        "filters": {"Donor": "Red Cross"},
+    }
+    mock_source_id.objects.get.return_value.search_kql = ""
+    mock_source_id.objects.get.return_value.exclude_paths = []
+    mock_source_id.objects.get.return_value.order_by = None
+    viewset, _ = _make_viewset()
+    qp = {"source_id": "src1", "Donor": "Existing"}
+    viewset._apply_source_id_filters(qp)
+    assert qp.get("Donor") == "Existing"
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.SourceId")
+def test_apply_source_id_filters_search_kql_without_existing(mock_source_id):
+    mock_source_id.objects.get.return_value.default_filters = {
+        "search_kql": "Donor:Red Cross",
+    }
+    mock_source_id.objects.get.return_value.filters = {}
+    mock_source_id.objects.get.return_value.exclude_paths = []
+    mock_source_id.objects.get.return_value.order_by = None
+    viewset, _ = _make_viewset()
+    qp = {"source_id": "src1"}
+    viewset._apply_source_id_filters(qp)
+    assert qp.get("search") == "Donor:Red Cross"
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.SourceId")
+def test_apply_source_id_filters_search_kql_with_existing(mock_source_id):
+    mock_source_id.objects.get.return_value.default_filters = {
+        "search_kql": "Donor:Red Cross",
+    }
+    mock_source_id.objects.get.return_value.filters = {}
+    mock_source_id.objects.get.return_value.exclude_paths = []
+    mock_source_id.objects.get.return_value.order_by = None
+    viewset, _ = _make_viewset()
+    qp = {"source_id": "src1", "search": "ReportStatus:Final"}
+    viewset._apply_source_id_filters(qp)
+    assert qp.get("search") == "(Donor:Red Cross) AND (ReportStatus:Final)"
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.SourceId")
+def test_apply_source_id_filters_exclude_paths(mock_source_id):
+    mock_source_id.objects.get.return_value.default_filters = {
+        "exclude_paths": ["/archive", "/old"],
+    }
+    mock_source_id.objects.get.return_value.filters = {}
+    mock_source_id.objects.get.return_value.search_kql = ""
+    mock_source_id.objects.get.return_value.order_by = None
+    viewset, _ = _make_viewset()
+    qp = {"source_id": "src1"}
+    viewset._apply_source_id_filters(qp)
+    assert '-Path:"/archive"' in qp["search"]
+    assert '-Path:"/old"' in qp["search"]
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.SourceId")
+def test_apply_source_id_filters_order_by(mock_source_id):
+    mock_source_id.objects.get.return_value.default_filters = {
+        "order_by": "Size desc",
+    }
+    mock_source_id.objects.get.return_value.filters = {}
+    mock_source_id.objects.get.return_value.search_kql = ""
+    mock_source_id.objects.get.return_value.exclude_paths = []
+    viewset, _ = _make_viewset()
+    qp = {"source_id": "src1"}
+    viewset._apply_source_id_filters(qp)
+    assert qp.get("order_by") == "Size desc"
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.SourceId")
+def test_apply_source_id_filters_default_order_by(mock_source_id):
+    mock_source_id.objects.get.return_value.default_filters = {}
+    viewset, _ = _make_viewset()
+    qp = {"source_id": "src1"}
+    viewset._apply_source_id_filters(qp)
+    assert qp.get("order_by") == "-LastModifiedTime"
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.SourceId")
+def test_apply_source_id_filters_existing_order_by_not_overridden(mock_source_id):
+    mock_source_id.objects.get.return_value.default_filters = {}
+    viewset, _ = _make_viewset()
+    qp = {"source_id": "src1", "order_by": "Size"}
+    viewset._apply_source_id_filters(qp)
+    assert qp.get("order_by") == "Size"

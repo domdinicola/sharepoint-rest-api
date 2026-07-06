@@ -92,20 +92,32 @@ class GraphClient:
     # ---- HTTP -----------------------------------------------------------------
 
     def get(self, url, timeout=120):
-        try:
-            response = requests.get(url, headers=self.headers, timeout=timeout)
-            response.raise_for_status()
-        except requests.RequestException as e:
-            raise GraphClientError(f"Graph GET request failed: {e}")
-        return response
+        retries = config.GRAPH_API_RETRY_COUNT
+        for attempt in range(retries + 1):
+            try:
+                response = requests.get(url, headers=self.headers, timeout=timeout)
+                if response.status_code == 504 and attempt < retries:
+                    logger.warning("Graph GET returned 504, retrying (%d/%d)", attempt + 1, retries)
+                    continue
+                response.raise_for_status()
+                return response
+            except requests.RequestException as e:
+                raise GraphClientError(f"Graph GET request failed: {e}")
+        raise GraphClientError("Graph GET request failed after all retries")  # pragma: no cover
 
     def post(self, url, json=None, timeout=60):
-        try:
-            response = requests.post(url, headers=self.headers, json=json, timeout=timeout)
-            response.raise_for_status()
-        except requests.RequestException as e:
-            raise GraphClientError(f"Graph POST request failed: {e}")
-        return response
+        retries = config.GRAPH_API_RETRY_COUNT
+        for attempt in range(retries + 1):
+            try:
+                response = requests.post(url, headers=self.headers, json=json, timeout=timeout)
+                if response.status_code == 504 and attempt < retries:
+                    logger.warning("Graph POST returned 504, retrying (%d/%d)", attempt + 1, retries)
+                    continue
+                response.raise_for_status()
+                return response
+            except requests.RequestException as e:
+                raise GraphClientError(f"Graph POST request failed: {e}")
+        raise GraphClientError("Graph POST request failed after all retries")  # pragma: no cover
 
     # ---- Site ID --------------------------------------------------------------
 
