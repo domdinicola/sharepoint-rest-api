@@ -4,7 +4,12 @@ import pytest
 import requests
 
 from sharepoint_rest_api.builders.rest_builder import RestBuilder
-from sharepoint_rest_api.graph_client import GraphClient, GraphClientError, GRAPH_URL
+from sharepoint_rest_api.graph_client import GraphClient, GraphClientError, GRAPH_URL, _scan_cache
+
+
+@pytest.fixture(autouse=True)
+def _clear_scan_cache():
+    _scan_cache.clear()
 
 
 # ---- __init__ ----------------------------------------------------------------

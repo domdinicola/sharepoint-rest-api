@@ -386,12 +386,14 @@ class GraphClient:
             usedforsecurity=False,
         ).hexdigest()
 
-        all_items = _get_scan_cache(scan_key)
-        if all_items is None:
-            all_items = self._scan_all_post_filtered(kql, page_size, post_filters, reverse_map)
-            _set_scan_cache(scan_key, all_items)
+        cached = _get_scan_cache(scan_key)
+        if cached is not None:
+            all_items, scan_total = cached
+        else:
+            all_items, scan_total = self._scan_all_post_filtered(kql, page_size, post_filters, reverse_map)
+            _set_scan_cache(scan_key, (all_items, scan_total))
 
-        total_rows = len(all_items)
+        total_rows = scan_total
         offset = (page - 1) * page_size
         items = all_items[offset : offset + page_size]
 
@@ -399,13 +401,17 @@ class GraphClient:
         return items, total_rows
 
     def _scan_all_post_filtered(self, kql, page_size, post_filters, reverse_map):
-        """Scan ahead and return ALL post-filtered items (no page slicing)."""
+        """Scan ahead and return (all_filtered_items, raw_total)."""
         all_items = []
+        raw_total = 0
         max_scanned = 5
 
         for scan_offset in range(max_scanned):
             start_row = scan_offset * page_size
             page_items, page_total = self._execute_search_page(kql, start_row, page_size, reverse_map=reverse_map)
+
+            if scan_offset == 0:
+                raw_total = page_total
 
             page_items = [
                 it for it in page_items if self._matches_post_filters(it, post_filters, reverse_map=reverse_map)
@@ -417,7 +423,7 @@ class GraphClient:
             if start_row + page_size >= page_total:
                 break
 
-        return all_items
+        return all_items, raw_total
 
     def search(
         self,
