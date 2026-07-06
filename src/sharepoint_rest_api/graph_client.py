@@ -103,7 +103,7 @@ class GraphClient:
                 return response
             except requests.RequestException as e:
                 raise GraphClientError(f"Graph GET request failed: {e}")
-        raise GraphClientError("Graph GET request failed after all retries")
+        raise GraphClientError("Graph GET request failed after all retries")  # pragma: no cover
 
     def post(self, url, json=None, timeout=60):
         retries = config.GRAPH_API_RETRY_COUNT
@@ -117,7 +117,7 @@ class GraphClient:
                 return response
             except requests.RequestException as e:
                 raise GraphClientError(f"Graph POST request failed: {e}")
-        raise GraphClientError("Graph POST request failed after all retries")
+        raise GraphClientError("Graph POST request failed after all retries")  # pragma: no cover
 
     # ---- Site ID --------------------------------------------------------------
 

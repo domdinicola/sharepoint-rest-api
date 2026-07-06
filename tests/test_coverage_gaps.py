@@ -3,7 +3,7 @@ from rest_framework.fields import SkipField
 
 from sharepoint_rest_api.builders.camlquery_builder import CamlQueryBuilder, recursive_builder
 from sharepoint_rest_api.builders.rest_builder import RestBuilder
-from sharepoint_rest_api.models import SharePointLibrary, SharePointSite, SharePointTenant
+from sharepoint_rest_api.models import SharePointLibrary, SharePointSite, SharePointTenant, SourceId
 from sharepoint_rest_api.serializers.fields import (
     CapitalizeSearchSharePointField,
     RawSearchSharePointField,
@@ -42,6 +42,12 @@ def test_sharepoint_library_str():
     site = SharePointSite.objects.create(tenant=tenant, name="MySite")
     lib = SharePointLibrary.objects.create(name="Documents", site=site)
     assert str(lib) == "Documents (MySite) [https://contoso.sharepoint.com]"
+
+
+@pytest.mark.django_db
+def test_source_id_str():
+    source = SourceId.objects.create(name="TestSource", source_id="src123")
+    assert str(source) == "TestSource | src123"
 
 
 # ---- camlquery_builder.py line 83 coverage ----
