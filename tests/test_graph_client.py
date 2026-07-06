@@ -1302,7 +1302,7 @@ def test_search_with_post_filters(mock_cca, mock_post):
         filters={"ReportStatus": "Final"},
         searchable_properties=set(),
     )
-    assert total == 3
+    assert total == 2
     assert len(items) == 2
 
 
@@ -1366,7 +1366,7 @@ def test_search_with_post_filters_single_page(mock_cca, mock_post):
             filters={"ReportStatus": "Final"},
             searchable_properties=set(),
         )
-    assert total == 3
+    assert total == 1
     assert len(items) == 1
     assert items[0]["DocId"] == "doc1"
 
@@ -1449,7 +1449,7 @@ def test_search_post_filters_no_match(mock_cca, mock_post):
             filters={"ReportStatus": "Final"},
             searchable_properties=set(),
         )
-    assert total == 2
+    assert total == 0
     assert len(items) == 0
 
 

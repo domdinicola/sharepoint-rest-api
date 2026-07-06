@@ -5,7 +5,13 @@ from rest_framework.test import APIClient
 
 import pytest
 
+from sharepoint_rest_api.graph_client import _scan_cache
 from tests.factories import UserFactory
+
+
+@pytest.fixture(autouse=True)
+def _clear_scan_cache():
+    _scan_cache.clear()
 
 
 def pytest_configure(config):
