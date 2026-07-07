@@ -46,7 +46,7 @@ class RestBuilder:
         elif operator_key == "contains":
             result = [f'{raw_name}:"{values[0]}*"']
         elif kql_op == "<>":
-            result = [f'{raw_name}<>"{values[0]}"']
+            result = [f'-{raw_name}:"{values[0]}"']
         elif operator_key in ("gte", "gt", "lte", "lt"):
             result = [f"{raw_name}{kql_op}{values[0]}"]
         elif operator_key == "between":
@@ -76,8 +76,8 @@ class RestBuilder:
         if not clauses:
             return search or "*"
         if search:
-            return f"{search} AND {' AND '.join(clauses)}"
-        return " AND ".join(clauses)
+            return f"{search} {' '.join(clauses)}"
+        return " ".join(clauses)
 
     @staticmethod
     def build_search_request_body(kql, start_row, page_size):

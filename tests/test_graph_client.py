@@ -374,7 +374,7 @@ def test_kql_eq_filter_multi_value():
 
 def test_kql_not_filter():
     result = RestBuilder.build_kql(filters={"Donor__not": "Red Cross"})
-    assert result == 'Donor<>"Red Cross"'
+    assert result == '-Donor:"Red Cross"'
 
 
 def test_kql_contains_filter():
@@ -384,7 +384,7 @@ def test_kql_contains_filter():
 
 def test_kql_not_in_filter():
     result = RestBuilder.build_kql(filters={"Donor__not_in": "Red Cross,UNICEF"})
-    assert result == '-"Red Cross" AND -"UNICEF"'
+    assert result == '-"Red Cross" -"UNICEF"'
 
 
 def test_kql_unknown_operator():
@@ -399,14 +399,14 @@ def test_kql_exclusion_filter():
 
 def test_kql_search_with_filters():
     result = RestBuilder.build_kql(search="path:/docs", filters={"Donor": "Red Cross"})
-    assert result == 'path:/docs AND Donor:"Red Cross"'
+    assert result == 'path:/docs Donor:"Red Cross"'
 
 
 def test_kql_multiple_filters():
     result = RestBuilder.build_kql(filters={"Donor": "Red Cross", "ReportStatus": "Final"})
     assert 'Donor:"Red Cross"' in result
     assert 'ReportStatus:"Final"' in result
-    assert " AND " in result
+    assert " AND " not in result
 
 
 def test_kql_gte():

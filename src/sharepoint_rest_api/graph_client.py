@@ -2,6 +2,7 @@ import hashlib
 import json
 import logging
 import time
+from datetime import datetime
 from urllib.parse import quote
 
 import requests
@@ -17,6 +18,16 @@ from sharepoint_rest_api.builders.rest_builder import (
 logger = logging.getLogger(__name__)
 
 _scan_cache = {}
+
+
+def _parse_last_modified(item, field="LastModifiedTime"):
+    val = item.get(field) or ""
+    if not val:
+        return datetime.min
+    try:
+        return datetime.fromisoformat(val)
+    except ValueError, TypeError:
+        return datetime.min
 
 
 def _get_scan_cache(key):
@@ -377,8 +388,20 @@ class GraphClient:
 
         return items, total_rows
 
-    def _execute_paginated_search(self, kql, page, page_size, post_filters, reverse_map):
+    @staticmethod
+    def _parse_order_by(order_by):
+        if not order_by:
+            return None, False
+        parts = order_by.rsplit(" ", 1)
+        field = parts[0]
+        desc = len(parts) > 1 and parts[1] == "desc"
+        return field, desc
+
+    def _execute_paginated_search(self, kql, page, page_size, post_filters, reverse_map, order_by=None):  # noqa: PLR0913
+        sort_field, sort_desc = self._parse_order_by(order_by)
         if not post_filters:
+            # Graph API paginates by rank. Client-side sort per-page would
+            # make items jump between pages, so we skip it here.
             start_row = (page - 1) * page_size
             items, total_rows = self._execute_search_page(kql, start_row, page_size, reverse_map=reverse_map)
             logger.info(f"Graph Search API: {total_rows} total, returned {len(items)} for page {page}")
@@ -392,6 +415,7 @@ class GraphClient:
                     "kql": kql,
                     "post_filters": dict(sorted(post_filters.items())),
                     "page_size": page_size,
+                    "order_by": order_by,
                 },
                 sort_keys=True,
             ).encode(),
@@ -401,6 +425,8 @@ class GraphClient:
         all_items = _get_scan_cache(scan_key)
         if all_items is None:
             all_items = self._scan_all_post_filtered(kql, page_size, post_filters, reverse_map)
+            if sort_field:
+                all_items.sort(key=lambda i: _parse_last_modified(i, sort_field), reverse=sort_desc)
             _set_scan_cache(scan_key, all_items)
 
         total_rows = len(all_items)
@@ -437,6 +463,7 @@ class GraphClient:
         filters=None,
         page=1,
         searchable_properties=None,
+        order_by=None,
         **kwargs,
     ):
         """Search SharePoint content using the Microsoft Graph Search API.
@@ -455,6 +482,10 @@ class GraphClient:
                      searchable via KQL. Properties NOT in this set are
                      excluded from KQL and applied as post-filters after batch
                      enrichment. If None, all properties are treated as post-filters.
+            order_by: Sort expression (e.g. "LastModifiedTime desc").
+                      When set, results are sorted client-side by
+                      LastModifiedTime as a proper datetime comparison,
+                      not as a string.
             **kwargs: Extra keyword arguments for API compatibility.
                       Accepted kwargs:
                       - reverse_map: Dict mapping managed property names ->
@@ -476,7 +507,8 @@ class GraphClient:
                     post_filters[name] = value
 
         kql = RestBuilder.build_kql(search=search, filters=searchable_filters)
-        return self._execute_paginated_search(kql, page, page_size, post_filters, reverse_map)
+        logger.info("KQL query: %s | searchable: %s | post_filters: %s", kql, searchable_filters, post_filters)
+        return self._execute_paginated_search(kql, page, page_size, post_filters, reverse_map, order_by=order_by)
 
     def read_list_items(self, list_name):
         """Read all items from a SharePoint list via Graph API.
