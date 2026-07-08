@@ -345,7 +345,7 @@ class GraphClient:
             return site_id, list_id, list_item_id
         return None
 
-    def _execute_search_page(self, kql, start_row, page_size, reverse_map=None):
+    def _execute_search_page(self, kql, start_row, page_size, reverse_map=None, fields=None):
         """Execute a single search API page and return (items, total_rows) from raw results.
 
         Args:
@@ -353,9 +353,10 @@ class GraphClient:
             start_row: Zero-based row offset.
             page_size: Number of results to fetch.
             reverse_map: Optional dict of managed name -> serializer field name.
+            fields: Optional list of managed property names to include in results.
 
         """
-        body = RestBuilder.build_search_request_body(kql, start_row, page_size)
+        body = RestBuilder.build_search_request_body(kql, start_row, page_size, fields=fields)
         try:
             response = self.post(GRAPH_SEARCH_URL, json=body, timeout=60)
         except GraphClientError as e:
@@ -397,13 +398,15 @@ class GraphClient:
         desc = len(parts) > 1 and parts[1] == "desc"
         return field, desc
 
-    def _execute_paginated_search(self, kql, page, page_size, post_filters, reverse_map, order_by=None):  # noqa: PLR0913
+    def _execute_paginated_search(self, kql, page, page_size, post_filters, reverse_map, order_by=None, fields=None):  # noqa: PLR0913
         sort_field, sort_desc = self._parse_order_by(order_by)
         if not post_filters:
             # Graph API paginates by rank. Client-side sort per-page would
             # make items jump between pages, so we skip it here.
             start_row = (page - 1) * page_size
-            items, total_rows = self._execute_search_page(kql, start_row, page_size, reverse_map=reverse_map)
+            items, total_rows = self._execute_search_page(
+                kql, start_row, page_size, reverse_map=reverse_map, fields=fields
+            )
             logger.info(f"Graph Search API: {total_rows} total, returned {len(items)} for page {page}")
             return items, total_rows
 

@@ -80,8 +80,18 @@ class RestBuilder:
         return " ".join(clauses)
 
     @staticmethod
-    def build_search_request_body(kql, start_row, page_size):
-        """Build the JSON POST body for a Graph Search API request."""
+    def build_search_request_body(kql, start_row, page_size, fields=None):
+        """Build the JSON POST body for a Graph Search API request.
+
+        Args:
+            kql: KQL query string.
+            start_row: Zero-based row offset.
+            page_size: Number of results to fetch.
+            fields: Optional list of managed property names to include
+                    in search results for each hit. If omitted, only
+                    default resource properties are returned.
+
+        """
         request_body = {
             "entityTypes": ["driveItem"],
             "query": {"queryString": kql},
@@ -89,6 +99,8 @@ class RestBuilder:
             "from": start_row,
             "size": page_size,
         }
+        if fields:
+            request_body["fields"] = fields
         return {"requests": [request_body]}
 
     @staticmethod
