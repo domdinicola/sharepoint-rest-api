@@ -787,11 +787,15 @@ def test_execute_search_page_with_hits(mock_cca, mock_post):
     assert items[0]["Size"] == 1024
     assert items[0]["FileType"] == "pdf"
     assert items[0]["Author"] == "John Doe"
+    assert items[0]["SiteId"] == "site1"
+    assert items[0]["DriveId"] == ""
 
     assert items[1]["Title"] == "doc2"
     assert items[1]["Path"] == "https://sharepoint.com/site/doc2"
     assert "FileType" not in items[1]
     assert "Author" not in items[1]
+    assert items[1]["SiteId"] == ""
+    assert items[1]["DriveId"] == ""
 
 
 @mock.patch("sharepoint_rest_api.graph_client.requests.post")

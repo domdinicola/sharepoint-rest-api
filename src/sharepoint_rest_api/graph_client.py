@@ -147,6 +147,26 @@ class GraphClient:
             self._site_id = self._get_site_id()
         return self._site_id
 
+    def get_drive_id_by_name(self, name, site_id=None):
+        """Look up a drive (document library) ID by its display name.
+
+        Returns the drive ID string if found, ``None`` otherwise.
+        Returns ``None`` immediately when *site_id* is ``None`` to avoid
+        triggering the costly ``_get_site_id()`` lookup.
+        """
+        if not site_id:
+            return None
+        encoded_site_id = quote(site_id, safe="")
+        url = f"{GRAPH_URL}/sites/{encoded_site_id}/drives?$filter=name%20eq%20%27{name}%27"
+        try:
+            response = self.get(url)
+            drives = response.json().get("value", [])
+            if drives:
+                return drives[0].get("id")
+        except GraphClientError:
+            logger.warning("Could not look up drive by name '%s'", name)
+        return None
+
     # ---- Query / Response processing ------------------------------------------
 
     @staticmethod
@@ -303,6 +323,10 @@ class GraphClient:
         if not name and web_url:
             name = web_url.rstrip("/").rsplit("/", 1)[-1]
 
+        parent_ref = resource.get("parentReference")
+        site_id = parent_ref.get("siteId") if isinstance(parent_ref, dict) else None
+        drive_id = parent_ref.get("driveId") if isinstance(parent_ref, dict) else None
+
         item = {
             "Title": name,
             "Path": web_url,
@@ -312,6 +336,8 @@ class GraphClient:
             "Size": resource.get("size", 0),
             "Write": resource.get("lastModifiedDateTime", ""),
             "LastModifiedTime": resource.get("lastModifiedDateTime", ""),
+            "SiteId": site_id or "",
+            "DriveId": drive_id or "",
         }
 
         file_info = resource.get("file")
@@ -512,6 +538,86 @@ class GraphClient:
         kql = RestBuilder.build_kql(search=search, filters=searchable_filters)
         logger.info("KQL query: %s | searchable: %s | post_filters: %s", kql, searchable_filters, post_filters)
         return self._execute_paginated_search(kql, page, page_size, post_filters, reverse_map, order_by=order_by)
+
+    def download_file(self, file_path, drive_id=None, site_id=None):
+        """Download a file from SharePoint via the Graph API drive endpoint.
+
+        Uses ``GET /sites/{siteId}/drives/{driveId}/root:/{path}:/content``
+        when *drive_id* is provided, otherwise falls back to the default
+        drive via ``/drive/root:/{path}:/content``.
+
+        Args:
+            file_path: Site-relative path to the file (e.g.
+                       ``Shared Documents/folder/file.pdf``).
+            drive_id: Optional drive ID to target a specific document library.
+            site_id: Optional site ID string. When provided, this is used
+                     directly instead of ``self.site_id`` (which requires a
+                     ``/sites/`` lookup that may fail due to permissions).
+
+        Returns:
+            A ``requests.Response`` object whose ``content`` attribute
+            contains the raw file bytes.
+
+        Raises:
+            GraphClientError: If the request fails.
+
+        """
+        effective_site_id = site_id or self.site_id
+        encoded_site_id = quote(effective_site_id, safe="")
+        encoded_path = quote(file_path, safe="")
+        if drive_id:
+            encoded_drive_id = quote(drive_id, safe="")
+            url = f"{GRAPH_URL}/sites/{encoded_site_id}/drives/{encoded_drive_id}/root:/{encoded_path}:/content"
+        else:
+            url = f"{GRAPH_URL}/sites/{encoded_site_id}/drive/root:/{encoded_path}:/content"
+        try:
+            response = requests.get(
+                url,
+                headers={"Authorization": f"Bearer {self.token}"},
+                timeout=300,
+                allow_redirects=True,
+                stream=True,
+            )
+            if not response.ok:
+                raise GraphClientError(f"Graph file download failed ({response.status_code}): {response.text}")
+            return response
+        except requests.RequestException as e:
+            raise GraphClientError(f"Graph file download failed: {e}")
+
+    def download_item(self, drive_id, item_id):
+        """Download a file by drive ID and item ID.
+
+        Uses ``GET /drives/{driveId}/items/{itemId}/content`` which does
+        **not** require a site ID.
+
+        Args:
+            drive_id: The drive (document library) GUID.
+            item_id:  The Graph item ID (e.g. the ``DocId`` from search results).
+
+        Returns:
+            A ``requests.Response`` object whose ``content`` attribute
+            contains the raw file bytes.
+
+        Raises:
+            GraphClientError: If the request fails.
+
+        """
+        encoded_drive_id = quote(drive_id, safe="")
+        encoded_item_id = quote(item_id, safe="")
+        url = f"{GRAPH_URL}/drives/{encoded_drive_id}/items/{encoded_item_id}/content"
+        try:
+            response = requests.get(
+                url,
+                headers={"Authorization": f"Bearer {self.token}"},
+                timeout=300,
+                allow_redirects=True,
+                stream=True,
+            )
+            if not response.ok:
+                raise GraphClientError(f"Graph item download failed ({response.status_code}): {response.text}")
+            return response
+        except requests.RequestException as e:
+            raise GraphClientError(f"Graph item download failed: {e}")
 
     def read_list_items(self, list_name):
         """Read all items from a SharePoint list via Graph API.
