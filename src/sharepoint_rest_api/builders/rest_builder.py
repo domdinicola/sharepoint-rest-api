@@ -48,7 +48,10 @@ class RestBuilder:
         elif kql_op == "<>":
             result = [f'-{raw_name}:"{values[0]}"']
         elif operator_key in ("gte", "gt", "lte", "lt"):
-            result = [f"{raw_name}{kql_op}{values[0]}"]
+            formatted = values[0]
+            if len(formatted) == 10 and formatted[4] == "-" and formatted[7] == "-":
+                formatted = f"{formatted}T00:00:00Z"
+            result = [f"{raw_name}{kql_op}{formatted}"]
         elif operator_key == "between":
             range_parts = filter_value.split("__")
             result = [f"{raw_name}:{range_parts[0]}..{range_parts[-1]}"]

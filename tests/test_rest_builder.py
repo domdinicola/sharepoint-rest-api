@@ -72,6 +72,26 @@ def test_kql_clause_between():
     assert result == ["Size:1000..5000"]
 
 
+def test_kql_clause_lte_date():
+    result = RestBuilder.build_kql_clause("RefinableDate15__lte", "2026-01-01")
+    assert result == ["RefinableDate15<=2026-01-01T00:00:00Z"]
+
+
+def test_kql_clause_gte_date():
+    result = RestBuilder.build_kql_clause("RefinableDate15__gte", "2026-01-01")
+    assert result == ["RefinableDate15>=2026-01-01T00:00:00Z"]
+
+
+def test_kql_clause_lt_date():
+    result = RestBuilder.build_kql_clause("RefinableDate15__lt", "2026-01-01")
+    assert result == ["RefinableDate15<2026-01-01T00:00:00Z"]
+
+
+def test_kql_clause_gt_date():
+    result = RestBuilder.build_kql_clause("RefinableDate15__gt", "2026-01-01")
+    assert result == ["RefinableDate15>2026-01-01T00:00:00Z"]
+
+
 # ---- build_kql ---------------------------------------------------------------
 
 
