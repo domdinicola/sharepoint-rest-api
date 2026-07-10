@@ -1,3 +1,11 @@
+Release 0.21.6
+-----------------------------------------
+* fix datetime filtering
+
+Release 0.21.5
+-----------------------------------------
+* fix: use Refinable managed property names in KQL, fix AND separator
+
 Release 0.21.4
 -----------------------------------------
 * Fix KQL operators, add search caching and read_list_items
