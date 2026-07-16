@@ -1,13 +1,13 @@
 from unittest import mock
 
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.test import RequestFactory
 import pytest
 from rest_framework.response import Response
 
 from sharepoint_rest_api.graph_client import GraphClientError
 from sharepoint_rest_api.models import SourceId
-from sharepoint_rest_api.views.graph_based import GraphBasedSearchViewSet
+from sharepoint_rest_api.views.graph_based import GraphBasedSearchViewSet, GraphFileDownloadViewSet
 from rest_framework.exceptions import PermissionDenied
 
 
@@ -212,3 +212,177 @@ def test_apply_source_id_filters_existing_order_by_not_overridden(mock_source_id
     qp = {"source_id": "src1", "order_by": "Size"}
     viewset._apply_source_id_filters(qp)
     assert qp.get("order_by") == "Size"
+
+
+# ---- GraphFileDownloadViewSet -------------------------------------------------
+
+
+def _make_download_viewset():
+    viewset = GraphFileDownloadViewSet()
+    viewset.kwargs = {}
+    viewset.action = "download"
+    viewset.format_kwarg = None
+    request = RequestFactory().get("/graph/download")
+    request.query_params = request.GET
+    request.parser_context = {"kwargs": {}}
+    viewset.request = request
+    viewset.headers = request.headers
+    return viewset, request
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
+def test_download_viewset_client_success(mock_graph_client):
+    viewset = GraphFileDownloadViewSet()
+    result = viewset.client
+    mock_graph_client.assert_called_once_with(
+        url="https://unitst.sharepoint.com/sites/GLB-DRP",
+        relative_url="sites/GLB-DRP",
+        folder="Documents",
+    )
+    assert result == mock_graph_client.return_value
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
+def test_download_viewset_client_raises_permission_denied(mock_graph_client):
+    mock_graph_client.side_effect = GraphClientError("auth failed")
+    viewset = GraphFileDownloadViewSet()
+    with pytest.raises(PermissionDenied):
+        viewset.client
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
+def test_download_with_drive_id_and_item_id(mock_graph_client):
+    viewset, _ = _make_download_viewset()
+    mock_client = mock_graph_client.return_value
+    mock_resp = mock.MagicMock()
+    mock_resp.content = b"file-bytes"
+    mock_resp.status_code = 200
+    mock_resp.headers = {"Content-Type": "application/pdf"}
+    mock_client.download_item.return_value = mock_resp
+
+    request = RequestFactory().get("/graph/download/test.pdf", {"drive_id": "d1", "item_id": "i1"})
+    request.query_params = request.GET
+    response = viewset.download(request, filename="test.pdf")
+
+    assert isinstance(response, HttpResponse)
+    assert response.status_code == 200
+    assert response.content == b"file-bytes"
+    mock_client.download_item.assert_called_once_with("d1", "i1")
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
+def test_download_with_site_id_drive_not_found(mock_graph_client):
+    viewset, _ = _make_download_viewset()
+    mock_client = mock_graph_client.return_value
+    mock_client.get_drive_id_by_name.return_value = None
+    mock_resp = mock.MagicMock()
+    mock_resp.content = b"file-bytes"
+    mock_resp.status_code = 200
+    mock_resp.headers = {"Content-Type": "application/octet-stream"}
+    mock_client.download_file.return_value = mock_resp
+
+    request = RequestFactory().get("/graph/download/test.pdf", {"site_id": "s1"})
+    request.query_params = request.GET
+    response = viewset.download(request, filename="test.pdf", folder="SharedDocs")
+
+    assert isinstance(response, HttpResponse)
+    assert response.status_code == 200
+    mock_client.download_file.assert_called_once_with("SharedDocs/test.pdf", drive_id=None, site_id="s1")
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
+def test_download_with_site_id_drive_found(mock_graph_client):
+    viewset, _ = _make_download_viewset()
+    mock_client = mock_graph_client.return_value
+    mock_client.get_drive_id_by_name.return_value = "drive-abc"
+    mock_resp = mock.MagicMock()
+    mock_resp.content = b"file-bytes"
+    mock_resp.status_code = 200
+    mock_resp.headers = {"Content-Type": "application/pdf"}
+    mock_client.download_file.return_value = mock_resp
+
+    request = RequestFactory().get("/graph/download/test.pdf", {"site_id": "s1"})
+    request.query_params = request.GET
+    response = viewset.download(request, filename="test.pdf", folder="SharedDocs")
+
+    assert isinstance(response, HttpResponse)
+    assert response.status_code == 200
+    mock_client.download_file.assert_called_once_with("test.pdf", drive_id="drive-abc", site_id="s1")
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
+def test_download_without_site_id_or_drive_item(mock_graph_client):
+    viewset, _ = _make_download_viewset()
+    request = RequestFactory().get("/graph/download/test.pdf")
+    request.query_params = request.GET
+    response = viewset.download(request, filename="test.pdf")
+
+    assert isinstance(response, HttpResponseBadRequest)
+    assert b"site_id or drive_id+item_id" in response.content
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
+def test_download_graph_client_error(mock_graph_client):
+    viewset, _ = _make_download_viewset()
+    mock_client = mock_graph_client.return_value
+    mock_client.download_item.side_effect = GraphClientError("download failed")
+
+    request = RequestFactory().get("/graph/download/test.pdf", {"drive_id": "d1", "item_id": "i1"})
+    request.query_params = request.GET
+    response = viewset.download(request, filename="test.pdf")
+
+    assert isinstance(response, HttpResponseBadRequest)
+    assert b"download failed" in response.content
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
+def test_download_with_empty_folder(mock_graph_client):
+    viewset, _ = _make_download_viewset()
+    mock_client = mock_graph_client.return_value
+    mock_client.get_drive_id_by_name.return_value = None
+    mock_resp = mock.MagicMock()
+    mock_resp.content = b"data"
+    mock_resp.status_code = 200
+    mock_resp.headers = {}
+    mock_client.download_file.return_value = mock_resp
+
+    request = RequestFactory().get("/graph/download/test.pdf", {"site_id": "s1"})
+    request.query_params = request.GET
+    response = viewset.download(request, filename="test.pdf", folder="")
+
+    assert isinstance(response, HttpResponse)
+    mock_client.download_file.assert_called_once_with("test.pdf", drive_id=None, site_id="s1")
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
+def test_download_sets_content_disposition(mock_graph_client):
+    viewset, _ = _make_download_viewset()
+    mock_client = mock_graph_client.return_value
+    mock_resp = mock.MagicMock()
+    mock_resp.content = b"data"
+    mock_resp.status_code = 200
+    mock_resp.headers = {"Content-Type": "text/plain"}
+    mock_client.download_item.return_value = mock_resp
+
+    request = RequestFactory().get("/graph/download/report.csv", {"drive_id": "d1", "item_id": "i1"})
+    request.query_params = request.GET
+    response = viewset.download(request, filename="report.csv")
+
+    assert response["Content-Disposition"] == "attachment; filename=report.csv"
+
+
+@mock.patch("sharepoint_rest_api.views.graph_based.GraphClient")
+def test_download_default_content_type(mock_graph_client):
+    viewset, _ = _make_download_viewset()
+    mock_client = mock_graph_client.return_value
+    mock_resp = mock.MagicMock()
+    mock_resp.content = b"data"
+    mock_resp.status_code = 200
+    mock_resp.headers = {}
+    mock_client.download_item.return_value = mock_resp
+
+    request = RequestFactory().get("/graph/download/file", {"drive_id": "d1", "item_id": "i1"})
+    request.query_params = request.GET
+    response = viewset.download(request, filename="file")
+
+    assert response["Content-Type"] == "application/octet-stream"

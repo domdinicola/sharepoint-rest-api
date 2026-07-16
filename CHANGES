@@ -1,3 +1,7 @@
+Release 0.21.9
+-----------------------------------------
+* Add download using graph capability (GraphFileDownloadViewSet)
+
 Release 0.21.8
 -----------------------------------------
 * Add download_file and download_item methods to GraphClient
