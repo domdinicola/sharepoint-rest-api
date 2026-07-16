@@ -1,3 +1,4 @@
+import json
 import logging
 
 from sharepoint_rest_api import config
@@ -95,8 +96,9 @@ class RestBuilder:
                     default resource properties are returned.
 
         """
+        entity_types = json.loads(config.GRAPH_ENTITY_TYPES)
         request_body = {
-            "entityTypes": ["driveItem"],
+            "entityTypes": entity_types,
             "query": {"queryString": kql},
             "region": config.GRAPH_REGION,
             "from": start_row,
