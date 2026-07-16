@@ -191,6 +191,24 @@ def test_build_search_request_body():
 
 
 @mock.patch("sharepoint_rest_api.builders.rest_builder.config.GRAPH_REGION", "global")
+@mock.patch("sharepoint_rest_api.builders.rest_builder.config.GRAPH_ENTITY_TYPES", '["driveItem"]')
+def test_build_search_request_body_with_fields():
+    body = RestBuilder.build_search_request_body("test query", 0, 25, fields=["Title", "Author"])
+    assert body == {
+        "requests": [
+            {
+                "entityTypes": ["driveItem"],
+                "query": {"queryString": "test query"},
+                "region": "global",
+                "from": 0,
+                "size": 25,
+                "fields": ["Title", "Author"],
+            }
+        ]
+    }
+
+
+@mock.patch("sharepoint_rest_api.builders.rest_builder.config.GRAPH_REGION", "global")
 @mock.patch("sharepoint_rest_api.builders.rest_builder.config.GRAPH_ENTITY_TYPES", '["driveItem", "listItem"]')
 def test_build_search_request_body_with_list_item():
     body = RestBuilder.build_search_request_body("test query", 0, 25)

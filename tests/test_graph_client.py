@@ -1,10 +1,16 @@
+from datetime import datetime, timezone
 from unittest import mock
 
 import pytest
 import requests
 
 from sharepoint_rest_api.builders.rest_builder import RestBuilder
-from sharepoint_rest_api.graph_client import GraphClient, GraphClientError, GRAPH_URL
+from sharepoint_rest_api.graph_client import (
+    GraphClient,
+    GraphClientError,
+    GRAPH_URL,
+    _parse_last_modified,
+)
 
 
 # ---- __init__ ----------------------------------------------------------------
@@ -1893,3 +1899,329 @@ def test_scan_all_post_filtered_exhaust_all_pages(mock_cca, mock_post):
     assert total == 10
     assert len(items) == 3
     assert mock_post.call_count == 5
+
+
+# ---- _parse_last_modified -----------------------------------------------------
+
+
+def test_parse_last_modified_valid():
+    result = _parse_last_modified({"LastModifiedTime": "2024-06-15T10:30:00Z"})
+    assert result == datetime(2024, 6, 15, 10, 30, tzinfo=timezone.utc)
+
+
+def test_parse_last_modified_empty():
+    result = _parse_last_modified({})
+    assert result == datetime.min
+
+
+def test_parse_last_modified_empty_string():
+    result = _parse_last_modified({"LastModifiedTime": ""})
+    assert result == datetime.min
+
+
+def test_parse_last_modified_invalid():
+    result = _parse_last_modified({"LastModifiedTime": "not-a-date"})
+    assert result == datetime.min
+
+
+def test_parse_last_modified_custom_field():
+    result = _parse_last_modified({"Created": "2024-01-01T00:00:00Z"}, field="Created")
+    assert result == datetime(2024, 1, 1, tzinfo=timezone.utc)
+
+
+# ---- get_drive_id_by_name -----------------------------------------------------
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_drive_id_by_name_no_site_id(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    client = GraphClient()
+    result = client.get_drive_id_by_name("Documents", site_id=None)
+    assert result is None
+    mock_get.assert_not_called()
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_drive_id_by_name_found(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {"value": [{"id": "drive-abc-123", "name": "Documents"}]}
+    mock_get.return_value = mock_resp
+
+    client = GraphClient()
+    result = client.get_drive_id_by_name("Documents", site_id="site123")
+    assert result == "drive-abc-123"
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_drive_id_by_name_not_found(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {"value": []}
+    mock_get.return_value = mock_resp
+
+    client = GraphClient()
+    result = client.get_drive_id_by_name("NonExistent", site_id="site123")
+    assert result is None
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_drive_id_by_name_http_error(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_get.side_effect = requests.exceptions.RequestException("timeout")
+
+    client = GraphClient()
+    result = client.get_drive_id_by_name("Documents", site_id="site123")
+    assert result is None
+
+
+# ---- _parse_order_by ----------------------------------------------------------
+
+
+def test_parse_order_by_none():
+    field, desc = GraphClient._parse_order_by(None)
+    assert field is None
+    assert desc is False
+
+
+def test_parse_order_by_empty():
+    field, desc = GraphClient._parse_order_by("")
+    assert field is None
+    assert desc is False
+
+
+def test_parse_order_by_asc():
+    field, desc = GraphClient._parse_order_by("LastModifiedTime asc")
+    assert field == "LastModifiedTime"
+    assert desc is False
+
+
+def test_parse_order_by_desc():
+    field, desc = GraphClient._parse_order_by("LastModifiedTime desc")
+    assert field == "LastModifiedTime"
+    assert desc is True
+
+
+def test_parse_order_by_no_direction():
+    field, desc = GraphClient._parse_order_by("LastModifiedTime")
+    assert field == "LastModifiedTime"
+    assert desc is False
+
+
+# ---- download_file -----------------------------------------------------------
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_download_file_with_drive_id(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.ok = True
+    mock_resp.content = b"file-content"
+    mock_get.return_value = mock_resp
+
+    client = GraphClient()
+    with mock.patch.object(GraphClient, "_get_site_id", return_value="site1"):
+        resp = client.download_file("Shared Docs/file.pdf", drive_id="drive-123")
+
+    assert resp.ok
+    assert resp.content == b"file-content"
+    url = mock_get.call_args[0][0]
+    assert "/drives/" in url
+    assert "root:" in url
+    assert "/content" in url
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_download_file_without_drive_id(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.ok = True
+    mock_resp.content = b"file-content"
+    mock_get.return_value = mock_resp
+
+    client = GraphClient()
+    with mock.patch.object(GraphClient, "_get_site_id", return_value="site1"):
+        resp = client.download_file("Shared Docs/file.pdf")
+
+    assert resp.ok
+    url = mock_get.call_args[0][0]
+    assert "/drive/root:" in url
+    assert "/drives/" not in url
+    assert "/content" in url
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_download_file_with_site_id(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.ok = True
+    mock_resp.content = b"data"
+    mock_get.return_value = mock_resp
+
+    client = GraphClient()
+    resp = client.download_file("doc.pdf", site_id="my-site-id")
+    assert resp.ok
+    url = mock_get.call_args[0][0]
+    assert "my-site-id" in url
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_download_file_http_error(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.ok = False
+    mock_resp.status_code = 404
+    mock_resp.text = "Not Found"
+    mock_get.return_value = mock_resp
+
+    client = GraphClient()
+    with mock.patch.object(GraphClient, "_get_site_id", return_value="site1"):
+        with pytest.raises(GraphClientError, match="Graph file download failed"):
+            client.download_file("missing.pdf")
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_download_file_request_exception(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_get.side_effect = requests.exceptions.ConnectionError("refused")
+
+    client = GraphClient()
+    with mock.patch.object(GraphClient, "_get_site_id", return_value="site1"):
+        with pytest.raises(GraphClientError, match="Graph file download failed"):
+            client.download_file("doc.pdf")
+
+
+# ---- download_item -----------------------------------------------------------
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_download_item_success(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.ok = True
+    mock_resp.content = b"item-content"
+    mock_get.return_value = mock_resp
+
+    client = GraphClient()
+    resp = client.download_item("drive-abc", "item-xyz")
+    assert resp.ok
+    assert resp.content == b"item-content"
+    url = mock_get.call_args[0][0]
+    assert "/drives/drive-abc/items/item-xyz/content" in url
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_download_item_http_error(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.ok = False
+    mock_resp.status_code = 404
+    mock_resp.text = "Not Found"
+    mock_get.return_value = mock_resp
+
+    client = GraphClient()
+    with pytest.raises(GraphClientError, match="Graph item download failed"):
+        client.download_item("drive-abc", "item-xyz")
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_download_item_request_exception(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_get.side_effect = requests.exceptions.ConnectionError("refused")
+
+    client = GraphClient()
+    with pytest.raises(GraphClientError, match="Graph item download failed"):
+        client.download_item("drive-abc", "item-xyz")
+
+
+# ---- search with order_by (covers _parse_order_by + sort line) ---------------
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.post")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_search_with_order_by_and_post_filters(mock_cca, mock_post):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {
+        "value": [
+            {
+                "hitsContainers": [
+                    {
+                        "total": 2,
+                        "hits": [
+                            {
+                                "hitId": "hit1",
+                                "rank": 1,
+                                "resource": {
+                                    "id": "doc1",
+                                    "name": "doc1.pdf",
+                                    "webUrl": "https://sharepoint.com/site/doc1",
+                                    "size": 512,
+                                    "lastModifiedDateTime": "2024-01-01T00:00:00Z",
+                                    "listItem": {"fields": {"ReportStatus": "Final"}},
+                                    "parentReference": {
+                                        "siteId": "s1",
+                                        "sharepointIds": {"listId": "l1", "listItemId": "i1"},
+                                    },
+                                },
+                            },
+                            {
+                                "hitId": "hit2",
+                                "rank": 2,
+                                "resource": {
+                                    "id": "doc2",
+                                    "name": "doc2.pdf",
+                                    "webUrl": "https://sharepoint.com/site/doc2",
+                                    "size": 512,
+                                    "lastModifiedDateTime": "2023-06-01T00:00:00Z",
+                                    "listItem": {"fields": {"ReportStatus": "Final"}},
+                                    "parentReference": {
+                                        "siteId": "s1",
+                                        "sharepointIds": {"listId": "l1", "listItemId": "i2"},
+                                    },
+                                },
+                            },
+                        ],
+                    }
+                ]
+            }
+        ]
+    }
+    mock_post.return_value = mock_resp
+
+    client = GraphClient()
+    with mock.patch.object(GraphClient, "_fetch_item_fields"):
+        items, total = client.search(
+            filters={"ReportStatus": "Final"},
+            searchable_properties=set(),
+            order_by="LastModifiedTime desc",
+        )
+    assert total == 2
+    assert len(items) == 2
+    assert items[0]["LastModifiedTime"] >= items[1]["LastModifiedTime"]
