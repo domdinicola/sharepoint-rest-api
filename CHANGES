@@ -1,3 +1,9 @@
+Release 0.21.8
+-----------------------------------------
+* Add download_file and download_item methods to GraphClient
+* Add get_drive_id_by_name to GraphClient
+* Make GRAPH_ENTITY_TYPES configurable
+
 Release 0.21.7
 -----------------------------------------
 * Increase test coverage to 100%
