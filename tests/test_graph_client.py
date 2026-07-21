@@ -2225,3 +2225,52 @@ def test_search_with_order_by_and_post_filters(mock_cca, mock_post):
     assert total == 2
     assert len(items) == 2
     assert items[0]["LastModifiedTime"] >= items[1]["LastModifiedTime"]
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.post")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_search_with_order_by_no_post_filters_passes_sort_properties(mock_cca, mock_post):
+    """Server-side sorting: sortProperties should be in the request body."""
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {
+        "value": [
+            {
+                "hitsContainers": [
+                    {
+                        "total": 1,
+                        "hits": [
+                            {
+                                "hitId": "hit1",
+                                "rank": 1,
+                                "resource": {
+                                    "id": "doc1",
+                                    "name": "doc1.pdf",
+                                    "webUrl": "https://sharepoint.com/site/doc1",
+                                    "size": 512,
+                                    "lastModifiedDateTime": "2024-01-01T00:00:00Z",
+                                    "parentReference": {
+                                        "siteId": "s1",
+                                        "sharepointIds": {"listId": "l1", "listItemId": "i1"},
+                                    },
+                                },
+                            },
+                        ],
+                    }
+                ]
+            }
+        ]
+    }
+    mock_post.return_value = mock_resp
+
+    client = GraphClient()
+    with mock.patch.object(GraphClient, "_fetch_item_fields"):
+        client.search(order_by="RefinableDate11 desc")
+
+    call_kwargs = mock_post.call_args
+    body = call_kwargs[1]["json"] if "json" in call_kwargs[1] else call_kwargs[0][1]
+    request_body = body["requests"][0]
+    assert "sortProperties" in request_body
+    assert request_body["sortProperties"] == [{"name": "RefinableDate11", "isDescending": True}]

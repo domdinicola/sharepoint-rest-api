@@ -84,7 +84,7 @@ class RestBuilder:
         return " ".join(clauses)
 
     @staticmethod
-    def build_search_request_body(kql, start_row, page_size, fields=None):
+    def build_search_request_body(kql, start_row, page_size, fields=None, sort_properties=None):
         """Build the JSON POST body for a Graph Search API request.
 
         Args:
@@ -94,6 +94,8 @@ class RestBuilder:
             fields: Optional list of managed property names to include
                     in search results for each hit. If omitted, only
                     default resource properties are returned.
+            sort_properties: Optional list of sort dicts, e.g.
+                    [{"name": "RefinableDate11", "isDescending": True}].
 
         """
         entity_types = json.loads(config.GRAPH_ENTITY_TYPES)
@@ -106,6 +108,8 @@ class RestBuilder:
         }
         if fields:
             request_body["fields"] = fields
+        if sort_properties:
+            request_body["sortProperties"] = sort_properties
         return {"requests": [request_body]}
 
     @staticmethod
