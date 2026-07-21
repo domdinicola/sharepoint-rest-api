@@ -225,6 +225,52 @@ def test_build_search_request_body_with_list_item():
     }
 
 
+@mock.patch("sharepoint_rest_api.builders.rest_builder.config.GRAPH_REGION", "global")
+@mock.patch("sharepoint_rest_api.builders.rest_builder.config.GRAPH_ENTITY_TYPES", '["driveItem"]')
+def test_build_search_request_body_with_sort_properties():
+    sort_props = [{"name": "RefinableDate11", "isDescending": True}]
+    body = RestBuilder.build_search_request_body("test query", 0, 25, sort_properties=sort_props)
+    assert body == {
+        "requests": [
+            {
+                "entityTypes": ["driveItem"],
+                "query": {"queryString": "test query"},
+                "region": "global",
+                "from": 0,
+                "size": 25,
+                "sortProperties": [{"name": "RefinableDate11", "isDescending": True}],
+            }
+        ]
+    }
+
+
+@mock.patch("sharepoint_rest_api.builders.rest_builder.config.GRAPH_REGION", "global")
+@mock.patch("sharepoint_rest_api.builders.rest_builder.config.GRAPH_ENTITY_TYPES", '["driveItem"]')
+def test_build_search_request_body_with_fields_and_sort():
+    sort_props = [{"name": "RefinableDate11", "isDescending": False}]
+    body = RestBuilder.build_search_request_body("test query", 0, 25, fields=["Title"], sort_properties=sort_props)
+    assert body == {
+        "requests": [
+            {
+                "entityTypes": ["driveItem"],
+                "query": {"queryString": "test query"},
+                "region": "global",
+                "from": 0,
+                "size": 25,
+                "fields": ["Title"],
+                "sortProperties": [{"name": "RefinableDate11", "isDescending": False}],
+            }
+        ]
+    }
+
+
+@mock.patch("sharepoint_rest_api.builders.rest_builder.config.GRAPH_REGION", "global")
+@mock.patch("sharepoint_rest_api.builders.rest_builder.config.GRAPH_ENTITY_TYPES", '["driveItem"]')
+def test_build_search_request_body_empty_sort_not_included():
+    body = RestBuilder.build_search_request_body("test query", 0, 25, sort_properties=None)
+    assert "sortProperties" not in body["requests"][0]
+
+
 # ---- build_batch_body --------------------------------------------------------
 
 

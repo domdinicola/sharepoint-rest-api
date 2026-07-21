@@ -1,3 +1,10 @@
+Release 0.22.0
+-----------------------------------------
+* Add server-side sorting via Graph Search API sortProperties
+* Add Django 6.0 support (migration for AutoCreatedField/AutoLastModifiedField)
+* Fix Python 2 except syntax (ValueError, TypeError)
+* Pass fields through search() to _execute_paginated_search()
+
 Release 0.21.9
 -----------------------------------------
 * Add download using graph capability (GraphFileDownloadViewSet)

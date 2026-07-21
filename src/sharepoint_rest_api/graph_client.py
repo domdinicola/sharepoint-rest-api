@@ -371,7 +371,7 @@ class GraphClient:
             return site_id, list_id, list_item_id
         return None
 
-    def _execute_search_page(self, kql, start_row, page_size, reverse_map=None, fields=None):
+    def _execute_search_page(self, kql, start_row, page_size, reverse_map=None, fields=None, sort_properties=None):  # noqa: PLR0913
         """Execute a single search API page and return (items, total_rows) from raw results.
 
         Args:
@@ -380,9 +380,12 @@ class GraphClient:
             page_size: Number of results to fetch.
             reverse_map: Optional dict of managed name -> serializer field name.
             fields: Optional list of managed property names to include in results.
+            sort_properties: Optional list of sort dicts for server-side sorting.
 
         """
-        body = RestBuilder.build_search_request_body(kql, start_row, page_size, fields=fields)
+        body = RestBuilder.build_search_request_body(
+            kql, start_row, page_size, fields=fields, sort_properties=sort_properties
+        )
         try:
             response = self.post(GRAPH_SEARCH_URL, json=body, timeout=60)
         except GraphClientError as e:
@@ -426,12 +429,20 @@ class GraphClient:
 
     def _execute_paginated_search(self, kql, page, page_size, post_filters, reverse_map, order_by=None, fields=None):  # noqa: PLR0913
         sort_field, sort_desc = self._parse_order_by(order_by)
+
+        sort_properties = None
+        if sort_field:
+            sort_properties = [{"name": sort_field, "isDescending": sort_desc}]
+
         if not post_filters:
-            # Graph API paginates by rank. Client-side sort per-page would
-            # make items jump between pages, so we skip it here.
             start_row = (page - 1) * page_size
             items, total_rows = self._execute_search_page(
-                kql, start_row, page_size, reverse_map=reverse_map, fields=fields
+                kql,
+                start_row,
+                page_size,
+                reverse_map=reverse_map,
+                fields=fields,
+                sort_properties=sort_properties,
             )
             logger.info(f"Graph Search API: {total_rows} total, returned {len(items)} for page {page}")
             return items, total_rows
@@ -453,7 +464,9 @@ class GraphClient:
 
         all_items = _get_scan_cache(scan_key)
         if all_items is None:
-            all_items = self._scan_all_post_filtered(kql, page_size, post_filters, reverse_map)
+            all_items = self._scan_all_post_filtered(
+                kql, page_size, post_filters, reverse_map, sort_properties=sort_properties
+            )
             if sort_field:
                 all_items.sort(key=lambda i: _parse_last_modified(i, sort_field), reverse=sort_desc)
             _set_scan_cache(scan_key, all_items)
@@ -465,14 +478,16 @@ class GraphClient:
         logger.info(f"Graph Search API: {total_rows} total, returned {len(items)} for page {page}")
         return items, total_rows
 
-    def _scan_all_post_filtered(self, kql, page_size, post_filters, reverse_map):
+    def _scan_all_post_filtered(self, kql, page_size, post_filters, reverse_map, sort_properties=None):
         """Scan ahead and return ALL post-filtered items (no page slicing)."""
         all_items = []
         max_scanned = 5
 
         for scan_offset in range(max_scanned):
             start_row = scan_offset * page_size
-            page_items, page_total = self._execute_search_page(kql, start_row, page_size, reverse_map=reverse_map)
+            page_items, page_total = self._execute_search_page(
+                kql, start_row, page_size, reverse_map=reverse_map, sort_properties=sort_properties
+            )
 
             page_items = [
                 it for it in page_items if self._matches_post_filters(it, post_filters, reverse_map=reverse_map)
@@ -512,9 +527,8 @@ class GraphClient:
                      excluded from KQL and applied as post-filters after batch
                      enrichment. If None, all properties are treated as post-filters.
             order_by: Sort expression (e.g. "LastModifiedTime desc").
-                      When set, results are sorted client-side by
-                      LastModifiedTime as a proper datetime comparison,
-                      not as a string.
+                       When set, results are sorted server-side via the
+                       Graph Search API ``sortProperties`` parameter.
             **kwargs: Extra keyword arguments for API compatibility.
                       Accepted kwargs:
                       - reverse_map: Dict mapping managed property names ->
@@ -525,6 +539,7 @@ class GraphClient:
         """
         reverse_map = kwargs.pop("reverse_map", None)
         page_size = kwargs.pop("page_size", None) or config.GRAPH_PAGE_SIZE
+        fields = kwargs.pop("fields", None)
         searchable_filters = {}
         post_filters = {}
         if filters:
@@ -537,7 +552,9 @@ class GraphClient:
 
         kql = RestBuilder.build_kql(search=search, filters=searchable_filters)
         logger.info("KQL query: %s | searchable: %s | post_filters: %s", kql, searchable_filters, post_filters)
-        return self._execute_paginated_search(kql, page, page_size, post_filters, reverse_map, order_by=order_by)
+        return self._execute_paginated_search(
+            kql, page, page_size, post_filters, reverse_map, order_by=order_by, fields=fields
+        )
 
     def download_file(self, file_path, drive_id=None, site_id=None):
         """Download a file from SharePoint via the Graph API drive endpoint.
