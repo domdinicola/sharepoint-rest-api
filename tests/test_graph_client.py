@@ -1263,6 +1263,56 @@ def test_execute_search_page_reverse_map_no_overwrite(mock_cca, mock_post):
     assert items[0]["DRPDonorCode"] == "existing"
 
 
+@mock.patch("sharepoint_rest_api.graph_client.requests.post")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_execute_search_page_reverse_map_case_insensitive_fallback(mock_cca, mock_post):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {
+        "value": [
+            {
+                "hitsContainers": [
+                    {
+                        "total": 1,
+                        "hits": [
+                            {
+                                "hitId": "hit1",
+                                "rank": 1,
+                                "resource": {
+                                    "id": "doc1",
+                                    "name": "doc.docx",
+                                    "webUrl": "https://sharepoint.com/site/doc1",
+                                    "size": 512,
+                                    "lastModifiedDateTime": "2024-01-01T00:00:00Z",
+                                    "Title": "already in item",
+                                    "listItem": {
+                                        "fields": {"donorcode": "DC123"},
+                                    },
+                                },
+                            }
+                        ],
+                    }
+                ]
+            }
+        ]
+    }
+    mock_post.return_value = mock_resp
+
+    client = GraphClient()
+    items, total = client._execute_search_page(
+        "*",
+        0,
+        25,
+        reverse_map={
+            "DonorCode": "DRPDonorCode",
+            "NonExistent": "DRPNonExistent",
+        },
+    )
+    assert items[0]["DRPDonorCode"] == "DC123"
+    assert "DRPNonExistent" not in items[0]
+
+
 # ---- search -------------------------------------------------------------------
 
 

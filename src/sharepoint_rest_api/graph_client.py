@@ -355,6 +355,10 @@ class GraphClient:
         if isinstance(list_item, dict):
             GraphClient._merge_list_item_fields(item, list_item)
 
+        for k, v in resource.items():
+            if k not in item:
+                item[k] = v
+
         if hit.get("summary"):
             item["HitHighlightedSummary"] = hit["summary"]
 
@@ -411,12 +415,22 @@ class GraphClient:
             self._fetch_item_fields(items_with_refs)
 
         if reverse_map:
-            for item in items:
-                for managed_name, serializer_name in reverse_map.items():
-                    if managed_name in item and serializer_name not in item:
-                        item[serializer_name] = item[managed_name]
+            self._apply_reverse_map(items, reverse_map)
 
         return items, total_rows
+
+    @staticmethod
+    def _apply_reverse_map(items, reverse_map):
+        for item in items:
+            lower_map = {k.lower(): v for k, v in item.items()}
+            for managed_name, serializer_name in reverse_map.items():
+                if serializer_name in item:
+                    continue
+                val = item.get(managed_name)
+                if val is None:
+                    val = lower_map.get(managed_name.lower())
+                if val is not None:
+                    item[serializer_name] = val
 
     @staticmethod
     def _parse_order_by(order_by):

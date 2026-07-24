@@ -1,0 +1,26 @@
+{
+    "status_code": 200,
+    "headers": {
+        "Content-Type": "application/json",
+        "Vary": "Accept, origin",
+        "Allow": "GET, HEAD, OPTIONS",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "237",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin"
+    },
+    "data": [
+        {
+            "id": 1,
+            "created": "2023-12-04T07:47:07.200000-06:00",
+            "modified": "2023-12-04T07:47:07.200000-06:00",
+            "url": "https://unitst.sharepoint.com/",
+            "client_id": null,
+            "client_cert_tenant": null,
+            "client_cert_path": null,
+            "client_cert_thumbprint": null
+        }
+    ],
+    "content_type": "application/json"
+}
