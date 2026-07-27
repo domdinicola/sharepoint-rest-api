@@ -6,6 +6,7 @@ from datetime import datetime
 from urllib.parse import quote
 
 import requests
+from django.core.cache import caches
 from msal import ConfidentialClientApplication
 
 from sharepoint_rest_api import config
@@ -14,6 +15,8 @@ from sharepoint_rest_api.builders.rest_builder import (
     GRAPH_URL,
     RestBuilder,
 )
+
+cache = caches["default"]
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +49,11 @@ def _set_scan_cache(key, value, ttl=300):
         stale = [k for k, v in _scan_cache.items() if now >= v["expires"]]
         for k in stale:
             del _scan_cache[k]
+
+
+def _build_cache_key(*parts):
+    raw = "|".join(str(p) for p in parts)
+    return f"graph:{hashlib.md5(raw.encode(), usedforsecurity=False).hexdigest()}"
 
 
 class GraphClientError(Exception):
@@ -137,9 +145,23 @@ class GraphClient:
         tenant = config.SHAREPOINT_TENANT.strip("/")
         site_type = config.SHAREPOINT_SITE_TYPE
         hostname = tenant.replace("https://", "").split("/")[0]
+
+        ttl = config.GRAPH_CACHE_TTL
+        if ttl:
+            cache_key = _build_cache_key("site_id", tenant, site_type, site)
+            cached = cache.get(cache_key)
+            if cached is not None:
+                logger.debug("Graph site_id cache hit: %s", cache_key)
+                return cached
+
         url = f"{GRAPH_URL}/sites/{hostname}:/{site_type}/{site}"
         response = self.get(url)
-        return response.json()["id"]
+        site_id = response.json()["id"]
+
+        if ttl:
+            cache.set(cache_key, site_id, ttl)
+
+        return site_id
 
     @property
     def site_id(self):
@@ -153,16 +175,30 @@ class GraphClient:
         Returns the drive ID string if found, ``None`` otherwise.
         Returns ``None`` immediately when *site_id* is ``None`` to avoid
         triggering the costly ``_get_site_id()`` lookup.
+
+        Results are cached in Redis for ``config.GRAPH_CACHE_TTL`` seconds.
         """
         if not site_id:
             return None
+
+        ttl = config.GRAPH_CACHE_TTL
+        if ttl:
+            cache_key = _build_cache_key("drive", site_id, name)
+            cached = cache.get(cache_key)
+            if cached is not None:
+                logger.debug("Graph drive lookup cache hit: %s", cache_key)
+                return cached
+
         encoded_site_id = quote(site_id, safe="")
         url = f"{GRAPH_URL}/sites/{encoded_site_id}/drives?$filter=name%20eq%20%27{name}%27"
         try:
             response = self.get(url)
             drives = response.json().get("value", [])
             if drives:
-                return drives[0].get("id")
+                drive_id = drives[0].get("id")
+                if ttl and drive_id:
+                    cache.set(cache_key, drive_id, ttl)
+                return drive_id
         except GraphClientError:
             logger.warning("Could not look up drive by name '%s'", name)
         return None
@@ -530,6 +566,11 @@ class GraphClient:
         across all document libraries. Returns (items, total_rows) matching
         the format existing serializers expect.
 
+        Results are cached in Redis for ``config.GRAPH_CACHE_TTL`` seconds
+        (default 1800 / 30 min) keyed by the full set of search parameters.
+        Set the ``GRAPH_CACHE_TTL`` Django setting or environment variable
+        to ``0`` to disable caching.
+
         Args:
             search: Optional free-text KQL search string (e.g. path exclusions).
             filters: Dict of managed-property-name -> value. The caller is
@@ -566,9 +607,31 @@ class GraphClient:
 
         kql = RestBuilder.build_kql(search=search, filters=searchable_filters)
         logger.info("KQL query: %s | searchable: %s | post_filters: %s", kql, searchable_filters, post_filters)
-        return self._execute_paginated_search(
+
+        ttl = config.GRAPH_CACHE_TTL
+        if ttl:
+            cache_key = _build_cache_key(
+                "search",
+                kql,
+                json.dumps(post_filters, sort_keys=True),
+                page,
+                page_size,
+                order_by or "",
+                json.dumps(fields, sort_keys=True) if fields else "",
+            )
+            cached = cache.get(cache_key)
+            if cached is not None:
+                logger.debug("Graph search cache hit: %s", cache_key)
+                return cached
+
+        result = self._execute_paginated_search(
             kql, page, page_size, post_filters, reverse_map, order_by=order_by, fields=fields
         )
+
+        if ttl:
+            cache.set(cache_key, result, ttl)
+
+        return result
 
     def download_file(self, file_path, drive_id=None, site_id=None):
         """Download a file from SharePoint via the Graph API drive endpoint.
