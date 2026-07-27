@@ -357,6 +357,42 @@ def test_site_id_property_caches(mock_cca):
         mock_get.assert_called_once()
 
 
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_site_id_cache_hit(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {"id": "cached-site-id"}
+    mock_get.return_value = mock_resp
+
+    client = GraphClient()
+    result1 = client._get_site_id()
+    assert result1 == "cached-site-id"
+    assert mock_get.call_count == 1
+
+    result2 = client._get_site_id()
+    assert result2 == "cached-site-id"
+    assert mock_get.call_count == 1
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_site_id_cache_disabled(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {"id": "site-abc"}
+    mock_get.return_value = mock_resp
+
+    with mock.patch("sharepoint_rest_api.config.GRAPH_CACHE_TTL", 0):
+        client = GraphClient()
+        result1 = client._get_site_id()
+        result2 = client._get_site_id()
+    assert result1 == result2 == "site-abc"
+    assert mock_get.call_count == 2
+
+
 # ---- build_kql (delegates to RestBuilder) ------------------------------------
 
 
@@ -1729,6 +1765,41 @@ def test_search_with_all_params(mock_cca, mock_post):
     assert items == []
 
 
+@mock.patch("sharepoint_rest_api.graph_client.requests.post")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_search_cache_disabled(mock_cca, mock_post):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {
+        "value": [
+            {
+                "hitsContainers": [
+                    {
+                        "total": 1,
+                        "hits": [
+                            {
+                                "resource": {"name": "doc1", "listItem": {"fields": {"ReportStatus": "Final"}}},
+                                "hitId": "h1",
+                                "rank": 1,
+                            }
+                        ],
+                    }
+                ]
+            }
+        ]
+    }
+    mock_post.return_value = mock_resp
+
+    with mock.patch("sharepoint_rest_api.config.GRAPH_CACHE_TTL", 0):
+        client = GraphClient()
+        with mock.patch.object(GraphClient, "_fetch_item_fields"):
+            items1, total1 = client.search(filters={"ReportStatus": "Final"}, searchable_properties=set())
+            items2, total2 = client.search(filters={"ReportStatus": "Final"}, searchable_properties=set())
+    assert total1 == total2 == 1
+    assert mock_post.call_count == 1
+
+
 @mock.patch("sharepoint_rest_api.graph_client.requests.get")
 @mock.patch("sharepoint_rest_api.graph_client.requests.post")
 @mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
@@ -2031,6 +2102,42 @@ def test_get_drive_id_by_name_http_error(mock_cca, mock_get):
     client = GraphClient()
     result = client.get_drive_id_by_name("Documents", site_id="site123")
     assert result is None
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_drive_id_by_name_cache_hit(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {"value": [{"id": "drive-abc-123", "name": "Documents"}]}
+    mock_get.return_value = mock_resp
+
+    client = GraphClient()
+    result1 = client.get_drive_id_by_name("Documents", site_id="site123")
+    assert result1 == "drive-abc-123"
+    assert mock_get.call_count == 1
+
+    result2 = client.get_drive_id_by_name("Documents", site_id="site123")
+    assert result2 == "drive-abc-123"
+    assert mock_get.call_count == 1
+
+
+@mock.patch("sharepoint_rest_api.graph_client.requests.get")
+@mock.patch("sharepoint_rest_api.graph_client.ConfidentialClientApplication")
+def test_get_drive_id_by_name_cache_disabled(mock_cca, mock_get):
+    mock_app = mock_cca.return_value
+    mock_app.acquire_token_for_client.return_value = {"access_token": "t"}
+    mock_resp = mock.MagicMock()
+    mock_resp.json.return_value = {"value": [{"id": "drive-abc-123", "name": "Documents"}]}
+    mock_get.return_value = mock_resp
+
+    with mock.patch("sharepoint_rest_api.config.GRAPH_CACHE_TTL", 0):
+        client = GraphClient()
+        result1 = client.get_drive_id_by_name("Documents", site_id="site123")
+        result2 = client.get_drive_id_by_name("Documents", site_id="site123")
+    assert result1 == result2 == "drive-abc-123"
+    assert mock_get.call_count == 2
 
 
 # ---- _parse_order_by ----------------------------------------------------------

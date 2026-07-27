@@ -10,13 +10,16 @@ import pytest
 # because SHAREPOINT_CONNECTION is evaluated at module load time.
 os.environ.setdefault("SHAREPOINT_CONNECTION", "user")
 
+from django.core.cache import caches
+
 from sharepoint_rest_api.graph_client import _scan_cache  # noqa: E402
 from tests.factories import UserFactory  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
-def _clear_scan_cache():
+def _clear_caches():
     _scan_cache.clear()
+    caches["default"].clear()
 
 
 @pytest.fixture(scope="session", autouse=True)
