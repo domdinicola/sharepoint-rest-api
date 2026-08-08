@@ -32,7 +32,7 @@ dependencies = [
   "django-model-utils",
   "djangorestframework",
   "msal",
-  "office365-rest-python-client",
+  "office365-rest-python-client>=2.6,<3",
 ]
 
 [dependency-groups]

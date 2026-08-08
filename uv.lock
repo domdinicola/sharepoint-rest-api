@@ -877,7 +877,7 @@ requires-dist = [
     { name = "django-model-utils" },
     { name = "djangorestframework" },
     { name = "msal" },
-    { name = "office365-rest-python-client" },
+    { name = "office365-rest-python-client", specifier = ">=2.6,<3" },
 ]
 
 [package.metadata.requires-dev]
