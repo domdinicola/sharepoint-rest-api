@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        django: [ "32", "42", "52", "60"]
+        django: [ "52", "60", "61"]
         python: [ "3.14"  ]
     env:
       CELERY_BROKER_URL: redis://redis:6379/0
@@ -70,16 +70,16 @@ jobs:
         run: uv python install --python-preference only-managed ${{ matrix.python }}
 
       - name: Setup test suite
-        run: tox run -vv --notest --skip-missing-interpreters false -e d${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
+        run: tox run -vv --notest --skip-missing-interpreters false -e dj${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
 
-      - name: Run test suite d${{ matrix.django }}-py${{ matrix.python }}
-        run: tox -e d${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
+      - name: Run test suite dj${{ matrix.django }}-py${{ matrix.python }}
+        run: tox -e dj${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
 
       - name: Upload pytest test results
         uses: actions/upload-artifact@v7
         with:
           name: pytest-results-${{ matrix.python }}-${{matrix.django}}
-          path: junit-${{ matrix.python }}-${{matrix.django}}.xml
+          path: junit-dj${{ matrix.django }}-py*.xml
         if: ${{ always() }}
 
       - name: Upload coverage to Codecov
