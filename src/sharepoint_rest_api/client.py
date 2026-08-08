@@ -1,8 +1,5 @@
 import logging
 
-from office365.runtime.auth.authentication_context import AuthenticationContext
-from office365.runtime.auth.client_credential import ClientCredential
-from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 from office365.sharepoint.files.creation_information import FileCreationInformation
 from office365.sharepoint.files.file import File
@@ -20,6 +17,12 @@ logger = logging.getLogger(__name__)
 default_select = ["*", "FileLeafRef"]
 
 
+def get_tenant_name(url):
+    """Return the Microsoft Entra ID tenant name derived from a SharePoint site URL."""
+    host = url.split("//")[-1].split("/")[0]
+    return f"{host.split('.')[0]}.onmicrosoft.com"
+
+
 class SharePointClientException(BaseException):
     """SharePoint Exception when initializing the client."""
 
@@ -28,9 +31,9 @@ class SharePointClient:
     """Client to access SharePoint Document Library.
 
     Supports three authentication modes, configured via ``SHAREPOINT_CONNECTION``:
-    - "app":  SharePoint App-Only (ACS) using client_id + client_secret.
-      **Deprecated by Microsoft** — no longer works for new tenants.
-    - "user": User credentials (username + password).
+    - "app":  Microsoft Entra ID app-only using client_id + client_secret.
+    - "user": User credentials via the MSAL resource owner password flow
+      (requires a registered ``client_id`` and the tenant name).
     - "cert": Microsoft Entra ID app registration using client_id + certificate.
       Recommended for app-only access.
     """
@@ -38,10 +41,10 @@ class SharePointClient:
     def __init__(self, *args, **kwargs) -> None:
         self.relative_url = kwargs.get("relative_url")
         self.site_path = kwargs.get("url", config.SHAREPOINT_TENANT)
-        auth_context = None
+        tenant = kwargs.get("tenant", get_tenant_name(self.site_path))
+        self.context = ClientContext(self.site_path)
         if config.SHAREPOINT_CONNECTION == "cert":
-            auth_context = AuthenticationContext(self.site_path)
-            auth_context.with_client_certificate(
+            self.context.with_client_certificate(
                 kwargs.get("cert_tenant", config.SHAREPOINT_CLIENT_CERT_TENANT),
                 kwargs.get("client_id", config.SHAREPOINT_CLIENT_ID),
                 kwargs.get("cert_thumbprint", config.SHAREPOINT_CLIENT_CERT_THUMBPRINT),
@@ -50,20 +53,21 @@ class SharePointClient:
                 passphrase=kwargs.get("cert_passphrase", config.SHAREPOINT_CLIENT_CERT_PASSPHRASE) or None,
             )
         elif config.SHAREPOINT_CONNECTION == "app":
-            client_id = kwargs.get("client_id", config.SHAREPOINT_CLIENT_ID)
-            client_secret = kwargs.get("client_secret", config.SHAREPOINT_CLIENT_SECRET)
-            credentials = ClientCredential(client_id, client_secret)
+            self.context.with_client_secret(
+                tenant,
+                kwargs.get("client_id", config.SHAREPOINT_CLIENT_ID),
+                kwargs.get("client_secret", config.SHAREPOINT_CLIENT_SECRET),
+            )
         elif config.SHAREPOINT_CONNECTION == "user":
-            username = kwargs.get("username", config.SHAREPOINT_USERNAME)
-            password = kwargs.get("password", config.SHAREPOINT_PASSWORD)
-            credentials = UserCredential(username, password)
+            self.context.with_username_and_password(
+                tenant,
+                kwargs.get("client_id", config.SHAREPOINT_CLIENT_ID),
+                kwargs.get("username", config.SHAREPOINT_USERNAME),
+                kwargs.get("password", config.SHAREPOINT_PASSWORD),
+            )
         else:
             raise SharePointClientException("Invalid connection type")
         self.folder = kwargs.get("folder", "Documents")
-        if auth_context:
-            self.context = ClientContext(self.site_path, auth_context=auth_context)
-        else:
-            self.context = ClientContext(self.site_path).with_credentials(credentials)
 
         # User-based auth context used specifically for search operations, since
         # the SharePoint Search REST API does not accept app-only (cert) tokens.
@@ -75,8 +79,11 @@ class SharePointClient:
             None,
             "",
         ):
-            self._search_context = ClientContext(self.site_path).with_credentials(
-                UserCredential(search_username, search_password)
+            self._search_context = ClientContext(self.site_path).with_username_and_password(
+                tenant,
+                kwargs.get("client_id", config.SHAREPOINT_CLIENT_ID),
+                search_username,
+                search_password,
             )
 
     def __reduce__(self):

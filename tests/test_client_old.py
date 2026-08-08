@@ -6,12 +6,10 @@ from sharepoint_rest_api.client import SharePointClient, SharePointClientExcepti
 
 
 @mock.patch("sharepoint_rest_api.client.ClientContext")
-@mock.patch("sharepoint_rest_api.client.ClientCredential")
 @mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "app")
-def test_init_app(mock_credential, mock_context):
+def test_init_app(mock_context):
     mock_context_instance = mock.MagicMock()
     mock_context.return_value = mock_context_instance
-    mock_context_instance.with_credentials.return_value = mock_context_instance
 
     client = SharePointClient(
         url="https://test.sharepoint.com/",
@@ -21,23 +19,16 @@ def test_init_app(mock_credential, mock_context):
         client_secret="test_secret",
     )
 
-    mock_credential.assert_called_once_with("test_id", "test_secret")
     mock_context.assert_called_once_with("https://test.sharepoint.com/")
-    mock_context_instance.with_credentials.assert_called_once_with(mock_credential.return_value)
+    mock_context_instance.with_client_secret.assert_called_once_with("test.onmicrosoft.com", "test_id", "test_secret")
     assert client.folder == "Docs"
 
 
-@mock.patch("sharepoint_rest_api.client.AuthenticationContext")
 @mock.patch("sharepoint_rest_api.client.ClientContext")
-@mock.patch("sharepoint_rest_api.client.UserCredential")
 @mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "cert")
-def test_cert_auth_with_search_context(mock_user_cred, mock_context, mock_auth):
-    mock_auth_instance = mock.MagicMock()
-    mock_auth.return_value = mock_auth_instance
-
+def test_cert_auth_with_search_context(mock_context):
     mock_context_instance = mock.MagicMock()
     mock_context.return_value = mock_context_instance
-    mock_context_instance.with_credentials.return_value = mock_context_instance
 
     client = SharePointClient(
         url="https://test.sharepoint.com/",
@@ -48,13 +39,12 @@ def test_cert_auth_with_search_context(mock_user_cred, mock_context, mock_auth):
         password="valid_pass",
     )
 
-    mock_auth.assert_called_once_with("https://test.sharepoint.com/")
-    mock_auth_instance.with_client_certificate.assert_called_once()
-
-    mock_context.assert_any_call("https://test.sharepoint.com/", auth_context=mock_auth_instance)
     mock_context.assert_any_call("https://test.sharepoint.com/")
-    mock_context_instance.with_credentials.assert_called_with(mock_user_cred.return_value)
-    mock_user_cred.assert_called_once_with("valid_user", "valid_pass")
+    assert mock_context.call_count == 2
+    mock_context_instance.with_client_certificate.assert_called_once()
+    mock_context_instance.with_username_and_password.assert_called_once_with(
+        "test.onmicrosoft.com", "test-client-id", "valid_user", "valid_pass"
+    )
     assert client._search_context is not None
 
 
@@ -65,12 +55,10 @@ def test_init_invalid():
 
 
 @mock.patch("sharepoint_rest_api.client.ClientContext")
-@mock.patch("sharepoint_rest_api.client.ClientCredential")
 @mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "app")
-def test_reduce(mock_credential, mock_context):
+def test_reduce(mock_context):
     mock_context_instance = mock.MagicMock()
     mock_context.return_value = mock_context_instance
-    mock_context_instance.with_credentials.return_value = mock_context_instance
 
     client = SharePointClient(
         url="https://test.sharepoint.com/",
@@ -83,12 +71,10 @@ def test_reduce(mock_credential, mock_context):
 
 
 @mock.patch("sharepoint_rest_api.client.ClientContext")
-@mock.patch("sharepoint_rest_api.client.ClientCredential")
 @mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "app")
-def test_read_file(mock_credential, mock_context):
+def test_read_file(mock_context):
     mock_context_instance = mock.MagicMock()
     mock_context.return_value = mock_context_instance
-    mock_context_instance.with_credentials.return_value = mock_context_instance
 
     client = SharePointClient(
         url="https://test.sharepoint.com/",
@@ -114,12 +100,10 @@ def test_read_file(mock_credential, mock_context):
 @mock.patch("sharepoint_rest_api.client.SearchRequestBuilder")
 @mock.patch("sharepoint_rest_api.client.SearchService")
 @mock.patch("sharepoint_rest_api.client.ClientContext")
-@mock.patch("sharepoint_rest_api.client.ClientCredential")
 @mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "app")
-def test_search(mock_credential, mock_context, mock_search_service, mock_builder):
+def test_search(mock_context, mock_search_service, mock_builder):
     mock_context_instance = mock.MagicMock()
     mock_context.return_value = mock_context_instance
-    mock_context_instance.with_credentials.return_value = mock_context_instance
 
     client = SharePointClient(
         url="https://test.sharepoint.com/",
@@ -153,12 +137,10 @@ def test_search(mock_credential, mock_context, mock_search_service, mock_builder
 
 @mock.patch("sharepoint_rest_api.client.FileCreationInformation")
 @mock.patch("sharepoint_rest_api.client.ClientContext")
-@mock.patch("sharepoint_rest_api.client.ClientCredential")
 @mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "app")
-def test_upload_file_alt(mock_credential, mock_context, mock_creation_info):
+def test_upload_file_alt(mock_context, mock_creation_info):
     mock_context_instance = mock.MagicMock()
     mock_context.return_value = mock_context_instance
-    mock_context_instance.with_credentials.return_value = mock_context_instance
 
     client = SharePointClient(
         url="https://test.sharepoint.com/",
@@ -186,12 +168,10 @@ def test_upload_file_alt(mock_credential, mock_context, mock_creation_info):
 
 
 @mock.patch("sharepoint_rest_api.client.ClientContext")
-@mock.patch("sharepoint_rest_api.client.ClientCredential")
 @mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "app")
-def test_upload_file(mock_credential, mock_context):
+def test_upload_file(mock_context):
     mock_context_instance = mock.MagicMock()
     mock_context.return_value = mock_context_instance
-    mock_context_instance.with_credentials.return_value = mock_context_instance
 
     client = SharePointClient(
         url="https://test.sharepoint.com/",
@@ -230,12 +210,10 @@ def test_upload_file(mock_credential, mock_context):
 @mock.patch("builtins.open", new_callable=mock.mock_open)
 @mock.patch("sharepoint_rest_api.client.File")
 @mock.patch("sharepoint_rest_api.client.ClientContext")
-@mock.patch("sharepoint_rest_api.client.ClientCredential")
 @mock.patch("sharepoint_rest_api.client.config.SHAREPOINT_CONNECTION", "app")
-def test_download_file(mock_credential, mock_context, mock_file, mock_open):
+def test_download_file(mock_context, mock_file, mock_open):
     mock_context_instance = mock.MagicMock()
     mock_context.return_value = mock_context_instance
-    mock_context_instance.with_credentials.return_value = mock_context_instance
 
     client = SharePointClient(
         url="https://test.sharepoint.com/",

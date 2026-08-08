@@ -56,10 +56,8 @@ Default: ``app``
 
 Authentication mode for the SharePoint client. Supported values:
 
-- ``"app"`` — SharePoint App-Only (ACS) using client_id + client_secret.
-  **Deprecated** — Microsoft has deprecated SharePoint App-Only (ACS) and it
-  no longer works for new tenants. Use ``"cert"`` instead.
-- ``"user"`` — User credentials (username + password).
+- ``"app"`` — Microsoft Entra ID app-only using client_id + client_secret.
+- ``"user"`` — User credentials via the MSAL resource owner password flow.
 - ``"cert"`` — Microsoft Entra ID app registration using client_id + certificate.
 
 
@@ -91,10 +89,12 @@ SharePoint site type (sites/teams)
 
 
 TENANT
------------------------
+----------------------
 Default: ``https://unitst.sharepoint.com``
 
-SharePoint tenant name
+SharePoint tenant name. Also used to derive the Microsoft Entra ID tenant name
+(e.g. ``https://contoso.sharepoint.com`` -> ``contoso.onmicrosoft.com``) for the
+``"app"`` and ``"user"`` authentication modes.
 
 
 USERNAME
@@ -108,14 +108,14 @@ CLIENT_ID
 ---------------------------
 Default: ``invalid_client_id``
 
-Client ID for SharePoint App-Only (ACS) or certificate-based authentication (Microsoft Entra ID app registration).
+Client ID for Microsoft Entra ID app-only or certificate-based authentication.
 
 
 CLIENT_SECRET
 -------------------------------
 Default: ``invalid_client_secret``
 
-Client secret for SharePoint App-Only (ACS) authentication. Not used in certificate mode.
+Client secret for Microsoft Entra ID app-only authentication (``"app"`` connection). Not used in certificate mode.
 
 
 CLIENT_CERT_TENANT
