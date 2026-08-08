@@ -1,3 +1,14 @@
+Release 0.24.0
+-----------------------------------------
+* Require office365-rest-python-client>=3 (drop 2.x)
+* Migrate SharePointClient to MSAL authentication flows (Entra ID client secret
+  app-only and resource owner password) and drop the legacy SAML/ACS auth code
+* Add Django 6.1 support and drop Django 3.2/4.2 from the test matrix
+
+Release 0.23.0
+-----------------------------------------
+* Add Redis caching for Graph API site_id and drive_id lookups (GRAPH_CACHE_TTL)
+
 Release 0.22.0
 -----------------------------------------
 * Add server-side sorting via Graph Search API sortProperties
