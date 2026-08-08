@@ -20,12 +20,20 @@ Authentication modes
 The ``SharePointClient`` supports three authentication modes, configured via the
 ``SHAREPOINT_CONNECTION`` setting:
 
-- ``"app"`` — SharePoint App-Only (ACS) using client_id + client_secret.
-  **This method is deprecated by Microsoft and no longer works for new tenants.**
-  Use certificate-based authentication instead.
-- ``"user"`` — User credentials (username + password).
+- ``"app"`` — Microsoft Entra ID app-only using client_id + client_secret.
+- ``"user"`` — User credentials via the MSAL resource owner password flow
+  (requires a registered ``client_id`` and the tenant name).
 - ``"cert"`` — Microsoft Entra ID app registration using client_id + certificate.
   This is the recommended approach for app-only access.
+
+For the ``"app"`` and ``"user"`` modes, the following additional settings are used:
+
+- ``SHAREPOINT_CLIENT_ID``
+- ``SHAREPOINT_CLIENT_SECRET`` (``"app"`` mode only)
+- ``SHAREPOINT_USERNAME`` and ``SHAREPOINT_PASSWORD`` (``"user"`` mode only)
+
+The Microsoft Entra ID tenant name is derived from ``SHAREPOINT_TENANT``
+(e.g. ``https://contoso.sharepoint.com`` -> ``contoso.onmicrosoft.com``).
 
 For certificate-based authentication, the following additional settings are used:
 

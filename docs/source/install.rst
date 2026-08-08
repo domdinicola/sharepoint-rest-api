@@ -38,9 +38,8 @@ The library supports two API backends:
   Uses the ``SharePointClient`` with one of three authentication modes
   (configured via ``SHAREPOINT_CONNECTION``):
 
-  - ``"app"`` — SharePoint App-Only (ACS). **Deprecated by Microsoft** and
-    no longer works for new tenants.
-  - ``"user"`` — User credentials (username + password).
+  - ``"app"`` — Microsoft Entra ID app-only using client_id + client_secret.
+  - ``"user"`` — User credentials via the MSAL resource owner password flow.
   - ``"cert"`` — Microsoft Entra ID app registration with a certificate.
     The recommended approach for app-only access.
 

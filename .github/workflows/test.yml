@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        django: [ "32", "42", "52", "60"]
+        django: [ "52", "60", "61"]
         python: [ "3.14"  ]
     env:
       CELERY_BROKER_URL: redis://redis:6379/0
@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: pytest-results-${{ matrix.python }}-${{matrix.django}}
-          path: junit-${{ matrix.python }}-${{matrix.django}}.xml
+          path: junit-d${{ matrix.django }}-py*.xml
         if: ${{ always() }}
 
       - name: Upload coverage to Codecov

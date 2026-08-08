@@ -26,6 +26,12 @@ def _clear_caches():
 def _mock_sharepoint_auth():
     patcher = mock.patch("office365.runtime.auth.authentication_context.AuthenticationContext.authenticate_request")
     patcher.start()
+    patcher = mock.patch("msal.PublicClientApplication")
+    patcher.start()
+    patcher = mock.patch("msal.ConfidentialClientApplication")
+    patcher.start()
+    patcher = mock.patch("office365.sharepoint.request.SharePointRequest.ensure_form_digest")
+    patcher.start()
     yield
     patcher.stop()
 

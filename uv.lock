@@ -519,7 +519,7 @@ wheels = [
 
 [[package]]
 name = "office365-rest-python-client"
-version = "2.6.2"
+version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "msal" },
@@ -527,9 +527,9 @@ dependencies = [
     { name = "requests" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bc/04/6dce2d581c54a8e55a3b128cf79a93821a68a62bb9a956e65476c5bb247e/office365_rest_python_client-2.6.2.tar.gz", hash = "sha256:ce27f5a1c0cc3ff97041ccd9b386145692be4c64739f243f7d6ac3edbe0a3c46", size = 659460, upload-time = "2025-05-11T10:24:21.895Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/79/63/6ccc58f2e20c770b9409ea5a4794aa8515e1158b23df2dd2bfe90b04aacd/office365_rest_python_client-3.0.0.tar.gz", hash = "sha256:3f95d29794ee0adc58e0b16f6574257c885c74af108e1789e4b3c286bc2ce5ac", size = 949771, upload-time = "2026-08-02T11:54:01.716Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/a4/611155711f8af347875c15b8b83f5fd9e978bd4de45f90085b9a583b684d/Office365_REST_Python_Client-2.6.2-py3-none-any.whl", hash = "sha256:06fc6829c39b503897caa9d881db419d7f97a8e4f1c95c4c2d12db36ea6c955d", size = 1337139, upload-time = "2025-05-11T10:24:18.926Z" },
+    { url = "https://files.pythonhosted.org/packages/09/70/3abd5a09c4213fc57c2b563b599ebaa05aa51a2f9b74e68c681a881f4e95/office365_rest_python_client-3.0.0-py3-none-any.whl", hash = "sha256:3432a9780febe0aa571543d21288d97ef9e0a0287aa0a5047523a65557e41932", size = 2860038, upload-time = "2026-08-02T11:53:59.863Z" },
 ]
 
 [[package]]
@@ -682,14 +682,14 @@ wheels = [
 
 [[package]]
 name = "pytest-django"
-version = "4.12.0"
+version = "4.13.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/13/2b/db9a193df89e5660137f5428063bcc2ced7ad790003b26974adf5c5ceb3b/pytest_django-4.12.0.tar.gz", hash = "sha256:df94ec819a83c8979c8f6de13d9cdfbe76e8c21d39473cfe2b40c9fc9be3c758", size = 91156, upload-time = "2026-02-14T18:40:49.235Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1c/ae/5ed1ab2d12090bd794392d798c14d092f0470f6446eaa6d2af4183f4aa2b/pytest_django-4.13.0.tar.gz", hash = "sha256:2316e3f63e3bc799deb4212830e39b2ef1dcc3b2d8688060f1d0217db6a56ebe", size = 94200, upload-time = "2026-08-05T21:36:23.035Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/83/a5/41d091f697c09609e7ef1d5d61925494e0454ebf51de7de05f0f0a728f1d/pytest_django-4.12.0-py3-none-any.whl", hash = "sha256:3ff300c49f8350ba2953b90297d23bf5f589db69545f56f1ec5f8cff5da83e85", size = 26123, upload-time = "2026-02-14T18:40:47.381Z" },
+    { url = "https://files.pythonhosted.org/packages/27/88/52db7a840fdbd74934f8df11b7450c9919ac00f61c02e88827f3d58180f7/pytest_django-4.13.0-py3-none-any.whl", hash = "sha256:09374c12d947ca0f99e33726bcb720a6d0124f67058e1130586372bd109493e3", size = 27066, upload-time = "2026-08-05T21:36:21.763Z" },
 ]
 
 [[package]]
@@ -877,7 +877,7 @@ requires-dist = [
     { name = "django-model-utils" },
     { name = "djangorestframework" },
     { name = "msal" },
-    { name = "office365-rest-python-client" },
+    { name = "office365-rest-python-client", specifier = ">=3" },
 ]
 
 [package.metadata.requires-dev]
